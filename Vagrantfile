@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
       cp -v /vagrant/apache2.conf /etc/apache2/
       cp -v /vagrant/pumukydev.conf /etc/apache2/sites-available/
       cp -v /vagrant/index.html /var/www/html/
+      cp -vr /vagrant/errors/ /var/www/html/
       sudo a2ensite pumukydev.conf
       systemctl restart apache2
   SHELL
