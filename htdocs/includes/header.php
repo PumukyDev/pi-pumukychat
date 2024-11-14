@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($pageTitle) ? $pageTitle : 'PumukyDev - Página de Bienvenida'; ?></title>
+    <title><?php echo isset($pageTitle) ? $pageTitle : 'PumukyDev'; ?></title>
     <link rel="stylesheet" href="<?php echo isset($pathStyle) ? $pathStyle : '../style/style.css'; ?>">
 </head>
 <body>

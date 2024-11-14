@@ -1,11 +1,11 @@
 <?php
 $pageTitle = "PumukyDev - URL Shortener";
 include '../includes/header.php';
-
-echo "<main>";
-    echo "<h1>Acortador de URL</h1>";
-    echo "<p>Usa esta herramienta para acortar tus enlaces.</p>";
-echo "</main>";
-
-include '../includes/footer.php';
 ?>
+
+<main>
+    <h1>Acortador de URL</h1>
+    <p>Usa esta herramienta para acortar tus enlaces.</p>
+</main>
+
+<?php include '../includes/footer.php';?>
