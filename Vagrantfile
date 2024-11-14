@@ -14,11 +14,18 @@ Vagrant.configure("2") do |config|
     s.vm.network "forwarded_port", guest: 443, host: 4433
     s.vm.provision "shell", inline: <<-SHELL
       apt-get update -y
-      apt-get install -y apache2 curl php libapache2-mod-php
+      apt-get install -y apache2 curl php libapache2-mod-php gnupg
       cp -vr /vagrant/config/apache2/ /etc/
       cp -vr /vagrant/htdocs/ /var/www/
       sudo a2ensite pumukydev.conf
       systemctl restart apache2
+      sudo apt install -y gnupg2 software-properties-common apt-transport-https wget
+      sudo mkdir -p /etc/apt/keyrings/
+      wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+      echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+      sudo apt-get update -y
+      sudo apt-get install grafana -y
+      systemctl restart grafana-server
   SHELL
   end
 end
