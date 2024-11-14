@@ -15,8 +15,7 @@ Vagrant.configure("2") do |config|
     s.vm.provision "shell", inline: <<-SHELL
       apt-get update -y
       apt-get install -y apache2 curl php libapache2-mod-php
-      cp -v /vagrant/config/apache/apache2.conf /etc/apache2/
-      cp -v /vagrant/config/apache/sites-available/pumukydev.conf /etc/apache2/sites-available/
+      cp -vr /vagrant/config/apache2/ /etc/
       cp -vr /vagrant/htdocs/ /var/www/
       sudo a2ensite pumukydev.conf
       systemctl restart apache2
