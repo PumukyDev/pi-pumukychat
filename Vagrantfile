@@ -18,6 +18,7 @@ Vagrant.configure("2") do |config|
       cp -vr /vagrant/config/apache2/ /etc/
       cp -vr /vagrant/htdocs/ /var/www/
       sudo a2ensite pumukydev.conf
+      sudo a2enmod headers
       cp -r /vagrant/config/dynamic-dns/get_url/ /opt/dynamic-dns/
       chmod +x /opt/dynamic-dns/dyndns.sh
       cp /vagrant/config/dynamic-dns/dyndns-cronjob /etc/cron.d/
