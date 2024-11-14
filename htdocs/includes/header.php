@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Usamos una variable PHP para el título -->
     <title><?php echo isset($pageTitle) ? $pageTitle : 'PumukyDev - Página de Bienvenida'; ?></title>
-    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="<?php echo isset($pathStyle) ? $pathStyle : '../style/style.css'; ?>">
 </head>
 <body>
     <header>
         <div class="header-container">
-            <a href="index.php" class="logo">PumukyDev</a>
+            <a href="<?php echo isset($pathIndex) ? $pathIndex : '../index.php'; ?>" class="logo">PumukyDev</a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="shortener.php">URL Shortener</a></li>
-                    <li><a href="tools.php">Tools</a></li>
+                    <li><a href="<?php echo isset($pathIndex) ? $pathIndex : '../index.php'; ?>">Home</a></li>
+                    <li><a href="<?php echo isset($pathShortener) ? $pathShortener : 'shortener.php'; ?>">URL Shortener</a></li>
+                    <li><a href="<?php echo isset($pathTools) ? $pathTools : 'tools.php'; ?>">Tools</a></li>
                 </ul>
             </nav>
             <div class="lang-switch">
