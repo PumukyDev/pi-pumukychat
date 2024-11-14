@@ -6,9 +6,9 @@ $pageTitle = "PumukyDev - Página Principal";
 # Paths
 $pathFavicon = "images/favicon.png";
 $pathStyle = "style/style.css";
-$pathIndex = "index.php";
-$pathShortener = "./pages/shortener.php";
-$pathTools = "./pages/tools.php";
+$pathIndex = ".";
+$pathShortener = "./shortener";
+$pathTools = "./tools";
 
 include 'includes/header.php';
 ?>

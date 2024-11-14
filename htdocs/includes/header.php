@@ -10,12 +10,12 @@
 <body>
     <header>
         <div class="header-container">
-            <a href="<?php echo isset($pathIndex) ? $pathIndex : '../index.php'; ?>" class="logo">PumukyDev</a>
+            <a href="<?php echo isset($pathIndex) ? $pathIndex : '../'; ?>" class="logo">PumukyDev</a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="<?php echo isset($pathIndex) ? $pathIndex : '../index.php'; ?>">Home</a></li>
-                    <li><a href="<?php echo isset($pathShortener) ? $pathShortener : 'shortener.php'; ?>">URL Shortener</a></li>
-                    <li><a href="<?php echo isset($pathTools) ? $pathTools : 'tools.php'; ?>">Tools</a></li>
+                    <li><a href="<?php echo isset($pathIndex) ? $pathIndex : '../'; ?>">Home</a></li>
+                    <li><a href="<?php echo isset($pathShortener) ? $pathShortener : '../shortener'; ?>">URL Shortener</a></li>
+                    <li><a href="<?php echo isset($pathTools) ? $pathTools : '../tools'; ?>">Tools</a></li>
                 </ul>
             </nav>
             <div class="lang-switch">
