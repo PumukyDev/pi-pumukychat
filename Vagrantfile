@@ -14,10 +14,13 @@ Vagrant.configure("2") do |config|
     s.vm.network "forwarded_port", guest: 443, host: 4433
     s.vm.provision "shell", inline: <<-SHELL
       apt-get update -y
-      apt-get install -y apache2 curl php libapache2-mod-php gnupg
+      apt-get install -y apache2 curl php libapache2-mod-php gnupg jq
       cp -vr /vagrant/config/apache2/ /etc/
       cp -vr /vagrant/htdocs/ /var/www/
       sudo a2ensite pumukydev.conf
+      cp -r /vagrant/config/dynamic-dns/get_url/ /opt/dynamic-dns/
+      chmod +x /opt/dynamic-dns/dyndns.sh
+      cp /vagrant/config/dynamic-dns/dyndns-cronjob /etc/cron.d/
       systemctl restart apache2
       sudo apt install -y gnupg2 software-properties-common apt-transport-https wget
       sudo mkdir -p /etc/apt/keyrings/
