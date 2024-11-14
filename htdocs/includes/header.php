@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? $pageTitle : 'PumukyDev'; ?></title>
+    <link rel="icon" type="image/x-icon" href="<?php echo isset($pathFavicon) ? $pathFavicon : '../images/favicon.png'; ?>">
     <link rel="stylesheet" href="<?php echo isset($pathStyle) ? $pathStyle : '../style/style.css'; ?>">
 </head>
 <body>
