@@ -9,11 +9,12 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "server" do |s|
     s.vm.hostname = "server"
-    #s.vm.network "public_network", ip: "192.168.57.10", bridge: "eth0"
-    s.vm.network "public_network", ip: "10.112.40.2", bridge: "eth0"
+    s.vm.network "public_network", ip: "192.168.57.10", bridge: "eth0"
+    #s.vm.network "public_network", ip: "10.112.40.2", bridge: "eth0"
     s.vm.network "forwarded_port", guest: 80, host: 8080
     s.vm.network "forwarded_port", guest: 443, host: 4433
     s.vm.network "forwarded_port", guest: 3000, host: 3000
+    s.vm.network "forwarded_port", guest: 9090, host: 9090
     s.vm.provision "shell", inline: <<-SHELL
       apt-get update -y
       apt-get install -y apache2 curl php libapache2-mod-php gnupg jq
@@ -31,8 +32,10 @@ Vagrant.configure("2") do |config|
       echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
       sudo apt-get update -y
       sudo apt-get install grafana -y
-      cp -r /vagrant/config/grafana /etc/grafana/
+      cp -r /vagrant/config/monitoring/grafana /etc/grafana/
       systemctl restart grafana-server
+      apt-get install -y prometheus
+      systemctl restart prometheus
   SHELL
   end
 end
