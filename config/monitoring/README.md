@@ -25,7 +25,33 @@ By default, Grafana is accessible at `http://localhost:3000` after starting the 
 
 <div align="center">
     <img src="images/grafana_login.jpg" alt="grafana login page"/>
+    <img src="images/grafana_change_passwd.jpg" alt="grafana change password"/>
 </div>
+
+<div align="center">
+    <img src="images/grafana_connections.jpg" alt="grafana login page"/>
+</div>
+
+<div align="center">
+    <img src="images/grafana_prometheus.jpg" alt="grafana login page"/>
+</div>
+
+<div align="center">
+    <img src="images/prometheus_add_source.jpg" alt="grafana login page"/>
+</div>
+
+<div align="center">
+    <img src="images/prometheus_settings.jpg" alt="grafana login page"/>
+</div>
+
+<div align="center">
+    <img src="images/prometheus_succed.jpg" alt="grafana login page"/>
+</div>
+
+<div align="center">
+    <img src="images/grafana_graph.jpg" alt="grafana login page"/>
+</div>
+
 
 ...
 
