@@ -34,10 +34,12 @@ Vagrant.configure("2") do |config|
       echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
       sudo apt-get update -y
       sudo apt-get install grafana -y
-      cp -r /vagrant/config/monitoring/grafana /etc/grafana/
+      cp /vagrant/config/monitoring/grafana/gradana.ini /etc/grafana/
+      cp /vagrant/config/monitoring/prometheus/prometheus.yml /etc/prometheus/
       systemctl restart grafana-server
       apt-get install -y prometheus
       systemctl restart prometheus
+      systemctl restart apache2
   SHELL
   end
 end
