@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.define "server" do |s|
     s.vm.hostname = "server"
-    s.vm.network "public_network", ip: "192.168.57.10", bridge: "eth0"
+    s.vm.network "public_network", ip: "192.168.1.202", bridge: "eth0"
     #s.vm.network "public_network", ip: "10.112.40.2", bridge: "eth0"
     s.vm.network "forwarded_port", guest: 80, host: 8080
     s.vm.network "forwarded_port", guest: 443, host: 4433
@@ -21,6 +21,8 @@ Vagrant.configure("2") do |config|
       cp -vr /vagrant/config/apache2/ /etc/
       cp -vr /vagrant/htdocs/ /var/www/
       sudo a2ensite pumukydev.conf
+      sudo a2enmod proxy
+      sudo a2enmod proxy_http
       sudo a2enmod headers
       cp -r /vagrant/config/dynamic-dns/get_url/ /opt/dynamic-dns/
       chmod +x /opt/dynamic-dns/dyndns.sh
