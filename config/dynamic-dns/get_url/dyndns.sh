@@ -10,6 +10,7 @@ curl -X 'POST' \
   "domains": [
     "pumukydev.com",
     "www.pumukydev.com"
+    "url-shortener.pumukydev.com"
   ],
   "description": "Dynamic DNS"
 }'
