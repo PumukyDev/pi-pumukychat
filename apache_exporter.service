@@ -1,0 +1,21 @@
+[Unit]
+Description=Prometheus
+Documentation=https://github.com/Lusitaniae/apache_exporter
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=prometheus
+Group=prometheus
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/apache_exporter \
+  --insecure \
+  --scrape_uri=http://localhost/server-status/?auto \
+  --telemetry.endpoint=/metrics
+
+SyslogIdentifier=apache_exporter
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

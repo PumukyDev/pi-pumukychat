@@ -42,3 +42,9 @@ scrape_configs:
     # machine by default.
     static_configs:
       - targets: ['localhost:9100']
+
+  - job_name: apache1
+    static_configs:
+      - targets: ['localhost:9117']
+        labels:
+          alias: my-apache-server
