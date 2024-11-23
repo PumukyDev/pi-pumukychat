@@ -18,13 +18,13 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 1,
+    "id": 2,
     "links": [],
     "panels": [
       {
         "datasource": {
           "type": "prometheus",
-          "uid": "fe4tova25lm2oe"
+          "uid": "PBFA97CFB590B2093"
         },
         "fieldConfig": {
           "defaults": {
@@ -105,7 +105,7 @@
           {
             "datasource": {
               "type": "prometheus",
-              "uid": "fe4tova25lm2oe"
+              "uid": "PBFA97CFB590B2093"
             },
             "disableTextWrap": false,
             "editorMode": "builder",
@@ -120,11 +120,11 @@
           {
             "datasource": {
               "type": "prometheus",
-              "uid": "fe4tova25lm2oe"
+              "uid": "PBFA97CFB590B2093"
             },
             "disableTextWrap": false,
             "editorMode": "builder",
-            "expr": "apache_cpu_time_ms_total",
+            "expr": "apache_cpuload",
             "fullMetaSearch": false,
             "hide": false,
             "includeNullMetadata": true,
@@ -132,6 +132,40 @@
             "legendFormat": "__auto",
             "range": true,
             "refId": "B",
+            "useBackend": false
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "go_gc_duration_seconds",
+            "fullMetaSearch": false,
+            "hide": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "C",
+            "useBackend": false
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "PBFA97CFB590B2093"
+            },
+            "disableTextWrap": false,
+            "editorMode": "builder",
+            "expr": "go_memstats_mspan_sys_bytes",
+            "fullMetaSearch": false,
+            "hide": false,
+            "includeNullMetadata": true,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "D",
             "useBackend": false
           }
         ],
@@ -151,8 +185,8 @@
     },
     "timepicker": {},
     "timezone": "browser",
-    "title": "prueba",
-    "uid": "de4toyy0yzda8e",
-    "version": 4,
+    "title": "Prueba2",
+    "uid": "ae4u63vfbbzlsa",
+    "version": 2,
     "weekStart": ""
   }

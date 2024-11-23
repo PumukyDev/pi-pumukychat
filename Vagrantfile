@@ -52,6 +52,38 @@ Vagrant.configure("2") do |config|
       apt install prometheus -y
       cp /vagrant/config/monitoring/prometheus/prometheus.yml /etc/prometheus/
       sudo systemctl restart prometheus
+       # Crear carpetas para dashboards
+      mkdir -p /var/lib/grafana/dashboards
+      mkdir -p /etc/grafana/provisioning/dashboards
+
+      # Copiar el dashboard
+      cp /vagrant/config/monitoring/grafana/dashboard.json /var/lib/grafana/dashboards/
+      cp /vagrant/config/monitoring/grafana/dashboard.yml /etc/grafana/provisioning/dashboards/
+
+      # Configurar el provisioning
+      cat <<EOF > /etc/grafana/provisioning/dashboards/dashboard.yml
+apiVersion: 1
+providers:
+  - name: 'default'
+    orgId: 1
+    folder: ''
+    type: 'file'
+    disableDeletion: false
+    editable: false
+    options:
+      path: /var/lib/grafana/dashboards
+EOF
+    sudo chown grafana:grafana /var/lib/grafana/dashboards/dashboard.json
+    sudo chmod 644 /var/lib/grafana/dashboards/dashboard.json
+    sudo systemctl restart grafana-server
+    # Crear el directorio de provisión de Grafana si no existe
+    sudo mkdir -p /etc/grafana/provisioning/datasources
+
+    # Copiar el archivo de configuración YAML desde el host
+    sudo cp /vagrant/config/monitoring/grafana/datasources.yml /etc/grafana/provisioning/datasources/
+
+    # Reiniciar Grafana para aplicar la configuración
+    sudo systemctl restart grafana-server
   SHELL
   end
 end
