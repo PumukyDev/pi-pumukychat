@@ -1,7 +1,13 @@
 #!/bin/bash
 
+# Carga las variables de entorno
 source .env
 
+# Obtiene los parámetros
+short_hash=$1
+long_url=$2
+
+# Realiza la petición para registrar el TXT record
 curl -X "POST" \
     "https://api.hosting.ionos.com/dns/v1/zones/$zoneId/records" \
     -H "accept: application/json" \
