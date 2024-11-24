@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $short_hash = substr(hash('sha256', $long_url), 0, 6);
 
     // Define la URL corta
-    $short_url = "$short_hash.url-shortener.pumukydev.com";
+    $short_url = "pumukydev.com/$short_hash";
 
     // Ejecuta el script `post_txt.sh` para registrar el TXT record
     $script_path = realpath("post_txt.sh"); // Ruta al script
