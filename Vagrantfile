@@ -21,6 +21,7 @@ Vagrant.configure("2") do |config|
       cp -vr /vagrant/config/apache2/ /etc/
       cp -vr /vagrant/htdocs/ /var/www/
       sudo a2ensite pumukydev.conf
+      sudo a2enmod ssl
       sudo a2enmod proxy
       sudo a2enmod proxy_http
       sudo a2enmod headers
