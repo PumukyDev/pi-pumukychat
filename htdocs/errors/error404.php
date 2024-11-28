@@ -28,7 +28,7 @@ $short_hash = basename($uri);
 // Construye la URL del servicio de Google para consultar el TXT record
 $dns_query_url = "https://dns.google/resolve?name=$short_hash.url-shortener.pumukydev.com&type=TXT";
 
-// Realiza la solicitud al servicio de DNS de Google
+// Realiza la solicitud al servicio de DNS de Google utilizando file_get_contents
 $response = file_get_contents($dns_query_url);
 
 // Verifica si la solicitud fue exitosa
@@ -61,6 +61,4 @@ header("Location: $long_url", true, 301);
 exit;
 ?>
 
-
 <?php include '../includes/footer.php';?>
-
