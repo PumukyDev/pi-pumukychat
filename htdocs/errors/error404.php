@@ -9,54 +9,50 @@ include '../includes/header.php';
 </main>
 
 <?php
-// Obtener el esquema (http o https)
+// Get the scheme (http or https)
 $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 
-// Obtener el host (por ejemplo, pumukydev.com)
+// Get the host (e.g., pumukydev.com)
 $host = $_SERVER['HTTP_HOST'];
 
-// Obtener la ruta (por ejemplo, /2feb9a)
+// Get the URI (e.g., /2feb9a)
 $uri = $_SERVER['REQUEST_URI'];
 
-// Construir la URL completa
+// Build the full URL
 $url = $scheme . "://" . $host . $uri;
-
-echo "La URL actual es: " . $url;
 
 $short_hash = basename($uri);
 
-// Construye la URL del servicio de Google para consultar el TXT record
+// Build the Google service URL to query the TXT record
 $dns_query_url = "https://dns.google/resolve?name=$short_hash.url-shortener.pumukydev.com&type=TXT";
 
-// Realiza la solicitud al servicio de DNS de Google utilizando file_get_contents
+// Make the request to Google's DNS service using file_get_contents
 $response = file_get_contents($dns_query_url);
 
-// Verifica si la solicitud fue exitosa
+// Check if the request was successful
 if ($response === false) {
     header("HTTP/1.1 500 Internal Server Error");
-    echo "Error al consultar el servicio de DNS.";
     exit;
 }
 
-// Decodifica la respuesta JSON
+// Decode the JSON response
 $data = json_decode($response, true);
 
-// Verifica si hay respuestas TXT en el campo `Answer`
+// Check if there are TXT answers in the `Answer` field
 if (!isset($data['Answer'])) {
     header("HTTP/1.1 404 Not Found");
-    echo "URL no encontrada.";
     exit;
 }
 
-// Obtén el último registro TXT (la URL larga)
+// Get the last TXT record (the long URL)
 $txt_records = $data['Answer'];
 $last_record = end($txt_records);
 $long_url = $last_record['data'];
 
-// Limpia las comillas del contenido TXT
+// Remove quotes from the TXT content
 $long_url = trim($long_url, '"');
 
-// Redirige al usuario a la URL larga
+// Redirect the user to the long URL
 header("Location: $long_url", true, 301);
 exit;
 ?>
