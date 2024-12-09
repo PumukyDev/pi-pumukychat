@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Carga las variables de entorno
 source .env
 
 # Obtiene los parámetros
@@ -15,9 +14,9 @@ curl -X "POST" \
     -H "Content-Type: application/json" \
     -d "[
          {
-             \"name\": \"$short_hash.url-shortener.pumukydev.com\",
+             \"name\": \"${short_hash}.url-shortener.pumukydev.com\",
              \"type\": \"TXT\",
-             \"content\": \"$long_url\",
+             \"content\": \"${long_url}\",
              \"ttl\": 3600,
              \"prio\": 0,
              \"disabled\": false
