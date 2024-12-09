@@ -3,7 +3,7 @@
 
 # PumukyDev Web Server
 
-This is my **self hosted web server**. At the moment it is hosted in my laptop with arch linux so **do not expect great availability** (In a few months it will be running 24/7 in a Raspberry Pi)
+This is my **self hosted web server**. At the moment it is hosted in my desktop computer with debian so **do not expect great availability** (In a few months it will be running 24/7 in a Raspberry Pi)
 
 ## Download
 
@@ -23,6 +23,62 @@ This is my **self hosted web server**. At the moment it is hosted in my laptop w
 ![showing url-shortener](assets/screencasts/url-shortener.gif)
 
 ## Other
+
+<details>
+    <summary><b>Performance tests</b></summary><br/>
+Comandos para ejecutar las pruebas en https://pumukydev.com/
+Pruebas iniciales
+
+    Página principal con 100 usuarios y 1000 peticiones:
+
+ab -k -n 1000 -c 100 https://pumukydev.com/
+
+Página principal con 1000 usuarios y 1000 peticiones:
+
+    ab -k -n 1000 -c 1000 https://pumukydev.com/
+
+Prueba de recurso estático
+
+    Logo o recurso estático (/logo.png):
+        Con 100 usuarios:
+
+ab -k -n 1000 -c 100 https://pumukydev.com/logo.png
+
+Con 1000 usuarios:
+
+        ab -k -n 1000 -c 1000 https://pumukydev.com/logo.png
+
+Prueba de autenticación básica
+
+    Página protegida (/admin):
+        Si /admin está protegida con autenticación básica, usa el parámetro -A para enviar las credenciales. Sustituye username y password con las credenciales correctas:
+
+ab -k -n 1000 -c 100 -A "username:password" https://pumukydev.com/admin/
+
+        ab -k -n 1000 -c 1000 -A "username:password" https://pumukydev.com/admin/
+
+Pruebas con compresión
+
+    Enviar cabecera para solicitar compresión:
+
+        Página principal:
+
+ab -k -n 1000 -c 100 -H "Accept-Encoding: gzip, deflate" https://pumukydev.com/
+
+ab -k -n 1000 -c 1000 -H "Accept-Encoding: gzip, deflate" https://pumukydev.com/
+
+Recurso estático:
+
+ab -k -n 1000 -c 100 -H "Accept-Encoding: gzip, deflate" https://pumukydev.com/logo.png
+
+ab -k -n 1000 -c 1000 -H "Accept-Encoding: gzip, deflate" https://pumukydev.com/logo.png
+
+Página protegida:
+
+ab -k -n 1000 -c 100 -H "Accept-Encoding: gzip, deflate" -A "username:password" https://pumukydev.com/admin/
+
+ab -k -n 1000 -c 1000 -H "Accept-Encoding: gzip, deflate" -A "username:password" https://pumukydev.com/admin/
+</details>
 
 <details>
     <summary>
@@ -103,11 +159,13 @@ This is the my proyect files structure:
 
 ## License
 
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](LICENSE) file for details.
+
 ## Contribute
 
 Want to contribute? There are multiple ways you can contribute to this project. Here are some ideas:
 
 * 📃 [Translate the web into multiple languages!](./CONTRIBUTING.md#translations)
-* 🐛 [Fix some easy issues](CONTRIBUTING.md#coding)
-* 💡 [Or check out some other issues](CONTRIBUTING.md#need-ideas) (or translate them).
->>>>>>> f1e9ff7d2209fb729919dda995a2c7bb9f888b9c
+* 🐛 [Fix some easy issues](CONTRIBUTING.md#Reporting-Issues)
+* 💡 [Or check out some other issues](CONTRIBUTING.md#Reporting-Issues) (or translate them).
+

@@ -39,14 +39,15 @@ Prometheus is a powerful monitoring and alerting toolkit optimized for time-seri
 ## Structure
 
 - **`grafana/`**: Contains Grafana's configuration files and predefined dashboards.
-- **`images/`**: Screenshots demonstrating Grafana and Prometheus setups for reference.
+- **`images/`**: Screenshots to document this README.md with Grafana, Prometheus and Apache exporter configurations
 - **`prometheus/`**: Holds Prometheus configuration files.
 
 ---
 
 ## Installation and Setup
 
-### **Graphical Installation**
+<details>
+    <summary><b>Graphical Installation</b></summary><br/>
 To configure monitoring tools using the graphical interface, follow these steps:
 
 1. **Login to Grafana**:
@@ -83,11 +84,49 @@ To configure monitoring tools using the graphical interface, follow these steps:
    <div align="center">
        <img src="images/grafana_graph.jpg" alt="Grafana Graph Example"/>
    </div>
+</details>
+
+
+<details>
+    <summary><b>Script Installation</b></summary><br/>
+In this proyect we are automating installation with vagrant + ansible so 
+
+   ```yml
+   providers:
+      - name: "default"
+      orgId: 1
+      folder: ""
+      type: "file"
+      disableDeletion: false
+      updateIntervalSeconds: 10
+      options:
+         path: "/var/lib/grafana/dashboards"
+   ```
+
+   ```yml
+   datasources:
+      - name: Prometheus
+      type: prometheus
+      access: proxy
+      url: http://localhost:9090
+      isDefault: true
+      jsonData:
+         timeInterval: "10s"
+   ```
+
+   ```yml
+     - job_name: apache1
+       static_configs:
+         - targets: ['localhost:9117']
+         labels:
+            alias: my-apache-server
+   ```
+</details>
 
 ---
 
 ### **Automated Installation**
-This project leverages **Vagrant** and **Ansible** for automation. The monitoring stack is pre-configured to run seamlessly in the development environment.
+This project leverages **Vagrant** and **Ansible** for automation. The monitoring stack is pre-configured to run perfectly in the development environment.
 
 1. **Set up environment**:
    Ensure Vagrant and Ansible are properly installed on your system.
@@ -95,8 +134,13 @@ This project leverages **Vagrant** and **Ansible** for automation. The monitorin
 2. **Run provisioning**:
    Execute the following command to start the virtual machines and set up monitoring tools automatically:
    ```bash
-   vagrant up
+   make up
+   ```
 
+   If you are not sure if  you have ansible and vagrant installed you can also try:
+      ```bash
+      make validate
+      ```
 
 ### Access the Tools
 
@@ -120,13 +164,3 @@ This structure ensures flexibility and scalability to accommodate further enhanc
 - Make sure configuration files (`grafana.ini`, `prometheus.yml`, etc.) are correctly updated for your specific environment.
 - For security reasons, sensitive files like authentication details should be stored securely and not included in the repository.
 
-
-
-
-
-
-
-AÑADIR
-
-
-prometheus.yml  en este archivo se configura prometheus. Puedes encontrar la configuración inicial en /etc/prometheus/
