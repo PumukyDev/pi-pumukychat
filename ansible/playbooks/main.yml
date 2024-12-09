@@ -5,5 +5,5 @@
 - import_playbook: tasks/base_packages.yml
 - import_playbook: tasks/dyndns.yml
 - import_playbook: tasks/apache.yml
-
+- import_playbook: tasks/monitoring.yml
 
