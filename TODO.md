@@ -8,16 +8,8 @@ Here is a to do list of my proyect
 
 ### In Progress
 
-- [ ] Make ansible provision
-  - [X] Plan ansible estructure
-  - [ ] Make .yml files
-    - [ ] main.yml
-    - [X] base_packages.yml
-    - [X] apache.yml
-    - [ ] monitoring.yml
-
 - [ ] General README.md
-
+- [ ] Monitoring README.md
 
 ### Done ✓
 
@@ -35,4 +27,11 @@ Here is a to do list of my proyect
 - [X] Enable https with ionos certificates
 - [X] "Errors" folder README.md
 - [X] Configure /status
+- [X] Make ansible provision
+  - [X] Plan ansible estructure
+  - [X] Make .yml files
+    - [X] main.yml
+    - [X] base_packages.yml
+    - [X] apache.yml
+    - [X] monitoring.yml
 
