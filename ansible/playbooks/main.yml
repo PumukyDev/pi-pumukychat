@@ -1,0 +1,6 @@
+---
+- name: Configure web server
+  hosts: server
+  become: true
+
+
