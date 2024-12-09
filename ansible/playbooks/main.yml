@@ -2,5 +2,6 @@
 - name: Configure web server
   hosts: server
   become: true
+- import_playbook: tasks/base_packages.yml
 
 
