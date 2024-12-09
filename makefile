@@ -1,57 +1,56 @@
 # Variables
-ANSIBLE_PLAYBOOK = ansible-playbook
 INVENTORY = ./ansible/hosts
 PLAYBOOK = ./ansible/playbooks/main.yml
 
-# Objetivo principal: Levantar la máquina virtual
+# Main goal: Start the virtual machine
 all: up
 
-# Levanta la máquina virtual definida en el Vagrantfile y provisiona
+# Starts the virtual machine defined in the Vagrantfile and provisions it
 up:
-	@echo "==> Iniciando máquina virtual con Vagrant..."
-	vagrant up || { echo "vagrant up falló, reintentando..."; sleep 10; vagrant up; }
+	@echo "==> Starting virtual machine with Vagrant..."
+	vagrant up || { echo "vagrant up failed, retrying..."; sleep 10; vagrant up; }
 
-	@echo "==> Eliminando claves conflictivas de known_hosts (si existen)..."
+	@echo "==> Removing conflicting keys from known_hosts (if any)..."
 	@ssh-keygen -f "/home/adrian/.ssh/known_hosts" -R "[127.0.0.1]:2222" || true
 	@ssh-keygen -f "/home/adrian/.ssh/known_hosts" -R "[192.168.1.202]:2222" || true
 
-	@echo "==> Esperando 30 segundos..."
+	@echo "==> Waiting 30 seconds..."
 	@sleep 30
 
-	@echo "==> Ejecutando Ansible Playbook..."
-	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./ansible/hosts ./ansible/playbooks/main.yml || { echo "Ansible Playbook falló, reintentando..."; sleep 10; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./ansible/hosts ./ansible/playbooks/main.yml; }
+	@echo "==> Running Ansible Playbook..."
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./ansible/hosts ./ansible/playbooks/main.yml || { echo "Ansible Playbook failed, retrying..."; sleep 10; ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ./ansible/hosts ./ansible/playbooks/main.yml; }
 
-# Apaga la máquina virtual
+# Stops the virtual machine
 halt:
-	@echo "==> Apagando máquina virtual..."
+	@echo "==> Stopping virtual machine..."
 	vagrant halt
 
-# Elimina la máquina virtual
+# Destroys the virtual machine
 destroy:
-	@echo "==> Eliminando máquina virtual..."
+	@echo "==> Destroying virtual machine..."
 	vagrant destroy -f
 
-# Corre el playbook de Ansible
+# Runs the Ansible playbook
 provision:
-	@echo "==> Eliminando claves conflictivas de known_hosts (si existen)..."
+	@echo "==> Removing conflicting keys from known_hosts (if any)..."
 	@ssh-keygen -f "/home/adrian/.ssh/known_hosts" -R "[127.0.0.1]:2222" || true
 	@ssh-keygen -f "/home/adrian/.ssh/known_hosts" -R "[192.168.1.202]:2222" || true
-	@echo "==> Ejecutando Ansible Playbook..."
-	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK)
+	@echo "==> Running Ansible Playbook..."
+	ansible-playbook -i $(INVENTORY) $(PLAYBOOK)
 
-# Limpia archivos temporales y deja todo listo para un nuevo entorno
+# Cleans up temporary files and prepares for a new environment
 clean:
-	@echo "==> Limpiando entorno..."
+	@echo "==> Cleaning environment..."
 	vagrant destroy -f
 	rm -rf .vagrant
 	rm -f *.retry
-	@echo "==> Eliminando claves de known_hosts (si existen)..."
+	@echo "==> Removing keys from known_hosts (if any)..."
 	@ssh-keygen -f "/home/adrian/.ssh/known_hosts" -R "[127.0.0.1]:2222" || true
 	@ssh-keygen -f "/home/adrian/.ssh/known_hosts" -R "[192.168.1.202]:2222" || true
 
-# Validar dependencias (opcional)
+# Validate dependencies
 validate:
-	@which vagrant > /dev/null || (echo "Vagrant no está instalado. Por favor instálalo antes de continuar." && exit 1)
-	@which ansible-playbook > /dev/null || (echo "Ansible no está instalado. Por favor instálalo antes de continuar." && exit 1)
+	@which vagrant > /dev/null || (echo "Vagrant is not installed. Please install it before continuing." && exit 1)
+	@which ansible-playbook > /dev/null || (echo "Ansible is not installed. Please install it before continuing." && exit 1)
 
 .PHONY: all up halt destroy provision clean validate
