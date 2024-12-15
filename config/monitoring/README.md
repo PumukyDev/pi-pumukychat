@@ -50,7 +50,7 @@ Prometheus is a powerful monitoring and alerting toolkit optimized for time-seri
     <summary><b>Graphical Installation</b></summary><br/>
 To configure monitoring tools using the graphical interface, follow these steps:
 
-1. **Login to Grafana**:
+1. **Login to Grafana**: (Default user: admin,  passsword: admin)
    <div align="center">
        <img src="images/grafana_login.jpg" alt="Grafana Login Page"/>
    </div>
@@ -89,7 +89,12 @@ To configure monitoring tools using the graphical interface, follow these steps:
 
 <details>
     <summary><b>Script Installation</b></summary><br/>
-In this proyect we are automating installation with vagrant + ansible so 
+In this proyect we are automating installation with vagrant + ansible so there are some configuration files that have to be copied.
+
+In order to configure prometheus with apache:
+
+
+1. Add a route to storage the grafana dashboards in [dashboard.yml](./grafana/dashboard.yml)
 
    ```yml
    providers:
@@ -103,6 +108,8 @@ In this proyect we are automating installation with vagrant + ansible so
          path: "/var/lib/grafana/dashboards"
    ```
 
+2. Add prometheus add a data source in [datasources.yml](./grafana/datasources.yml)
+
    ```yml
    datasources:
       - name: Prometheus
@@ -113,6 +120,7 @@ In this proyect we are automating installation with vagrant + ansible so
       jsonData:
          timeInterval: "10s"
    ```
+3. Write this at the end of [prometheus.yml](./prometheus/prometheus.yml)
 
    ```yml
      - job_name: apache1
@@ -121,6 +129,10 @@ In this proyect we are automating installation with vagrant + ansible so
          labels:
             alias: my-apache-server
    ```
+4. Install other tools like apache-exporter if you want more server information
+
+5. Then you can configure your own dashboard in [dashboard.json](./grafana/dashboard.json)
+
 </details>
 
 ---
@@ -153,14 +165,7 @@ This project leverages **Vagrant** and **Ansible** for automation. The monitorin
 
 - **Loki**: For log aggregation.
 - **Suricata**: For intrusion detection.
-- **Node Exporter**: For server metrics monitoring.
 
 This structure ensures flexibility and scalability to accommodate further enhancements.
 
----
-
-## Notes
-
-- Make sure configuration files (`grafana.ini`, `prometheus.yml`, etc.) are correctly updated for your specific environment.
-- For security reasons, sensitive files like authentication details should be stored securely and not included in the repository.
 
