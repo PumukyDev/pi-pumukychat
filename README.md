@@ -597,8 +597,41 @@ This is the my proyect file structure:
 
 ```
 .
-├── apache_exporter.service
-├── compose.yml
+├── ansible
+│   ├── ansible.cfg
+│   ├── hosts
+│   └── playbooks
+│       ├── main.yml
+│       └── tasks
+│           ├── apache.yml
+│           ├── base_packages.yml
+│           ├── dyndns.yml
+│           └── monitoring.yml
+├── assets
+│   ├── images
+│   │   ├── grafana-example.jpg
+│   │   ├── performance
+│   │   │   ├── 1000-10000-A-admin-H.jpg
+│   │   │   ├── 1000-10000-A-admin.jpg
+│   │   │   ├── 1000-10000-f-SSL3-H.jpg
+│   │   │   ├── 1000-10000-f-SSL3.jpg
+│   │   │   ├── 1000-10000-f-TLS1.2-H.jpg
+│   │   │   ├── 1000-10000-f-TLS1.2.jpg
+│   │   │   ├── 1000-10000-H-logo.jpg
+│   │   │   ├── 1000-10000-logo.jpg
+│   │   │   ├── 100-1000-A-admin-H.jpg
+│   │   │   ├── 100-1000-A-admin.jpg
+│   │   │   ├── 100-1000-admin.jpg
+│   │   │   ├── 100-1000-f-SSL3-H.jpg
+│   │   │   ├── 100-1000-f-SSL3.jpg
+│   │   │   ├── 100-1000-f-TLS1.2-H.jpg
+│   │   │   ├── 100-1000-f-TLS1.2.jpg
+│   │   │   ├── 100-1000-H-logo.jpg
+│   │   │   ├── 100-1000-logo.jpg
+│   │   │   └── error.jpg
+│   │   └── ports.jpg
+│   └── screencasts
+│       └── url-shortener.gif
 ├── config
 │   ├── apache2
 │   │   ├── apache2.conf
@@ -608,12 +641,14 @@ This is the my proyect file structure:
 │   │   │   │   └── intermediate2.cer
 │   │   │   ├── _.pumukydev.com_private_key.key
 │   │   │   └── pumukydev.com_ssl_certificate.cer
+│   │   ├── .htpasswd
 │   │   └── sites-available
 │   │       └── pumukydev.conf
 │   ├── dynamic-dns
 │   │   ├── dyndns-cronjob
 │   │   ├── get_url
-│   │   │   └── dyndns.sh
+│   │   │   ├── dyndns.sh
+│   │   │   └── .env
 │   │   └── README.md
 │   └── monitoring
 │       ├── grafana
@@ -633,19 +668,30 @@ This is the my proyect file structure:
 │       ├── prometheus
 │       │   └── prometheus.yml
 │       └── README.md
+├── CONTRIBUTING.md
+├── .env
+├── .gitignore
 ├── htdocs
 │   ├── admin
-│   │   └── index.phpweb-server
+│   │   └── index.php
+│   ├── errors
+│   │   ├── error404.php
+│   │   └── README.md
+│   ├── images
+│   │   └── favicon.png
+│   ├── includes
 │   │   ├── footer.php
 │   │   └── header.php
 │   ├── index.php
 │   ├── logo.png
 │   ├── shortener
+│   │   ├── .env
 │   │   ├── get_long_url.sh
 │   │   ├── get_txt.sh
 │   │   ├── get_zoneId.sh
 │   │   ├── index.php
 │   │   ├── post_txt.sh
+│   │   ├── README.md
 │   │   ├── redirect.php
 │   │   └── urlshortener.php
 │   ├── status
@@ -654,15 +700,12 @@ This is the my proyect file structure:
 │   │   └── style.css
 │   └── tools
 │       └── index.php
-├── playbooks
-│   ├── main.yml
-│   ├── tasks
-│   │   ├── apache.yml
-│   │   ├── dyndns.yml
-│   │   └── monitoring.yml
-│   └── vars
+├── LICENSE
+├── makefile
 ├── README.md
 └── Vagrantfile
+
+28 directories, 80 files
 ```
 </details>
 
