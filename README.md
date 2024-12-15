@@ -13,11 +13,15 @@ This is my **self hosted web server**. At the moment it is hosted in my desktop 
 
 ## Status page with grafana
 
+Check my server status in https://pumukydev.com/status/ . There, you can see many information about my server (time up, loads, conections, etc
+)
 ![showing grafana](assets/images/grafana-example.jpg)
+
+If you want more detailed information [click here](./config/monitoring/README.md)
 
 ## URL Shortener in action...
 
-Try my own url shortener system. If you want short any link, just introduce it and you will get a shorter url for your video or page. There you can see an example:
+Try my own url shortener system in https://pumukydev.com/shortener/ . If you want short any link, just introduce it and you will get a shorter url for your video or page. There you can see an example:
 
 ![showing url-shortener](assets/screencasts/url-shortener.gif)
 
@@ -123,6 +127,9 @@ ab -k -f SSL3 -c 100 -n 1000 https://pumukydev.com/
 ```
 
 ![performance image](assets/images/performance/100-1000-f-SSL3.jpg)
+
+> [!NOTE]
+> SSL3 is deprecated so apache use TLS1.3 automatically, so this test is made with TLS1.3 instead of SSL3 actually.
 
 The test duration was **1.556 seconds**, during which all **1000 requests** were successfully completed with no failures. Out of those, **994 requests** reused connections, reducing overhead thanks to HTTP Keep-Alive.
 
@@ -231,6 +238,9 @@ ab -k -f SSL3 -c 1000 -n 10000 https://pumukydev.com/
 ```
 
 ![performance image with custom header](assets/images/performance/1000-10000-f-SSL3.jpg)
+
+> [!NOTE]
+> SSL3 is deprecated so apache use TLS1.3 automatically, so this test is made with TLS1.3 instead of SSL3 actually.
 
 The test duration was **4.450 seconds**, during which **10,000 requests** were completed with **0 failures**. Out of those, **9,914 requests** reused connections, reducing overhead thanks to HTTP Keep-Alive.
 
@@ -355,6 +365,9 @@ The final breakdown shows that **90% of the requests** were completed within **7
 ab -k -f SSL3 -c 100 -n 1000 -H "Accept-Encoding: gzip, deflate" https://pumukydev.com/
 ```
 
+> [!NOTE]
+> SSL3 is deprecated so apache use TLS1.3 automatically, so this test is made with TLS1.3 instead of SSL3 actually.
+
 ![performance image](assets/images/performance/100-1000-f-SSL3-H.jpg)
 
 **The test duration was 0.830 seconds**, during which **1,000 requests** were completed with **0 failures**. Out of those, **993 requests** reused connections, reducing overhead thanks to HTTP Keep-Alive.
@@ -452,6 +465,9 @@ The final breakdown shows that **99% of the requests** were completed within **6
 ab -k -f SSL3 -c 1000 -n 10000 -H "Accept-Encoding: gzip, deflate" https://pumukydev.com/
 ```
 
+> [!NOTE]
+> SSL3 is deprecated so apache use TLS1.3 automatically, so this test is made with TLS1.3 instead of SSL3 actually.
+
 ![performance image with custom header](assets/images/performance/1000-10000-f-SSL3-H.jpg)
 
 The test duration was **4.998 seconds**, during which **10,000 requests** were completed with **0 failures**. Out of those, **9,916 requests** reused connections, reducing overhead thanks to HTTP Keep-Alive.
@@ -536,6 +552,12 @@ Connection times were broken down into phases:
 The final breakdown shows that **90% of the requests** were completed within **9 ms**, and **95% within 9 ms**. The **longest request** took **5,803 ms** to complete.
 
 </details>
+
+<br/>
+
+---
+
+<br/>
 
 </details>
 
