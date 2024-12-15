@@ -20,3 +20,8 @@ If you enter a long URL like https://www.youtube.com/watch?v=jNQXAC9IVRw, the sy
 * `index.php`: The main file that contains the form and logic to shorten URLs.
 * `post_txt.sh`: The Bash script that handles creating the TXT records on the DNS server.
 * `error404.php`: This page appears when you click on a link that leads to a non-existent page. For example, https://pumukydev.com/4b0f48 doesn't exist on my website. When this happens, the 404 error page is triggered. It extracts the current URL, searches for the corresponding long URL in the IONOS TXT records, and then redirects you to the original URL.
+
+If you want to use it, just create a `.env` file with the following structure:
+   ```env
+    ID=your_ionos_id
+    SecretKey=your_ionos_secret_key
