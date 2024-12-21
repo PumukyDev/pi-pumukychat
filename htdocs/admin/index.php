@@ -1,11 +1,11 @@
 <?php
-$pageTitle = "Administración";
+$pageTitle = "Administration";
 include '../includes/header.php';
 ?>
 
 <main>
-    <h1>Administración</h1>
-    <p>Hola administrador</p>
+    <h1>Administration</h1>
+    <p>Hi Admin!</p>
 </main>
 
 <?php include '../includes/footer.php';?>
