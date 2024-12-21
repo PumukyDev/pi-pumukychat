@@ -2,6 +2,8 @@
 
 This folder contains configurations and files for the monitoring tools used in the project. It includes setups for **Grafana** and **Prometheus**, with a flexible structure that allows easy integration of additional tools such as Loki, Suricata, and more in the future.
 
+![showing grafana](../../assets/images/grafana-example.jpg)
+
 ---
 
 ## Tools Included
