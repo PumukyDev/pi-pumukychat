@@ -13,9 +13,16 @@ services:
     volumes:
       - ./htdocs:/usr/share/nginx/html
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./config/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./templates:/etc/nginx/templates
     ports:
       - "8080:80"
     environment:
       - NGINX_HOST=${NGINX_HOST}
       - NGINX_PORT=${NGINX_PORT}
+
+  php:
+    image: php:8.1-fpm
+    container_name: php
+    volumes:
+      - ./htdocs:/usr/share/nginx/html
