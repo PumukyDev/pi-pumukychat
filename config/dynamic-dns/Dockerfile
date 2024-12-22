@@ -11,12 +11,17 @@ COPY update-ip.sh /opt/dynamic-dns/
 COPY get-url.sh /opt/dynamic-dns/
 COPY dyndns-cronjob /etc/cron.d/
 
-# Set correct permissions for the script and cronjob
+# Set correct permissions for the scripts and cronjob
+RUN chmod +x /opt/dynamic-dns/get-url.sh
 RUN chmod +x /opt/dynamic-dns/update-ip.sh
 RUN chmod 0644 /etc/cron.d/dyndns-cronjob
+
+# Get the url to change the ip
+RUN /opt/dynamic-dns/get-url.sh
 
 # Install the cron job
 RUN crontab /etc/cron.d/dyndns-cronjob
 
-# Run cron in the foreground
-CMD ["cron", "-f"]
+# Dockerfile
+
+CMD ["/bin/bash", "-c", "/opt/dynamic-dns/get-url.sh && cron -f"]

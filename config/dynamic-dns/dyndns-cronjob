@@ -1,1 +1,1 @@
-* * * * * root /usr/bin/flock -n /tmp/ipupdate.lck ./update.sh >> /var/log/cron.log 2>&1
+* * * * * curl -s "$(cat /opt/dynamic-dns/update_url)" > /dev/null 2>&1

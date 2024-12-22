@@ -2,6 +2,8 @@ services:
   dyndns:
     build: ./config/dynamic-dns
     container_name: dyndns
+    env_file:
+      - .env
     depends_on: 
       - web
 
