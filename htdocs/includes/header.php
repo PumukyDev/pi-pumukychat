@@ -1,3 +1,34 @@
+<?php
+
+# Set the theme cookie
+$theme_cookie = "theme";
+
+# If the user click on a theme svg, create or renew the cookie
+if (isset($_POST["theme"])) {
+    $theme = $_POST['theme'];
+    setcookie('theme', $theme, [
+        'expires' => time() + 3600 * 24 * 30,  # 30 days
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'None',
+    ]);
+
+}
+# If the user do not click on the svg, pick the user cookie (if he have one)
+else {
+    $theme = $_COOKIE["$theme_cookie"];
+}
+
+# If the cookie is dark, save the path of the dark css
+if ($theme === "dark") {
+    $themePath = (isset($pathDarkTheme) ? $pathDarkTheme : '../style/dark.css');
+}
+# If not, save the path of the light css
+else {
+    $themePath = (isset($pathLightTheme) ? $pathLightTheme : '../style/light.css');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,38 +37,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($pageTitle) ? $pageTitle : 'PumukyDev'; ?></title>
     <link rel="icon" type="image/x-icon" href="<?php echo isset($pathFavicon) ? $pathFavicon : '../images/favicon.png'; ?>">
-
-    <?php
-
-    # Set the theme cookie
-    $theme_cookie = "theme";
-
-    # If the user click on a theme svg, create or renew the cookie
-    if (isset($_POST["theme"])) {
-        $theme = $_POST['theme'];
-        setcookie('theme', $theme, [
-            'expires' => time() + 3600 * 24 * 30,  # 30 days
-            'path' => '/',
-            'secure' => true,
-            'httponly' => true,
-            'samesite' => 'None',
-        ]);
-
-    }
-    # If the user do not click on the svg, pick the user cookie (if he have one)
-    else {
-        $theme = $_COOKIE["$theme_cookie"];
-    }
-
-    # If the cookie is dark, save the path of the dark css
-    if ($theme === "dark") {
-        $themePath = (isset($pathDarkTheme) ? $pathDarkTheme : '../style/dark.css');
-    }
-    # If not, save the path of the light css
-    else {
-        $themePath = (isset($pathLightTheme) ? $pathLightTheme : '../style/light.css');
-    }
-    ?>
 
     <!-- Remove default html style to make page to look the same in different browsers -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/taks-custom-base-css/taks-custom-base.css">
