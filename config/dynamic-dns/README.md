@@ -1,3 +1,6 @@
+> [!WARNING]  
+> I'm currently migrating the configuration from Vagrant + Ansible to Docker. You may encounter some inconsistencies or incomplete setups during this transition.
+
 # Dynamic DNS
 
 This directory contains the necessary configuration and scripts to enable dynamic DNS updates for your domain using IONOS's DynDNS service. These updates ensure that your domain always points to your current public IP address, even if it changes.

@@ -1,1 +1,1 @@
-*/5 * * * * root /opt/dynamic-dns/dyndns.sh
+* * * * * root /usr/bin/flock -n /tmp/ipupdate.lck ./update.sh >> /var/log/cron.log 2>&1

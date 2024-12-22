@@ -1,7 +1,4 @@
 services:
-  nginx:
-    build: .
-    ports:
-      - "8080:80"
-    volumes:
-      - ./htdocs:/usr/share/nginx/html
+  dyndns:
+    build: ./config/dynamic-dns
+    container_name: dyndns
