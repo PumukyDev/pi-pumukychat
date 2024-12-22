@@ -1,9 +1,8 @@
 <?php
-
 # Set the theme cookie
 $theme_cookie = "theme";
 
-# If the user click on a theme svg, create or renew the cookie
+# If the user clicks on a theme svg, create or renew the cookie
 if (isset($_POST["theme"])) {
     $theme = $_POST['theme'];
     setcookie('theme', $theme, [
@@ -13,11 +12,10 @@ if (isset($_POST["theme"])) {
         'httponly' => true,
         'samesite' => 'None',
     ]);
-
 }
-# If the user do not click on the svg, pick the user cookie (if he have one)
+# If the user does not click on the svg, pick the user cookie (if he has one)
 else {
-    $theme = $_COOKIE["$theme_cookie"];
+    $theme = isset($_COOKIE["$theme_cookie"]) ? $_COOKIE["$theme_cookie"] : 'light';  // Default theme is 'light'
 }
 
 # If the cookie is dark, save the path of the dark css
@@ -29,6 +27,7 @@ else {
     $themePath = (isset($pathLightTheme) ? $pathLightTheme : '../style/light.css');
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
