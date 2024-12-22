@@ -1,3 +1,6 @@
+> [!WARNING]  
+> I'm currently migrating the configuration from Vagrant + Ansible to Docker. You may encounter some inconsistencies or incomplete setups during this transition.
+
 # PumukyDev Web Server
 
 This is my **self hosted web server**. At the moment it is hosted in my desktop computer with debian so **do not expect great availability** (In a few months it will be running 24/7 in a Raspberry Pi)
