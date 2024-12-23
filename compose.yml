@@ -17,6 +17,7 @@ services:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./config/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./config/nginx/certs/:/etc/nginx/certs/
+      - ./config/nginx/.htpasswd/:/etc/nginx/.htpasswd
       - ./templates:/etc/nginx/templates
     ports:
       - "8080:80"
