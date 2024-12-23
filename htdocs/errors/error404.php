@@ -1,14 +1,20 @@
 <?php
-$pageTitle = "Error404";
-include '../includes/header.php';
-?>
-
-<main>
-    <h1>Error404</h1>
-    <p>Page not found!</p>
-</main>
-
-<?php
+function redirect($url) {
+    $content = sprintf('<!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="refresh" content="1;url=%1$s" />
+  
+      <title>Redirecting to %1$s</title>
+    </head>
+    <body>
+      Redirecting to <a href="%1$s">%1$s</a>.
+    </body>
+    </html>', htmlspecialchars($url, ENT_QUOTES, 'UTF-8'));
+    header('Location: ' . $url);
+    die($content);
+  }
 // Get the scheme (http or https)
 $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 
@@ -53,8 +59,17 @@ $long_url = $last_record['data'];
 $long_url = trim($long_url, '"');
 
 // Redirect the user to the long URL
-header("Location: $long_url", true, 301);
-exit;
+redirect($long_url);
+//header("Location: $long_url", true, 301);
+
+$pageTitle = "Error404";
+include '../includes/header.php';
 ?>
+
+<main>
+    <h1>Error404</h1>
+    <p>Page not found!</p>
+</main>
+
 
 <?php include '../includes/footer.php';?>
