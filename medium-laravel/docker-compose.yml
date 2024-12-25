@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # Application Service (PHP application)
   app:
     container_name: blog
     build:
@@ -14,8 +11,9 @@ services:
     working_dir: /var/www
     depends_on:
       - db
+    networks:
+      - mysql-network
 
-  # Database Service (MySQL)
   db:
     image: mysql:8.0.1
     container_name: mysql-container
@@ -33,7 +31,6 @@ services:
     networks:
       - mysql-network
 
-  # Web Server Service (Nginx)
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -45,8 +42,9 @@ services:
     depends_on:
       - app
       - db
+    networks:
+      - mysql-network
 
-  # phpMyAdmin Service
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin-container
