@@ -37,12 +37,6 @@ RUN apt-get -y install --fix-missing \
     libxml2-dev
 
 
-# Install Postgres PDO (adjust for Windows if needed)
-RUN apt-get install -y libpq-dev \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql
-
-
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
