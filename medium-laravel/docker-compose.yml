@@ -38,10 +38,12 @@ services:
     container_name: nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./src:/var/www
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/certs/:/etc/nginx/certs/
     depends_on:
       - app
       - db
