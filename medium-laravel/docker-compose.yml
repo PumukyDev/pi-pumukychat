@@ -13,9 +13,10 @@ services:
       - db
     networks:
       - mysql-network
+    platform: linux/arm64  # Usar ARM64 para Raspberry Pi 5
 
   db:
-    image: mysql:8.0.1
+    image: mariadb:latest  # Usar MariaDB en lugar de MySQL
     container_name: mysql-container
     restart: unless-stopped
     tty: true
@@ -30,6 +31,7 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - mysql-network
+    platform: linux/arm64
 
   nginx:
     image: nginx:alpine
@@ -44,9 +46,10 @@ services:
       - db
     networks:
       - mysql-network
+    platform: linux/arm64  # Usar ARM64 para Raspberry Pi 5
 
   phpmyadmin:
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:5.2  # Especifica una versión estable más reciente
     container_name: phpmyadmin-container
     environment:
       PMA_HOST: db
@@ -58,6 +61,7 @@ services:
       - mysql-network
     depends_on:
       - db
+    platform: linux/arm64
 
 volumes:
   db-data:
