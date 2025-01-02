@@ -34,8 +34,9 @@ RUN apt-get -y install --fix-missing \
     libmcrypt-dev \
     libicu-dev \
     libonig-dev \
-    libxml2-dev
-
+    libxml2-dev \
+    nodejs \
+    npm
 
 # Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
