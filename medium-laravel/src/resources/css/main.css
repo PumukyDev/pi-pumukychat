@@ -159,7 +159,7 @@ div {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: flex-start;
     height: 100%;
     border-width: 1px;
@@ -213,7 +213,7 @@ div {
     }
 }
 
-#url-shortener div {
+#url-shortener{
     margin: 50px auto;
     display: flex;
     justify-content: center; /* Centra el formulario en la página */
@@ -222,13 +222,13 @@ div {
     flex-direction: column;
 }
 
-#url-shortener div form {
+#url-shortener form {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-#url-shortener div form input[type="url"] {
+#url-shortener form input[type="url"] {
     margin-left: 5px;
     padding: 2px;
     font-size: 1rem;
@@ -238,7 +238,7 @@ div {
     transition: border-color 0.3s;
 }
 
-#url-shortener div form button {
+#url-shortener form button {
     margin-left: 5px;
     padding: 4px 8px;
     font-size: 1rem;
@@ -249,7 +249,7 @@ div {
 }
 
 .message a:hover {
-    text-decoration: underline; 
+    text-decoration: underline;
 }
 
 
