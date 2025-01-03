@@ -248,7 +248,11 @@ div {
     transition: background-color 0.3s, transform 0.2s;
 }
 
-.message a:hover {
+#url-shortener span{
+    margin-top: 30px;
+}
+
+#url-shortener span a:hover {
     text-decoration: underline;
 }
 

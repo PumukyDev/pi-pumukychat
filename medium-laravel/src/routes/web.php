@@ -1,15 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UrlShortenerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/shortener', function () {
-    return view('shortener');
-});
+Route::get('/shortener', [UrlShortenerController::class, 'index']);
+Route::post('/shortener', [UrlShortenerController::class, 'store']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
