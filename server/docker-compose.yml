@@ -1,4 +1,10 @@
 services:
+  dyndns:
+    build: ./dynamic-dns
+    container_name: dyndns
+    env_file:
+      - .env
+
   app:
     container_name: blog
     build:
