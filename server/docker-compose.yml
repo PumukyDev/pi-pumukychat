@@ -2,6 +2,7 @@ services:
   dyndns:
     build: ./dynamic-dns
     container_name: dyndns
+    restart: unless-stopped
     env_file:
       - .env
 
@@ -10,6 +11,7 @@ services:
     build:
       context: ./php
       dockerfile: Dockerfile
+    restart: unless-stopped
     volumes:
       - ./src:/var/www
     ports:
@@ -42,6 +44,7 @@ services:
   nginx:
     image: nginx:alpine
     container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -60,6 +63,7 @@ services:
   phpmyadmin:
     image: phpmyadmin:5.2
     container_name: phpmyadmin-container
+    restart: unless-stopped
     environment:
       PMA_HOST: ${PMA_HOST}
       PMA_USER: ${PMA_USER}
