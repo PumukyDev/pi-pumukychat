@@ -23,10 +23,10 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_USER: user
-      MYSQL_PASSWORD: user_password
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - db-data:/var/lib/mysql
     networks:
@@ -55,9 +55,9 @@ services:
     image: phpmyadmin:5.2
     container_name: phpmyadmin-container
     environment:
-      PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: 1234
+      PMA_HOST: ${PMA_HOST}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
     ports:
       - "8080:80"
     networks:
