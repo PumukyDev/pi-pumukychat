@@ -22,9 +22,21 @@ class UrlShortenerController extends Controller
         ]);
 
         // Generate the shortened URL using the model's method
-        $shortenedUrl = ShortenedUrl::generateShortenedUrl($request->input('long_url'));
+        $shortenedUrl = ShortenedUrl::insertUrls($request->input('long_url'));
 
         // Return the view with the shortened URL data
         return view('shortener', ['shortenedUrl' => $shortenedUrl]);
+    }
+
+    // Original URL redirection
+    public function redirectToOriginal($shortenedUrl)
+    {
+        $originalUrl = ShortenedUrl::selectUrls($shortenedUrl);
+
+        if ($originalUrl) {
+            return redirect($originalUrl->original_url);
+        }
+
+        abort(404);
     }
 }

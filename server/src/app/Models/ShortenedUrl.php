@@ -13,7 +13,7 @@ class ShortenedUrl extends Model
     protected $fillable = ['original_url', 'shortened_url'];
 
     // Function to generate the short URL
-    public static function generateShortenedUrl($originalUrl)
+    public static function insertUrls($originalUrl)
     {
         // Create a hash
         $shortenedUrl = substr(hash('sha256', $originalUrl), 0, 6);
@@ -23,5 +23,11 @@ class ShortenedUrl extends Model
             'original_url' => $originalUrl,
             'shortened_url' => $shortenedUrl
         ]);
+    }
+
+    // Search for the original url
+    public static function selectUrls($shortenedUrl)
+    {
+        return self::where('shortened_url', $shortenedUrl)->first();
     }
 }

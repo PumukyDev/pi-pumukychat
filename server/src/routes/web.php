@@ -10,6 +10,7 @@ Route::get('/', function () {
 
 Route::get('/shortener', [UrlShortenerController::class, 'index']);
 Route::post('/shortener', [UrlShortenerController::class, 'store']);
+Route::get('/{shortened_url}', [UrlShortenerController::class, 'redirectToOriginal'])->where('shortened_url', '.*');
 
 Route::fallback(function () {
     return view('errors.404');
