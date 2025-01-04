@@ -11,6 +11,10 @@ Route::get('/', function () {
 Route::get('/shortener', [UrlShortenerController::class, 'index']);
 Route::post('/shortener', [UrlShortenerController::class, 'store']);
 
+Route::fallback(function () {
+    return view('errors.404');
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
