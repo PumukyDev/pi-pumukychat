@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Source the environment variables from the .env file
-source /opt/dynamic-dns/.env
-
 # Make a POST request to the IONOS API to update the Dynamic DNS
 # Then, storage the response in 'output'
 output=$(curl -X 'POST' \
