@@ -1,1 +1,1 @@
-* * * * * curl -s "$(cat /opt/dynamic-dns/update_url)" > /dev/null 2>&1
+* * * * * /opt/dynamic-dns/update_public_ip.sh

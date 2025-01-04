@@ -4,7 +4,7 @@ source /etc/environment
 
 # Make a POST request to the IONOS API to update the Dynamic DNS
 # Then, storage the response in 'output'
-output=$(curl -X 'POST' \
+output=$(/usr/bin/curl -X 'POST' \
   'https://api.hosting.ionos.com/dns/v1/dyndns' \
   -H "accept: application/json" \
   -H "X-API-Key: $ID.$SecretKey" \
@@ -21,10 +21,6 @@ output=$(curl -X 'POST' \
 
 # Extract the 'updateUrl' from the JSON response using jq
 # The '-r' flag ensures that jq outputs without quotes
-updateUrl=$(echo "$output" | jq -r '.updateUrl')
+updateUrl=$(echo "$output" | /usr/bin/jq -r '.updateUrl')
 
-# Write the update URL to 'update_url' file
-echo $updateUrl > update_url
-
-# Display the content of the 'update_url' file
-cat update_url
+/usr/bin/curl -f $updateUrl

@@ -3,8 +3,8 @@ services:
     build: ./dynamic-dns
     container_name: dyndns
     restart: unless-stopped
-    env_file:
-      - .env
+    volumes:
+      - ./.env:/etc/environment
 
   app:
     container_name: blog
