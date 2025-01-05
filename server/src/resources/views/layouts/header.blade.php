@@ -3,8 +3,9 @@
             <a href="<?php echo isset($pathIndex) ? $pathIndex : '../'; ?>" class="logo">PUMUKYDEV</a>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="<?php echo isset($pathIndex) ? $pathIndex : '../'; ?>">Home</a></li>
-                    <li><a href="<?php echo isset($pathShortener) ? $pathShortener : '../shortener'; ?>">URL Shortener</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/shortener">URL Shortener</a></li>
+                    <li><a href="/chat">Encrypted Chat</a></li>
                 </ul>
             </nav>
 

@@ -8,12 +8,8 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/shortener', [UrlShortenerController::class, 'index']);
-Route::post('/shortener', [UrlShortenerController::class, 'store']);
-Route::get('/{shortened_url}', [UrlShortenerController::class, 'redirectToOriginal'])->where('shortened_url', '.*');
-
-Route::fallback(function () {
-    return view('errors.404');
+Route::get('/chat', function () {
+    return view('chat');
 });
 
 Route::get('/dashboard', function () {
@@ -27,3 +23,11 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/shortener', [UrlShortenerController::class, 'index']);
+Route::post('/shortener', [UrlShortenerController::class, 'store']);
+Route::get('/{shortened_url}', [UrlShortenerController::class, 'redirectToOriginal'])->where('shortened_url', '.*');
+
+Route::fallback(function () {
+    return view('errors.404');
+});
