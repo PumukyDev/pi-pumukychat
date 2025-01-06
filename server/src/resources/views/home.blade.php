@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'PumukyDev - Página Principal')
+@section('title', 'PumukyDev - Home')
 
 @section('content')
     <h1>My Projects</h1>
 
     <div class="projects">
-        <!-- Proyecto: Dotfiles -->
+        <!-- Project: Dotfiles -->
         <div class="project-card" onclick="window.location.href='https://github.com/PumukyDev/PumuArch'">
             <h3>Dotfiles</h3>
             <p>Arch Linux dotfiles with Qtile WM</p>
@@ -20,7 +20,7 @@
             </div>
         </div>
 
-        <!-- Proyecto: HashArt -->
+        <!-- Project: HashArt -->
         <div class="project-card" onclick="window.location.href='https://github.com/PumukyDev/HashArt'">
             <h3>HashArt</h3>
             <p>Program to write words and phrases into hashes</p>
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <!-- Proyecto: URL Shortener -->
+        <!-- Project: URL Shortener -->
         <div class="project-card" onclick="window.location.href='https://github.com/PumukyDev/web-server/tree/main/htdocs/shortener'">
             <h3>URL Shortener</h3>
             <p>A simple tool to shorten URLs for easier sharing and tracking</p>
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <!-- Proyecto: Web Monitoring -->
+        <!-- Project: Web Monitoring -->
         <div class="project-card" onclick="window.location.href='https://github.com/PumukyDev/web-server/tree/main/config/monitoring'">
             <h3>Web Monitoring</h3>
             <p>Setup for monitoring web server performance and metrics</p>
@@ -61,6 +61,20 @@
                 <span class="tag">Grafana</span>
                 <span class="tag">Prometheus</span>
                 <span class="tag">Apache</span>
+            </div>
+        </div>
+
+	<!-- Project: Arch Installation -->
+        <div class="project-card" onclick="window.location.href='https://github.com/PumukyDev/arch-installation'">
+            <h3>Arch Instalation</h3>
+            <p>Guide to install Arch Linux</p>
+            <ul class="features">
+                <li>Step by step installation guide</li>
+		        <li>X11 with Qtile</li>
+            </ul>
+            <div class="tags">
+                <span class="tag">Markdown</span>
+                <span class="tag">HTML</span>
             </div>
         </div>
     </div>
