@@ -9,13 +9,25 @@
     @if (Route::has('login'))
         <nav>
             @auth
-                <p>The chat is not working at the moment, please be patient</p>
+                <div class="center">
+                    <p>The chat is not working at the moment, please be patient</p>
+                </div>
             @else
-                <a href="{{ route('login') }}">Log in</a>
-
-                @if (Route::has('register'))
-                    <a href="{{ route('register') }}">Register</a>
-                @endif
+                <div class="center">
+                    <p>Please log in to access the chat features.</p>
+                </div>
+                </div class="center">
+                    <div id="login-register">
+                        <button>
+                            <a href="{{ route('login') }}">Log in</a>
+                        </button>
+                        @if (Route::has('register'))
+                            <button>
+                                <a href="{{ route('register') }}">Register</a>
+                            </button>
+                        @endif
+                    </div>
+                </div>
             @endauth
         </nav>
     @endif

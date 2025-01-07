@@ -267,3 +267,20 @@ div {
     height: 100%;
     z-index: -1;
 }
+
+
+
+
+.center {
+    margin: 0 auto;
+    text-align: center;
+}
+
+#login-register button {
+    margin: 30px;
+    padding: 5px 10px;
+    font-size: 1.1em;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
