@@ -11,6 +11,8 @@
             @auth
                 <div class="center">
                     <p>The chat is not working at the moment, please be patient</p>
+                    <p>Prueba generación de claves</p>
+                    <script src="{{ asset('js/keygen.js') }}"></script>
                 </div>
             @else
                 <div class="center">

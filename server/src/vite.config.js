@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/css/dark.css',
                 'resources/js/particles.js',
                 'resources/js/check_scroll.js',
+                'resources/js/keygen.js',
             ],
             refresh: true,
         }),
