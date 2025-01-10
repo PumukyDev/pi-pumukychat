@@ -16,11 +16,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return btoa(String.fromCharCode(...new Uint8Array(exported)));
     };
 
-    const keyPair = await generateECDHKeys(); // Genera las claves
-    const publicKeyBase64 = await exportKey(keyPair.publicKey, "spki"); // Exporta la clave pública
-    const privateKeyBase64 = await exportKey(keyPair.privateKey, "pkcs8"); // Exporta la clave privada
+    // Generate key pair
+    const keyPair = await generateECDHKeys();
+    const publicKeyBase64 = await exportKey(keyPair.publicKey, "spki");
+    const privateKeyBase64 = await exportKey(keyPair.privateKey, "pkcs8");
 
-    // Muestra las claves en la consola del navegador
-    console.log("Clave pública (Base64):", publicKeyBase64);
-    console.log("Clave privada (Base64):", privateKeyBase64);
+    // Send the public key to the server
+    const publicKeyField = document.getElementById("public_key");
+    publicKeyField.value = publicKeyBase64;
 });

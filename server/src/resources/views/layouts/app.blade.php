@@ -23,7 +23,6 @@
         'resources/css/light.css',
         'resources/js/particles.js',
         'resources/js/check_scroll.js',
-        'resources/js/keygen.js'
     ])
 
             <!--'resources/css/dark.css',-->
