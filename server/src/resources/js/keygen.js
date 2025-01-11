@@ -1,31 +1,37 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const generateECDHKeys = async () => {
+    const generateRSAKeys = async () => {
+        // Generate an RSA key pair (2048 bits)
         const keyPair = await crypto.subtle.generateKey(
             {
-                name: "ECDH",
-                namedCurve: "P-256",
+                name: "RSA-OAEP",
+                modulusLength: 2048,
+                publicExponent: new Uint8Array([1, 0, 1]),
+                hash: "SHA-256",
             },
             true,
-            ["deriveKey", "deriveBits"]
+            ["encrypt", "decrypt"]
         );
         return keyPair;
     };
 
     const exportKey = async (key, format) => {
+        // Export the key in the specified format
         const exported = await crypto.subtle.exportKey(format, key);
         return btoa(String.fromCharCode(...new Uint8Array(exported)));
     };
 
-    // Generate key pair
-    const keyPair = await generateECDHKeys();
+    // Generate the RSA key pair
+    const keyPair = await generateRSAKeys();
+
+    // Export the public and private keys in Base64 format
     const publicKeyBase64 = await exportKey(keyPair.publicKey, "spki");
     const privateKeyBase64 = await exportKey(keyPair.privateKey, "pkcs8");
 
-    // Send the public key to the server
+    // Send the public key to the server (for example, display it in a text field)
     const publicKeyField = document.getElementById("public_key");
     publicKeyField.value = publicKeyBase64;
 
-    // Save the private key into IndexedDB
+    // Save the private key in IndexedDB
     const savePrivateKeyToIndexedDB = () => {
         // Open or create the database
         const request = window.indexedDB.open("MyTestDatabase", 3);
@@ -38,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         };
 
-        // Successful operation: save the private key
+        // On success: save the private key
         request.onsuccess = (event) => {
             const db = event.target.result;
 
