@@ -4,12 +4,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UrlShortenerController;
 use App\Http\Controllers\UserListController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MessageController;
 
 Route::get('/', function () {
     return view('home');
 });
 
 Route::get('/chat', [UserListController::class, 'showUsers'])->middleware('auth')->name('chat');
+Route::get('/message/{id}', [MessageController::class, 'showForm'])->name('message.form');
+Route::post('/message/{id}', [MessageController::class, 'storeMessage'])->name('message.store');
 
 
 //Route::get('/dashboard', function () {
