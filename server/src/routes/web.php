@@ -10,7 +10,7 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/chat', [UserListController::class, 'showUsers'])->middleware('auth')->name('chat');
+Route::get('/chat', [UserListController::class, 'index'])->middleware('auth')->name('chat');
 Route::get('/message/{id}', [MessageController::class, 'showForm'])->name('message.form');
 Route::post('/message/{id}', [MessageController::class, 'storeMessage'])->name('message.store');
 

@@ -21,6 +21,15 @@
                         </li>
                     @endforeach
                 </ul>
+                <h2>Messages list:</h2>
+                <ul>
+                    @foreach ($messages as $message)
+                        <li>
+                                {{ $message->message }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
 
                 <!-- Form to manually insert the encrypted message and decypher it -->
                 <div class="center">
