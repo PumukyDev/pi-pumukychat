@@ -19,6 +19,7 @@ services:
     working_dir: /var/www
     depends_on:
       - db
+      - redis
     networks:
       - mysql-network
     platform: linux/arm64
@@ -74,6 +75,16 @@ services:
       - mysql-network
     depends_on:
       - db
+    platform: linux/arm64
+
+  redis:
+    image: redis:latest
+    container_name: redis-container
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - mysql-network
     platform: linux/arm64
 
 volumes:
