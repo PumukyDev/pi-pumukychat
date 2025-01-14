@@ -22,37 +22,33 @@
                     @endforeach
                 </ul>
                 <h2>Messages list:</h2>
-                <ul>
+                <ul id="messagesList">
                     @foreach ($messages as $message)
-                        <li>
-                                {{ $message->message }}
-                            </a>
+                        <li class="encrypted-message" data-encrypted="{{ $message->message }}">
+                            <!-- Aquí aparecerá el texto descifrado -->
                         </li>
                     @endforeach
                 </ul>
 
-                <!-- Form to manually insert the encrypted message and decypher it -->
-                <div class="center">
-                    <h2>Decrypt a Message</h2>
-                    <textarea id="encryptedMessage" placeholder="Paste the encrypted message here..."></textarea><br>
-                    <button onclick="decryptMessage()">Decrypt Message</button>
-                    <p id="decryptedMessage"></p>
-                </div>
-
                 <!-- Script to decrypt the message -->
                 <script>
-                    async function decryptMessage() {
-                        const encryptedMessageBase64 = document.getElementById("encryptedMessage").value;
+                    document.addEventListener("DOMContentLoaded", async () => {
+                        const encryptedMessages = document.querySelectorAll(".encrypted-message");
 
-                        try {
-                            const decryptedMessage = await decryptMessageFromPrivateKey(encryptedMessageBase64);
-                            document.getElementById("decryptedMessage").innerText = "Decrypted Message: " + decryptedMessage;
-                        } catch (error) {
-                            document.getElementById("decryptedMessage").innerText = "Error decrypting message: " + error.message;
+                        for (const messageElement of encryptedMessages) {
+                            const encryptedMessage = messageElement.dataset.encrypted;
+
+                            try {
+                                const decryptedMessage = await decryptMessageFromPrivateKey(encryptedMessage);
+                                messageElement.innerText = decryptedMessage; // Shot the decrypted message
+                            } catch (error) {
+                                messageElement.innerText = "Error decrypting message.";
+                                console.error("Error decrypting message:", error);
+                            }
                         }
-                    }
+                    });
 
-                    // Get the private key from IndexedDB
+                    // Auxiliary functions to decrypt the message
                     async function getPrivateKey() {
                         const db = await openDatabase();
 
@@ -75,7 +71,6 @@
                         });
                     }
 
-                    // Import the private key into SubtleCrypto
                     async function importPrivateKey(base64Key) {
                         const binaryKey = Uint8Array.from(atob(base64Key), (char) => char.charCodeAt(0));
                         return await crypto.subtle.importKey(
@@ -90,22 +85,16 @@
                         );
                     }
 
-                    // Decrypt the message using the private key
                     async function decryptMessageFromPrivateKey(encryptedMessageBase64) {
                         try {
-                            // Get the private key
                             const privateKeyBase64 = await getPrivateKey();
-
-                            // Import the private key
                             const privateKey = await importPrivateKey(privateKeyBase64);
 
-                            // Convert the key from Base64 to ArrayBuffer
                             const encryptedMessage = Uint8Array.from(
                                 atob(encryptedMessageBase64),
                                 (char) => char.charCodeAt(0)
                             );
 
-                            // Decrypt the message
                             const decryptedBuffer = await crypto.subtle.decrypt(
                                 {
                                     name: "RSA-OAEP",
@@ -114,7 +103,6 @@
                                 encryptedMessage
                             );
 
-                            // Convert the result to a text string
                             const decoder = new TextDecoder();
                             return decoder.decode(decryptedBuffer);
                         } catch (error) {
@@ -123,7 +111,6 @@
                         }
                     }
 
-                    // Open again the IndexedDB database
                     function openDatabase() {
                         return new Promise((resolve, reject) => {
                             const request = indexedDB.open("MyTestDatabase", 3);
@@ -138,6 +125,7 @@
                         });
                     }
                 </script>
+
 
             @else
                 <div class="center">
