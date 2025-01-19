@@ -10,6 +10,22 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/c', function () {
+    return view('welcome');
+});
+
+
+Route::get('/chat2', function () {
+    event(new \App\Events\PublicMessage());
+    dd('Public event executed successfully');
+});
+
+Route::get('/private-chat', function () {
+    event(new \App\Events\PrivateMessage(\Illuminate\Support\Facades\Auth::user()));
+    dd('Private event executed successfully');
+});
+
+
 Route::get('/chat', [UserListController::class, 'index'])->middleware('auth')->name('chat');
 Route::get('/message/{id}', [MessageController::class, 'showForm'])->name('message.form');
 Route::post('/message/{id}', [MessageController::class, 'storeMessage'])->name('message.store');
