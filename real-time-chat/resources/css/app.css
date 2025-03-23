@@ -6,7 +6,7 @@
     height: 100vh;
 }
 
-.conversation-item .avatar.online:before
+.conversation-item .avatar.online:before,
 .conversation-item .avatar.offline:before {
     width: 8px;
     height: 8px;

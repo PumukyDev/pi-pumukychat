@@ -1,10 +1,10 @@
-import { usePage } from "@intertiajs/react";
+/*import { usePage } from "@intertiajs/react";*/
 import ReactMarkdown from "react-markdown";
 import React from "react";
 import UserAvatar from "./UserAvatar";
 import { formatMessageDateLong } from "@/helpers";
 
-const MessageItem = ({ message, attachmentClick }) => {
+const MessageItem = ({ message }) => {
     const currentUser = usePage().props.auth.user;
 
     return (

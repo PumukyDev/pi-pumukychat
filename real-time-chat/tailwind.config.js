@@ -19,7 +19,7 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [forms, require("daisyui")],
 
     daisyui: {
         themes: true, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]

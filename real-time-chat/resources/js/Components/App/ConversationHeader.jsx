@@ -1,5 +1,5 @@
-import { Link, usePage } from "@inertia/react";
-import { ArrowLeftIcon } from "@heroicons/react";
+import { Link, usePage } from "@inertiajs/react";
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import UserAvatar from "./UserAvatar";
 import GroupAvatar from "./GroupAvatar";
 
@@ -33,3 +33,5 @@ const ConversationHeader = ({ selectedConversation }) => {
         </>
     )
 };
+
+export default ConversationHeader;

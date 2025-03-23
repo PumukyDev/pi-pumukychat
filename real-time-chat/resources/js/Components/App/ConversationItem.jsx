@@ -10,7 +10,7 @@ const ConversationItem = ({
 }) => {
     const page = usePage();
     const currentUser = page.props.auth.user;
-    let classes = " border-trnasparent";
+    let classes = " border-transparent";
     if (selectedConversation) {
         if (
             !selectedConversation.is_group &&
@@ -43,10 +43,10 @@ const ConversationItem = ({
                     : " pr-4")
             }
         >
-            {conversation.id_user && (
+            {conversation.is_user && (
                 <UserAvatar user={conversation} online={online} />
             )}
-            {conversation.id_group && <GroupAvatar />}
+            {conversation.is_group && <GroupAvatar />}
             <div
                 className={
                     `flex-1 text-xs max-w-full overflow-hidden` +

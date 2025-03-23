@@ -2,14 +2,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import ChatLayout from '@/Layouts/ChatLayout';
 import { ChatBubbleLeftRightIcon } from '@heroicons/react/24/solid';
 import { useRef, useState, useEffect } from 'react';
+import ConversationHeader from "@/Components/App/ConversationHeader";
+import MessageItem from '@/Components/App/MessageItem';
 
-function Home({ Messsages }) {
+function Home({ selectedConversation = null, messages = null }) {
 
     const [localMessages, setLocalMessages] = useState([]);
     const messagesCtrRef = useRef(null);
 
     useEffect(() => {
-        setLocalMessages(messages);
+        setLocalMessages(messages ? messages.data.reverse() : []);
     }, [messages]);
 
     return (
@@ -19,7 +21,7 @@ function Home({ Messsages }) {
                     <div className="text-2xl md:text-4xl p-16 text-state-200">
                         Please select conversation to see messages
                     </div>
-                    <ChatBubbleLeftRightIcon classNmae="w-32 h-32 inline-block" />
+                    <ChatBubbleLeftRightIcon className="w-32 h-32 inline-block" />
                 </div>
             )}
             {messages && (
@@ -33,14 +35,14 @@ function Home({ Messsages }) {
                     >
                         {/* Messages */}
 
-                        {localMessages.lenght === 0 && (
+                        {localMessages.length === 0 && (
                             <div className="flex justify-center items-center h-full">
                                 <div className="text-lg text-slate-200">
                                     No messages found
                                 </div>
                             </div>
                         )}
-                        {localMessages.lenght > 0 && (
+                        {localMessages.length > 0 && (
                             <div className="flex-1 flex-col">
                                 {localMessages.map((message) => (
                                     <MessageItem
@@ -51,7 +53,7 @@ function Home({ Messsages }) {
                             </div>
                         )}
                     </div>
-                    <MessageInput conversation={selectedConversation} />
+                    {/* <MessageInput conversation={selectedConversation} /> */}
                 </>
             )}
         </>

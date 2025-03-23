@@ -6,21 +6,24 @@ use App\Events\SocketMessage;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\Conversation;
+use App\Models\MessageAttachment;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use App\Models\Group;
 use App\Models\Message;
-use App\Models\MessageAttachment;
-use App\Models\User;
-use Illuminate\Container\Attributes\Storage;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class MessageController extends Controller
 {
     public function byUser(User $user)
     {
-        $messages = Message::where('sender_id', auth()->id())
+        $messages = Message::where('sender_id', Auth::id())
             ->where('receiver_id', $user->id)
             ->orWhere('sender_id', $user->id)
-            ->where('receiver_id', auth()->id())
+            ->where('receiver_id', Auth::id())
             ->latest()
             ->paginate(10);
 
@@ -67,7 +70,7 @@ class MessageController extends Controller
     public function store(StoreMessageRequest $request)
     {
         $data = $request->validated();
-        $data['sender_id'] = auth()->id();
+        $data['sender_id'] = Auth::id();
         $receiverId = $data['receiver_id'] ?? null;
         $groupId = $data['group_id'] ?? null;
 
@@ -95,7 +98,7 @@ class MessageController extends Controller
         }
 
         if ($receiverId) {
-            Conversation::updateConversationWithMessage($receiverId, auth()->id(), $message);
+            Conversation::updateConversationWithMessage($receiverId, Auth::id(), $message);
         }
 
         if($groupId) {
@@ -108,7 +111,7 @@ class MessageController extends Controller
 
     public function destroy(Message $message)
     {
-        if ($message->sender_id !== auth()->id()) {
+        if ($message->sender_id !== Auth::id()) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 

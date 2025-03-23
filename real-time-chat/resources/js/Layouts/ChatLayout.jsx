@@ -16,7 +16,7 @@ const ChatLayout = ({ children}) => {
     const isUsersOnline = (userId) => onlineUsers[userId];
 
     const onSearch = (event) => {
-        const search = event.taget.value.toLowerCase();
+        const search = event.target.value.toLowerCase();
         setLocalConversations(
             conversations.filter((conversation) => {
                 return (
@@ -39,7 +39,7 @@ const ChatLayout = ({ children}) => {
                 } else if (b.blocked_at) {
                     return -1;
                 }
-                if(a.last_message_data && b.last_message_date) {
+                if(a.last_message_date && b.last_message_date) {
                     return b.last_message_date.localeCompare(
                         a.last_message_date
                     );
@@ -99,7 +99,7 @@ const ChatLayout = ({ children}) => {
                     }`}
                 >
                     <div className="flex items-center justify-between py-2 px-3 text-xl font-medium text-gray-200">
-                        My Conversation
+                        My Conversations
                         <div
                             className="tooltip tooltip-left"
                             data-tip="Create New Group"
