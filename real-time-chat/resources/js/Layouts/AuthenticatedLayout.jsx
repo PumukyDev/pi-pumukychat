@@ -14,7 +14,7 @@ export default function AuthenticatedLayout({ header, children }) {
         useState(false);
 
     useEffect(() => {
-        conversations.forEch((conversation) => {
+        conversations.forEach((conversation) => {
             let channel = `message.group.${conversation.id}`;
 
             if (conversation.is_user) {
