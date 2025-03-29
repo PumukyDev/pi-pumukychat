@@ -13,6 +13,40 @@ const MessageInput = ({ conversation = null }) => {
     const [inputErrorMessage, setInputErrorMessage] = useState("");
     const [messageSending, setMessageSending]  = useState(false);
 
+    const onSendClick = () => {
+        if (newMessage.trim() === "") {
+            setInputErrorMessage("Please provide a message or upload attachments.");
+            
+            setTimeout(() => {
+                setInputErrorMessge("");
+            }, 3000)
+            return;
+        }
+        const formData = new FormData();
+        formData.append("message", newMessage);
+        if (conversation.is_user) {
+            formData.append("receiver_id", conversation.id);
+        } else if (conversation.id_group) {
+            formData.append("group_id", conversation.id);
+        }
+
+        setMessageSending(true);
+
+        axios.post(route("message.store"), formData, {
+            onUploadProgess: (progessEvent) => {
+                const progess = Math.round(
+                    (progessEvent.loaded / ProgressEvent.total) * 100
+                );
+                console.log(progess);
+            }
+        }).then((response) => {
+            setNewMessage("");
+            setMessageSending(false);
+        }).catch((error) => {
+            setMessageSending(false);
+        })
+    }
+    
     return (
         <div className="flex flex-wrap items-start border-t border-slate-700 py-3">
             <div className="order-2 flex-1 xs-flex-none xs-order-1 p-2">
@@ -37,9 +71,10 @@ const MessageInput = ({ conversation = null }) => {
                 <div className="flex ">
                     <NewMessageInput
                         value={newMessage}
+                        onSend={onSendCLick}
                         onChange={(ev) => setNewMessage(ev.target.value)}
                     />
-                    <button className="btn btn-info rounded-l-none">
+                    <button onClick={onSendClick} className="btn btn-info rounded-l-none">
                         {messageSending && (
                             <span className="loading loading-spinner loadding-xs"></span>
                         )}
