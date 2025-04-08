@@ -6,11 +6,19 @@
     height: 100vh;
 }
 
+.EmojiPickerReact.epr-dark-theme {
+    background-color: theme('colors.gray.800');
+}
+
+.EmojiPickerReact.epr-dark-theme .epr-emoji-category-label{
+    background-color: theme('colors.gray.900');
+}
+
 .conversation-item .avatar.online:before,
 .conversation-item .avatar.offline:before {
     width: 8px;
     height: 8px;
-    top: 1%; 
+    top: 1%;
     right: 1%;
     outline-width: 1px;
 }
