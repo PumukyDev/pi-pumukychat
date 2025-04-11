@@ -5,6 +5,7 @@ import {
     FaceSmileIcon,
     HandThumbUpIcon,
     PaperAirplaneIcon,
+    XCircleIcon,
 } from "@heroicons/react/24/solid";
 import NewMessageInput from "./NewMessageInput";
 import EmojiPicker from "emoji-picker-react";
@@ -14,6 +15,23 @@ const MessageInput = ({ conversation = null }) => {
     const [newMessage, setNewMessage] = useState("");
     const [inputErrorMessage, setInputErrorMessage] = useState("");
     const [messageSending, setMessageSending]  = useState(false);
+    const [chosenFiles, setChosenFiles] = useState([]);
+    const  [uploadProgess, setUploadProgess] = useState(0);
+
+    const onFileCHange = (ev) => {
+        const files = ev.target.files;
+
+        const updatedFiles = [...files].map((file) => {
+            return {
+                file: file,
+                url: URL.createObjectURL(file),
+            };
+        });
+
+        setChosenFiles((prevFiles) => {
+            return [...prevFiles, ...updatedFiles];
+        });
+    };
 
     const onSendClick = () => {
         if (messageSending) {
@@ -28,6 +46,9 @@ const MessageInput = ({ conversation = null }) => {
             return;
         }
         const formData = new FormData();
+        chosenFiles.forEach((file) => {
+            formData.append("attachments[]", file.file);
+        });
         formData.append("message", newMessage);
         if (conversation.is_user) {
             formData.append("receiver_id", conversation.id);
@@ -43,13 +64,21 @@ const MessageInput = ({ conversation = null }) => {
                     (progessEvent.loaded / ProgressEvent.total) * 100
                 );
                 console.log(progess);
+                setUploadProgess(progess);
             }
         }).then((response) => {
             setNewMessage("");
             setMessageSending(false);
+            setUploadProgess(0);
+            setChosenFiles([]);
         }).catch((error) => {
             setMessageSending(false);
-        })
+            setChosenFiles([]);
+            const message = error?.response?.data?.message;
+            setInputErrorMessage(
+                message || "An error occurerd while sending message"
+            );
+        });
     }
 
     const onLikeClick = () => {
@@ -94,11 +123,60 @@ const MessageInput = ({ conversation = null }) => {
                     >
                         <PaperAirplaneIcon className="w-6" />
                         <span className="hidden sm:inline">Send</span>
-                    </button>
+                    </button>{" "}
+                    {!!uploadProgess && (
+                        <progess
+                            className="progess progess-info w-full"
+                            value={uploadProgess}
+                            max="100"
+                        ></progess>
+                    )}
                 </div>
                 {inputErrorMessage && (
                     <p className="text-xs text-red-400">{inputErrorMessage}</p>
                 )}
+                <div className="flex flex-wrap gap-1 mt-2">
+                    {chosenFiles.map((file) => (
+                        <div
+                            key={file.file.name}
+                            className={
+                                `relative flex justify-between cursor-pointer` +
+                                (!isImage(file.file) ? " w-[240px]" : "")
+                            }
+                        >
+                            {isImage(file.file) && (
+                                <img
+                                    src={file.url}
+                                    alt=""
+                                    className="w-16 h-16 object-cover"
+                                />
+                            )}
+                            {isAudio(file.file) && (
+                                <CustomAudioPlayer
+                                    file={file}
+                                    showVolume={false}
+                                />
+                            )}
+                            {!isAudio(file.file) && !isImage(file.file) && (
+                                <AttachmentPreview file={file} />
+                            )}
+
+                            <button
+                                onClick={() =>
+                                    setChosenFiles(
+                                        chosenFiles.filter(
+                                            (f) =>
+                                                f.file.name !== file.file.name
+                                        )
+                                    )
+                                }
+                                className="absolute w-6 h-6 rounded-full bg-gray-800 -right-2 -top-2 text-gray-300 hover:text-gray-100 z-10"
+                            >
+                                <XCircleIcon className="w-6"/>
+                            </button>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className="order-3 xs-order-3 p-2 flex">
                 <Popover className="relative">
