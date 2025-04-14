@@ -74,8 +74,6 @@ El modelo de datos está diseñado para garantizar la escalabilidad y seguridad 
 - **groups**: Contiene la información de los grupos de chat.
 - **group_user**: Tabla pivote para gestionar las relaciones muchos a muchos entre usuarios y grupos.
 
-*Se podrá complementar este apartado con un diagrama ER detallado a partir de las migraciones del proyecto.*
-
 == Funcionalidades Principales
 
 - **Autenticación y Gestión de Usuarios:** Registro, inicio de sesión y manejo seguro de sesiones mediante tokens.
