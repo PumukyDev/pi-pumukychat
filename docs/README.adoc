@@ -1,0 +1,23 @@
+= PumukyChat
+:author: Adrián Bertos Gómez
+:revdate: 2025-04-14
+:toc: left
+:doctype: book
+
+== Introducción
+== Objetivos del Proyecto
+== Descripción General del Sistema
+== Arquitectura de la Solución
+== Tecnologías y Herramientas
+== Esquema de Base de Datos
+== Funcionalidades Principales
+== Servicios Adicionales
+== Conclusión
+
+[mermaid, mydiagram, png]
+----
+graph TD
+    A[Start] --> B{Is it working?}
+    B -- Yes --> C[Great]
+    B -- No --> D[Fix it]
+----
