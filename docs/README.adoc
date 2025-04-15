@@ -33,23 +33,25 @@ image::./assets/mermaid.png[Mermaid chart]
 
 == Tecnologías y Herramientas
 
-- **Frontend:**
-  - *React*: Librería de JavaScript para construir interfaces de usuario basadas en componentes.
-  - *Vite*: Herramienta de desarrollo y bundling que acelera el proceso de construcción.
-  - *Tailwind CSS*: Framework CSS para diseñar interfaces modernas y responsivas.
-  - *Axios*: Cliente HTTP para la comunicación con el backend.
-  - *Laravel Echo + WebSockets*: Implementación de comunicación en tiempo real entre el cliente y el servidor.
+== Tecnologías y Herramientas
 
-- **Backend:**
-  - *Laravel 11*: Framework PHP que gestiona la lógica de negocio, autenticación y persistencia.
-  - *Sanctum*: Sistema de autenticación basado en tokens para asegurar la comunicación de la API.
-  - *Eloquent ORM*: Facilita la interacción con la base de datos.
-  - *Laravel Broadcasting*: Permite la emisión de eventos en tiempo real utilizando Pusher o Laravel WebSockets.
+* **Frontend:**
+** *React*: Librería de JavaScript para construir interfaces de usuario basadas en componentes.
+** *Vite*: Herramienta de desarrollo y bundling que acelera el proceso de construcción.
+** *Tailwind CSS*: Framework CSS para diseñar interfaces modernas y responsivas.
+** *Axios*: Cliente HTTP para la comunicación con el backend.
+** *Laravel Echo + WebSockets*: Implementación de comunicación en tiempo real entre el cliente y el servidor.
 
-- **DevOps y Despliegue:**
-  - *Docker & Docker Compose*: Contenerización y orquestación de la aplicación para un despliegue automático, escalable y reproducible.
-  - *Git & GitHub*: Control de versiones del proyecto e integración continua de la documentación.
-  - *Composer y npm*: Gestores de dependencias para PHP y JavaScript respectivamente.
+* **Backend:**
+** *Laravel 11*: Framework PHP que gestiona la lógica de negocio, autenticación y persistencia.
+** *Sanctum*: Sistema de autenticación basado en tokens para asegurar la comunicación de la API.
+** *Eloquent ORM*: Facilita la interacción con la base de datos.
+** *Laravel Broadcasting*: Permite la emisión de eventos en tiempo real utilizando Pusher o Laravel WebSockets.
+
+* **DevOps y despliegue:**
+** *Docker & Docker Compose*: Contenerización y orquestación de la aplicación para un despliegue automático, escalable y reproducible.
+** *Git & GitHub*: Control de versiones del proyecto e integración continua de la documentación.
+** *Composer y npm*: Gestores de dependencias para PHP y JavaScript respectivamente.
 
 == Esquema de Base de Datos
 
