@@ -1,27 +1,27 @@
 = PumukyChat
 :author: Adrián Bertos Gómez
-:revdate: 2025-04-14
+:revdate: 2025-04-15
 :toc: left
 :doctype: book
 
 == Introducción
 
-PumukyChat es una aplicación de mensajería en tiempo real que permite a los usuarios comunicarse de forma segura y encriptada. Este proyecto nace del reto de aplicar y ampliar todo lo aprendido durante el curso. La aplicación se desplegará de forma automática y se encargará de gestionar todos los aspectos de un sistema de chat moderno.
+PumukyChat es una aplicación de mensajería en tiempo real que permite a los usuarios comunicarse de forma segura. Este proyecto nace del reto de aplicar y ampliar todo lo aprendido durante el curso. La aplicación se desplegará de forma automática y se encargará de gestionar todos los aspectos de un sistema de chat moderno.
 
 == Objetivos del Proyecto
 
 *Desarrollo funcional y seguro de una plataforma de chat en tiempo real con las siguientes metas:*
 
-- **Comunicación Instantánea:** Permitir chats individuales y grupales con alta fiabilidad y baja latencia.
-- **Seguridad y Encriptación:** Implementar cifrado de extremo a extremo para proteger la privacidad de las comunicaciones.
-- **Interfaz de Usuario Avanzada:** Proveer una experiencia moderna, intuitiva y responsive, adaptable a distintos dispositivos.
-- **Despliegue Automatizado:** Facilitar la integración continua y la escalabilidad mediante contenedores Docker.
-- **Aprendizaje y Experimentación:** Profundizar en tecnologías actuales como Laravel, React, Vite, Tailwind CSS y WebSockets.
+- **Comunicación instantánea:** Permitir chats individuales y grupales con alta fiabilidad y baja latencia.
+- **Seguridad y encriptación:** Se evalua la implementación de cifrado de extremo a extremo para proteger la privacidad de las comunicaciones.
+- **Interfaz de usuario adaptable:** Proveer una experiencia moderna, intuitiva y responsive, adaptable a distintos dispositivos.
+- **Despliegue automatizado:** Facilitar la integración continua y la escalabilidad mediante contenedores Docker.
+- **Uso de tecnologías modernas:** Profundizar en tecnologías actuales como Laravel, React, Vite, Tailwind CSS y WebSockets.
 
 == Descripción General del Sistema
 
 - **Frontend:** Aplicación desarrollada en React, utilizando Vite y Tailwind CSS para el diseño. Este módulo se encarga de la interfaz del usuario, implementando interacciones dinámicas y comunicándose con el backend mediante API REST y WebSockets.
-- **Backend:** API basada en Laravel 11, que gestiona la lógica del chat, la autenticación (con Sanctum), el almacenamiento de datos y el broadcasting de eventos mediante Laravel Echo. Además, se implementa cifrado de extremo a extremo para los mensajes.
+- **Backend:** API basada en Laravel 11, que gestiona la lógica del chat, la autenticación (con Sanctum), el almacenamiento de datos y el broadcasting de eventos mediante Laravel Echo. Además, se contempla la posibilidad de implementar cifrado de extremo a extremo para los mensajes.
 - **Base de Datos:** Se utiliza MariaDB para almacenar la información relacionada con usuarios, mensajes, grupos y las relaciones existentes entre ellos.
 - **Infraestructura de Despliegue:** Todo el sistema se despliega mediante Docker, utilizando Docker Compose para orquestar de forma automática cada uno de los servicios (frontend, backend y base de datos).
 
@@ -29,21 +29,7 @@ PumukyChat es una aplicación de mensajería en tiempo real que permite a los us
 
 La solución sigue una arquitectura cliente-servidor donde se separan por completo las responsabilidades de frontend y backend. La comunicación se da a través de API REST y conexiones WebSocket para la mensajería en tiempo real. La orquestación con Docker Compose garantiza un despliegue automatizado y la portabilidad del sistema.
 
-[source,plaintext]
-----
-       [ Usuario ]
-            │
-            ▼
- [ Interfaz React (Vite + Tailwind CSS) ]
-            │    REST API & WebSockets
-            ▼
-[ Laravel API (con Sanctum, Echo y Broadcasting) ]
-            │
-            ▼
-       [ Base de Datos MySQL ]
-
-       (Todos los servicios se ejecutan en contenedores Docker)
-----
+image::./assets/mermaid.png[Mermaid chart]
 
 == Tecnologías y Herramientas
 
@@ -76,20 +62,20 @@ El modelo de datos está diseñado para garantizar la escalabilidad y seguridad 
 
 == Funcionalidades Principales
 
-- **Autenticación y Gestión de Usuarios:** Registro, inicio de sesión y manejo seguro de sesiones mediante tokens.
-- **Chat en Tiempo Real:** Soporte para comunicación individual y grupal a través de WebSockets.
-- **Cifrado de Mensajes:** Implementación de cifrado de extremo a extremo para asegurar la privacidad.
-- **Notificaciones en Tiempo Real:** Actualización instantánea de la interfaz ante nuevos mensajes y eventos.
-- **Historial y Persistencia:** Almacenamiento de conversaciones y capacidad de carga de mensajes anteriores.
-- **Interfaz Responsive:** Diseño optimizado para dispositivos móviles y de escritorio gracias a Tailwind CSS.
+- **Autenticación y gestión de usuarios:** Registro, inicio de sesión y manejo seguro de sesiones mediante tokens.
+- **Chat en tiempo real:** Soporte para comunicación individual y grupal a través de WebSockets. Sin necesidad de recargar la página.
+- **Cifrado de mensajes (Opcional):** Se está considerando la implementación de cifrado de extremo a extremo para asegurar la privacidad.
+- **Notificaciones en tiempo real:** Actualización instantánea de la interfaz ante nuevos mensajes y eventos. Emitir notificaciones de estos.
+- **Historial y persistencia:** Almacenamiento de conversaciones y capacidad de carga de mensajes anteriores poco a poco sin saturar el servidor.
+- **Interfaz responsive:** Diseño optimizado para dispositivos móviles y de escritorio gracias a Tailwind CSS.
 
 == Servicios Adicionales
 
-- **Broadcasting de Eventos:** Emisión de eventos en tiempo real para una experiencia de usuario fluida.
-- **Verificación y Seguridad Adicional:** Opciones para la verificación de emails y medidas de seguridad avanzadas.
-- **Despliegue Continuo:** Automatización del despliegue con Docker Compose, permitiendo una integración y actualización constantes.
-- **Monitoreo y Logging:** Implementación de herramientas de seguimiento para el rendimiento y detección temprana de incidencias.
-- **Personalización de la Interfaz:** Soporte para modos oscuro y claro, adaptándose a las preferencias del usuario.
+- **Broadcasting de eventos:** Emisión de eventos en tiempo real para una experiencia de usuario fluida.
+- **Verificación y seguridad adicional:** Opciones para la verificación de emails y medidas de seguridad avanzadas.
+- **Despliegue continuo:** Automatización del despliegue con Docker Compose, permitiendo una integración y actualización constantes.
+- **Monitoreo y logging:** Implementación de herramientas de seguimiento para el rendimiento y detección temprana de incidencias.
+- **Personalización de la interfaz:** Soporte para modos oscuro y claro, adaptándose a las preferencias del usuario.
 
 == Conclusión
 
