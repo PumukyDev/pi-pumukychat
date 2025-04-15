@@ -33,8 +33,6 @@ image::./assets/mermaid.png[Mermaid chart]
 
 == Tecnologías y Herramientas
 
-== Tecnologías y Herramientas
-
 * **Frontend:**
 ** *React*: Librería de JavaScript para construir interfaces de usuario basadas en componentes.
 ** *Vite*: Herramienta de desarrollo y bundling que acelera el proceso de construcción.
