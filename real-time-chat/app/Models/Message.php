@@ -16,23 +16,19 @@ class Message extends Model
         'receiver_id',
     ];
 
-    public function sender()
-    {
+    public function sender() {
         return $this->belongsTo(User::class, 'sender_id');
     }
 
-    public function receiver()
-    {
+    public function receiver() {
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
-    public function group()
-    {
+    public function group() {
         return $this->belongsTo(Group::class);
     }
 
-    public function attachments()
-    {
+    public function attachments() {
         return $this->hasMany(MessageAttachment::class);
     }
 }

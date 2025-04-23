@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Conversation;
 use App\Models\Group;
 use App\Models\Message;
-use App\Models\Conversation;
+use App\Models\User;
 use Carbon\Carbon;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,13 +17,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
         User::factory()->create([
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => bcrypt('password'),
-            'is_admin' => true
+            'is_admin' => true,
         ]);
+
         User::factory()->create([
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory(10)->create();
 
-        for ($i = 0; $i < 5; $i++) {
+        for($i = 0; $i < 5; $i++){
             $group = Group::factory()->create([
                 'owner_id' => 1,
             ]);
@@ -44,10 +44,10 @@ class DatabaseSeeder extends Seeder
         Message::factory(1000)->create();
         $messages = Message::whereNull('group_id')->orderBy('created_at')->get();
 
-        $conversations = $messages->groupBy(function ($message) {
+        $conversation = $messages->groupBy(function ($message) {
             return collect([$message->sender_id, $message->receiver_id])->sort()->implode('_');
         })->map(function ($groupedMessages) {
-            return [
+            return[
                 'user_id1' => $groupedMessages->first()->sender_id,
                 'user_id2' => $groupedMessages->first()->receiver_id,
                 'last_message_id' => $groupedMessages->last()->id,
@@ -56,6 +56,7 @@ class DatabaseSeeder extends Seeder
             ];
         })->values();
 
-        Conversation::insertOrIgnore($conversations->toArray());
+        Conversation::insertOrIgnore($conversation->toArray());
+
     }
 }

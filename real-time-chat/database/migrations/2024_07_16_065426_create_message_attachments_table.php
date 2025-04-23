@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('message_attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('message_id')->constrained('messages');
-            $table->string('name', 255);
-            $table->string('path', 1024);
-            $table->string('mime', 255);
+            $table->string('name',255); // test.png
+            $table->string('path',1024);
+            $table->string('mime',255); // image/png
             $table->integer('size');
             $table->timestamps();
         });

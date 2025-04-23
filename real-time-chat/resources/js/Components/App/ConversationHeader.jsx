@@ -1,9 +1,11 @@
-import { Link, usePage } from "@inertiajs/react";
-import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import UserAvatar from "./UserAvatar";
-import GroupAvatar from "./GroupAvatar";
+import {Link, usePage} from '@inertiajs/react';
+import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import UserAvatar from './UserAvatar';
+import GroupAvatar from './GroupAvatar';
 
-const ConversationHeader = ({ selectedConversation }) => {
+
+const ConversationHeader = ({selectedConversation}) => {
+
     return (
         <>
             {selectedConversation && (
@@ -21,17 +23,18 @@ const ConversationHeader = ({ selectedConversation }) => {
                         {selectedConversation.is_group && <GroupAvatar />}
                         <div>
                             <h3>{selectedConversation.name}</h3>
-                                {selectedConversation.is_group && (
-                                    <p className="text-xs text-gray-500">
-                                        {selectedConversation.users.length} members
-                                    </p>
-                                )}
+                            {selectedConversation.is_group && (
+                                <p className="text-xs text-gray-500">
+                                    {selectedConversation.users.length} members
+                                </p>
+                            )}
                         </div>
                     </div>
                 </div>
             )}
         </>
-    )
+    );
 };
+
 
 export default ConversationHeader;

@@ -1,37 +1,32 @@
-import { usePage } from "@inertiajs/react";
-import { useEffect, useState } from "react";
-import { PencilSquareIcon } from '@heroicons/react/24/solid'
-import TextInput from "@/Components/TextInput";
 import ConversationItem from "@/Components/App/ConversationItem";
+import TextInput from "@/Components/TextInput";
 import { useEventBus } from "@/EventBus";
+import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import { usePage } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
 
-
-const ChatLayout = ({ children}) => {
+const ChatLayout = ({ children }) => {
     const page = usePage();
     const conversations = page.props.conversations;
     const selectedConversation = page.props.selectedConversation;
+    const [onlineUsers, setOnlineUsers] = useState({});
     const [localConversations, setLocalConversations] = useState([]);
     const [sortedConversations, setSortedConversations] = useState([]);
-    const [onlineUsers, setOnlineUsers] = useState({});
     const { on } = useEventBus();
 
-    const isUsersOnline = (userId) => onlineUsers[userId];
+    const isUserOnline = (userId) => onlineUsers[userId];
 
-    const onSearch = (event) => {
-        const search = event.target.value.toLowerCase();
+    const onSearch = (ev) => {
+        const search = ev.target.value.toLowerCase();
         setLocalConversations(
             conversations.filter((conversation) => {
-                return (
-                    conversation.name.toLowerCase().includes(search)
-                );
+                return conversation.name.toLowerCase().includes(search);
             })
         );
-    }
-
+    };
     const messageCreated = (message) => {
         setLocalConversations((oldUsers) => {
             return oldUsers.map((u) => {
-                // If the message is for user
                 if (
                     message.receiver_id &&
                     !u.is_group &&
@@ -41,7 +36,6 @@ const ChatLayout = ({ children}) => {
                     u.last_message_date = message.created_at;
                     return u;
                 }
-                // If the message is for group
                 if (
                     message.group_id &&
                     u.is_group &&
@@ -54,13 +48,13 @@ const ChatLayout = ({ children}) => {
                 return u;
             });
         });
-    }
+    };
 
     useEffect(() => {
-        const offCreted = on("message.created", messageCreated);
+        const offCreated = on("message.created", messageCreated);
         return () => {
             offCreated();
-        };
+        }
     }, [on]);
 
     useEffect(() => {
@@ -73,7 +67,8 @@ const ChatLayout = ({ children}) => {
                 } else if (b.blocked_at) {
                     return -1;
                 }
-                if(a.last_message_date && b.last_message_date) {
+
+                if (a.last_message_date && b.last_message_date) {
                     return b.last_message_date.localeCompare(
                         a.last_message_date
                     );
@@ -93,40 +88,41 @@ const ChatLayout = ({ children}) => {
     }, [conversations]);
 
     useEffect(() => {
-        Echo.join('online')
+        Echo.join("online")
             .here((users) => {
-                const onlineUsersObj = Object.fromEntries(users.map((user) => [user.id, user]) );
+                const onlineUsersObj = Object.fromEntries(
+                    users.map((user) => [user.id, user])
+                );
                 setOnlineUsers((prevOnlineUsers) => {
-                    return { ...prevOnlineUsers, ...onlineUsersObj }
-
+                    return { ...prevOnlineUsers, ...onlineUsersObj };
                 });
             })
             .joining((user) => {
                 setOnlineUsers((prevOnlineUsers) => {
                     const updatedUsers = { ...prevOnlineUsers };
                     updatedUsers[user.id] = user;
-                    return updatedUsers
-                })
+                    return updatedUsers;
+                });
             })
             .leaving((user) => {
                 setOnlineUsers((prevOnlineUsers) => {
                     const updatedUsers = { ...prevOnlineUsers };
                     delete updatedUsers[user.id];
-                    return updatedUsers
-                })
+                    return updatedUsers;
+                });
             })
             .error((error) => {
-                console.error(error);
+                console.error("Error:", error);
             });
 
         return () => {
-            Echo.leave('online');
-        }
+            Echo.leave("online");
+        };
     }, []);
 
     return (
         <>
-            <div className="flex-1 flex w-full overflow-hidden">
+            <div className="flex-1 w-full flex overflow-hidden">
                 <div
                     className={`transition-all w-full sm:w-[220px] md:w-[300px] bg-slate-800 flex flex-col overflow-hidden ${
                         selectedConversation ? "-ml-[100%] sm:ml-0" : ""
@@ -136,19 +132,17 @@ const ChatLayout = ({ children}) => {
                         My Conversations
                         <div
                             className="tooltip tooltip-left"
-                            data-tip="Create New Group"
+                            data-tip="Create new Group"
                         >
-                            <button
-                                className="text-gray-400 hover:text-gray-200"
-                            >
-                                <PencilSquareIcon className="w-4 h-4 inline-block ml-2" />
+                            <button className="text-gray-400 hover:text-gray-200">
+                                <PencilSquareIcon className="h-4 w-4 inline-block ml-2" />
                             </button>
                         </div>
                     </div>
                     <div className="p-3">
                         <TextInput
                             onKeyUp={onSearch}
-                            placeholder="Filter Users and Groups"
+                            placeholder="Filter users and groups"
                             className="w-full"
                         />
                     </div>
@@ -162,15 +156,18 @@ const ChatLayout = ({ children}) => {
                                             : "user_"
                                     }${conversation.id}`}
                                     conversation={conversation}
-                                    online={!!isUsersOnline(conversation.id)}
+                                    online={!!isUserOnline(conversation.id)}
                                     selectedConversation={selectedConversation}
                                 />
                             ))}
                     </div>
                 </div>
+                <div className="flex-1 flex flex-col overflow-hidden">
+                    {children}
+                </div>
             </div>
         </>
-    )
-}
+    );
+};
 
 export default ChatLayout;
