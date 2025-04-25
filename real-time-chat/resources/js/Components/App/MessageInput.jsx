@@ -20,6 +20,7 @@ import { isAudio, isImage,  } from "@/helper";
 import AttachmentPreview from "./AttachmentPreview";
 import CustomAudioPlayer from "./CustomAudioPlayer";
 import AudioRecorder from "./AudioRecorder";
+import { emit } from "@/EventBus";
 
 const MessageInput = ({ conversation = null }) => {
     const [newMessage, setNewMessage] = useState("");
@@ -45,6 +46,7 @@ const MessageInput = ({ conversation = null }) => {
     };
 
     const onSend = () => {
+        emit('toast.show', 'Message sent successfully')
         if (messageSending) {
             return;
         }
