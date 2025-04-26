@@ -18,13 +18,14 @@ function Home({ selectedConversation = null, messages = null }) {
     const [showAttachmentPreview, setShowAttachmentPreview] = useState(false);
     const [previewAttachment, setPreviewAttachment] = useState({});
     const { on } = useEventBus();
+
     const messageCreated = (message) => {
         if (
             selectedConversation &&
             selectedConversation.is_group &&
             selectedConversation.id == message.group_id
         ) {
-            setLocalMessages((prev) => [...prev, message]);
+            setLocalMessages((prevMessage) => [...prevMessage, message]);
         }
         if (
             selectedConversation &&
@@ -32,9 +33,31 @@ function Home({ selectedConversation = null, messages = null }) {
             (selectedConversation.id == message.sender_id ||
                 selectedConversation.id == message.receiver_id)
         ) {
-            setLocalMessages((prev) => [...prev, message]);
+            setLocalMessages((prevMessage) => [...prevMessage, message]);
         }
     };
+
+    const messageDeleted = ({ message }) => {
+        if (
+            selectedConversation &&
+            selectedConversation.is_group &&
+            selectedConversation.id == message.group_id
+        ) {
+            setLocalMessages((prevMessage) => {
+                return prevMessage.filter((m) => m.id !== message.id);
+            });
+        }
+        if (
+            selectedConversation &&
+            selectedConversation.is_user &&
+            (selectedConversation.id == message.sender_id ||
+                selectedConversation.id == message.receiver_id)
+        ) {
+            setLocalMessages((prevMessage) => {
+                return prevMessage.filter((m) => m.id !== message.id);
+            });
+        }
+    }
 
     const loadMoreMessages = useCallback(() => {
         if (noMoreMessages) {
@@ -57,8 +80,8 @@ function Home({ selectedConversation = null, messages = null }) {
                     scrollHeight - scrollTop - clientHeight;
                 console.log("tmpScrollFromBottom", tmpScrollFromBottom);
                 setScrollFromBottom(tmpScrollFromBottom);
-                setLocalMessages((prev) => {
-                    return [...data.data.reverse(), ...prev];
+                setLocalMessages((prevMessage) => {
+                    return [...data.data.reverse(), ...prevMessage];
                 });
             });
     }, [localMessages, noMoreMessages]);
@@ -79,11 +102,13 @@ function Home({ selectedConversation = null, messages = null }) {
             }
         }, 10);
         const offCreated = on("message.created", messageCreated);
+        const offDeleted = on("message.deleted", messageDeleted);
 
         setScrollFromBottom(0);
         setNoMoreMessages(false);
         return () => {
             offCreated();
+            offDeleted();
         };
     }, [selectedConversation]);
 
