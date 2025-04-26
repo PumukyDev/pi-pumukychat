@@ -20,7 +20,7 @@ import { isAudio, isImage,  } from "@/helper";
 import AttachmentPreview from "./AttachmentPreview";
 import CustomAudioPlayer from "./CustomAudioPlayer";
 import AudioRecorder from "./AudioRecorder";
-import { emit } from "@/EventBus";
+import { useEventBus } from "@/EventBus";
 
 const MessageInput = ({ conversation = null }) => {
     const [newMessage, setNewMessage] = useState("");
@@ -28,6 +28,7 @@ const MessageInput = ({ conversation = null }) => {
     const [messageSending, setMessageSending] = useState(false);
     const [chosenFiles, setChosenFiles] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const { emit } = useEventBus();
 
     const onFileChange = (ev) => {
         
