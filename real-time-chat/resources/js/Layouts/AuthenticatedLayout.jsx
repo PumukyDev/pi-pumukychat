@@ -14,9 +14,9 @@ export default function Authenticated({ header, children }) {
     const user = page.props.auth.user;
     const conversations = page.props.conversations;
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
     const { emit } = useEventBus();
+
     useEffect(() => {
         conversations.forEach((conversation) => {
             let channel = `message.group.${conversation.id}`;
@@ -53,7 +53,18 @@ export default function Authenticated({ header, children }) {
                             }`,
                     });
                 });
+
+            if (conversation.is_group) {
+                window.Echo.private(`group.deleted.${conversation.id}`)
+                    .listen("GroupDeleted", (e) => {
+                        emit("group.deleted", { id: e.id, name: e.name });
+                    })
+                    .error((e) => {
+                        console.error(e);
+                    });
+            }
         });
+
         return () => {
             conversations.forEach((conversation) => {
                 let channel = `message.group.${conversation.id}`;
@@ -66,6 +77,10 @@ export default function Authenticated({ header, children }) {
                         .join("-")}`;
                 }
                 window.Echo.leave(channel);
+
+                if (conversation.is_group) {
+                    window.Echo.leave(`group.deleted.${conversation.id}`);
+                }
             });
         };
     }, [conversations]);
@@ -103,7 +118,6 @@ export default function Authenticated({ header, children }) {
                                                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                                                 >
                                                     {user.name}
-
                                                     <svg
                                                         className="ms-2 -me-0.5 h-4 w-4"
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -121,9 +135,7 @@ export default function Authenticated({ header, children }) {
                                         </Dropdown.Trigger>
 
                                         <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route("profile.edit")}
-                                            >
+                                            <Dropdown.Link href={route("profile.edit")}>
                                                 Profile
                                             </Dropdown.Link>
                                             <Dropdown.Link

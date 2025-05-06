@@ -16,8 +16,10 @@ const ConversationHeader = ({selectedConversation}) => {
             return;
         }
 
-        axios.delete(route("groups.destroy", selectedConversation.id)).then(() => {
-            console.log(res)
+        axios.delete(route("group.destroy", selectedConversation.id))
+            .then((res) => {
+                console.log(res)
+                emit("toast.show", res.data.message);
         }).catch((err) => {
             console.log(err)
         });
