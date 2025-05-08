@@ -4,23 +4,23 @@ import {
     MenuItem,
     MenuItems,
 } from "@headlessui/react";
-import { EllipsisVerticalIcon, ShieldCheckIcon, TrashIcon, UserIcon } from "@heroicons/react/24/solid";
+import { EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
 import { Fragment } from "react";
 import { useEventBus } from "@/EventBus";
 
-
 export default function MessageOptionsDropdown({ message }) {
-
     const { emit } = useEventBus();
 
+    // Function to delete a message
     const onMessageDelete = () => {
         console.log("Delete message");
 
         axios
             .delete(route("message.destroy", message.id))
             .then((res) => {
-                emit('message.deleted', {
+                // Emit event with both deleted and previous message
+                emit("message.deleted", {
                     message,
                     prevMessage: res.data.message,
                 });
@@ -31,30 +31,27 @@ export default function MessageOptionsDropdown({ message }) {
     };
 
     return (
-        <div className="absolute right-full text-gray-100 top-1/2 -translate-y-1/2 z-10">
+        // Dropdown wrapper, positioned beside the message
+        <div className="absolute right-full top-1/2 -translate-y-1/2 z-10">
             <Menu as="div" className="relative inline-block text-left">
                 <div>
-                    <MenuButton
-                        className={
-                            "flex justify-center items-center w-8 h-8 rounded-full hover:bg-black/40"
-                        }
-                    >
-                        <EllipsisVerticalIcon className="h-5 w-5" />
+                    {/* Trigger button: three vertical dots */}
+                    <MenuButton className="flex justify-center items-center w-8 h-8 rounded-full hover:bg-base-300">
+                        <EllipsisVerticalIcon className="h-5 w-5 text-base-content" />
                     </MenuButton>
                 </div>
-                <MenuItems
-                    transition
-                    className="absolute left-0 mt-2 w-48 rounded-md bg-gray-900 shadow-lg z-50"
-                >
-                    <div className="px-1 py-1 ">
+
+                {/* Dropdown content */}
+                <MenuItems className="absolute left-0 mt-2 w-48 rounded-md bg-base-200 border border-base-300 shadow-xl backdrop-blur z-50">
+                    <div className="px-1 py-1">
                         <MenuItem as={Fragment}>
                             {({ focus }) => (
                                 <button
                                     onClick={onMessageDelete}
                                     className={`${
                                         focus
-                                            ? "bg-black/30 text-white"
-                                            : "text-gray-100"
+                                            ? "bg-base-300 text-base-content"
+                                            : "text-base-content"
                                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                 >
                                     <TrashIcon className="w-4 h-4 mr-2" />

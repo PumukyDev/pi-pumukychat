@@ -6,11 +6,11 @@ import GroupDescriptionPopover from './GroupDescriptionPopover';
 import GroupUsersPopover from './GroupUsersPopover';
 import { useEventBus } from '@/EventBus';
 
-
 const ConversationHeader = ({selectedConversation}) => {
     const authUser = usePage().props.auth.user;
     const { emit } = useEventBus();
 
+    // Trigger group deletion with confirmation
     const onDeleteGroup = () => {
         if (!window.confirm("Are you sure you want to delete this group?")) {
             return;
@@ -19,7 +19,7 @@ const ConversationHeader = ({selectedConversation}) => {
         axios.delete(route("group.destroy", selectedConversation.id))
             .then((res) => {
                 console.log(res)
-                emit("toast.show", res.data.message);
+                emit("toast.show", res.data.message); // Notify user via toast
         }).catch((err) => {
             console.log(err)
         });
@@ -30,16 +30,20 @@ const ConversationHeader = ({selectedConversation}) => {
             {selectedConversation && (
                 <div className="p-3 flex justify-between items-center border-b border-slate-700">
                     <div className="flex items-center gap-3">
+                        {/* Back button on small screens */}
                         <Link
                             href={route("dashboard")}
                             className="inline-block sm:hidden"
                         >
                             <ArrowLeftIcon className="w-6" />
                         </Link>
+
+                        {/* Show avatar depending on conversation type */}
                         {selectedConversation.is_user && (
                             <UserAvatar user={selectedConversation} />
                         )}
                         {selectedConversation.is_group && <GroupAvatar />}
+
                         <div>
                             <h3>{selectedConversation.name}</h3>
                             {selectedConversation.is_group && (
@@ -49,6 +53,8 @@ const ConversationHeader = ({selectedConversation}) => {
                             )}
                         </div>
                     </div>
+
+                    {/* Group management options for owner */}
                     {selectedConversation.is_group && (
                         <div className='flex gap-3'>
                             <GroupDescriptionPopover
@@ -59,6 +65,7 @@ const ConversationHeader = ({selectedConversation}) => {
                             />
                             {selectedConversation.owner_id == authUser.id && (
                                 <>
+                                    {/* Edit group button */}
                                     <div
                                         className="tooltip tooltip-left"
                                         data-tip="Edit Group"
@@ -75,6 +82,8 @@ const ConversationHeader = ({selectedConversation}) => {
                                             <PencilSquareIcon className="w-4" />
                                         </button>
                                     </div>
+
+                                    {/* Delete group button */}
                                     <div
                                         className="tooltip tooltip-left"
                                         data-tip="Delete Group"
@@ -95,6 +104,5 @@ const ConversationHeader = ({selectedConversation}) => {
         </>
     );
 };
-
 
 export default ConversationHeader;

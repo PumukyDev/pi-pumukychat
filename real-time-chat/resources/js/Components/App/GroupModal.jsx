@@ -16,6 +16,7 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
     const { on, emit } = useEventBus();
     const [group, setGroup] = useState({});
 
+    // Form state
     const { data, setData, processing, reset, post, put, errors } = useForm({
         id: "",
         name: "",
@@ -23,8 +24,10 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
         user_ids: [],
     });
 
+    // List of non-group users
     const users = conversations.filter((c) => !c.is_group);
 
+    // Submit handler for create or update
     const createOrUpdateGroup = (e) => {
         e.preventDefault();
 
@@ -45,11 +48,13 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
         });
     };
 
+    // Reset and close modal
     const closeModal = () => {
         reset();
         onClose();
     };
 
+    // Listen to external event to open the modal and prefill data
     useEffect(() => {
         return on("GroupModal.show", (group) => {
             setGroup(group);
@@ -68,47 +73,45 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
         <Modal show={show} onClose={closeModal}>
             <form
                 onSubmit={createOrUpdateGroup}
-                className="p-6 overflow-y-auto"
+                className="p-6 bg-base-200 text-base-content overflow-y-auto rounded-lg"
             >
-                <h2 className="text-xl font-medium text-gray-900 dark:text-gray-100">
+                <h2 className="text-xl font-medium">
                     {group.id
                         ? `Edit Group "${group.name}"`
                         : "Create new Group"}
                 </h2>
 
+                {/* Name input */}
                 <div className="mt-8">
-                    <InputLabel htmlFor="name" value="Name" />
-
+                    <InputLabel htmlFor="name" value="Name" className="text-white"/>
                     <TextInput
                         id="name"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full bg-base-300"
                         value={data.name}
                         disabled={!!group.id}
                         onChange={(e) => setData("name", e.target.value)}
                         required
                         isFocused
                     />
-
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
+                {/* Description input */}
                 <div className="mt-4">
-                    <InputLabel htmlFor="description" value="Description" />
-
+                    <InputLabel htmlFor="description" value="Description" className="text-white"/>
                     <TextAreaInput
                         id="description"
                         rows="3"
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full bg-base-300"
                         value={data.description}
                         onChange={(e) => setData("description", e.target.value)}
                     />
-
                     <InputError className="mt-2" message={errors.description} />
                 </div>
 
+                {/* User selector */}
                 <div className="mt-4">
-                    <InputLabel value="Select Users" />
-
+                    <InputLabel value="Select Users" className="text-white"/>
                     <UserPicker
                         value={
                             users.filter(
@@ -125,15 +128,14 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
                             )
                         }
                     />
-
                     <InputError className="mt-2" message={errors.user_ids} />
                 </div>
 
+                {/* Action buttons */}
                 <div className="mt-6 flex justify-end">
                     <SecondaryButton onClick={closeModal}>
                         Cancel
                     </SecondaryButton>
-
                     <PrimaryButton className="ms-3" disabled={processing}>
                         {group.id ? "Update" : "Create"}
                     </PrimaryButton>

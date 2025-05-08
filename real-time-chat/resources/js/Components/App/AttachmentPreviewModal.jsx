@@ -14,34 +14,37 @@ const AttachmentPreviewModal = ({
     show = false,
     onClose = () => {},
 }) => {
+    // Tracks the current previewed attachment index
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    // Filters attachments to only include previewable ones (images, audio, etc.)
     const previewableAttachments = useMemo(() => {
         return attachments.filter((attachment) => isPreviewable(attachment));
     }, [attachments]);
 
+    // Gets the current attachment to show based on index
     const attachment = useMemo(() => {
         return previewableAttachments[currentIndex];
     }, [attachments, currentIndex]);
 
+    // Handles modal close action
     const close = () => {
         onClose();
     };
 
+    // Navigates to previous attachment
     const prev = () => {
-        if (currentIndex === 0) {
-            return;
-        }
+        if (currentIndex === 0) return;
         setCurrentIndex(currentIndex - 1);
     };
 
+    // Navigates to next attachment
     const next = () => {
-        if (currentIndex === previewableAttachments.length - 1) {
-            return;
-        }
+        if (currentIndex === previewableAttachments.length - 1) return;
         setCurrentIndex(currentIndex + 1);
     };
 
+    // Syncs external index prop with local state when modal is shown
     useEffect(() => {
         setCurrentIndex(index);
     }, [index]);
@@ -54,13 +57,16 @@ const AttachmentPreviewModal = ({
                         transition
                         className="flex flex-col w-full h-full transform overflow-hidden bg-white/5 p-6 backdrop-blur-2xl text-left align-middle shadow-xl transition-all"
                     >
+                        {/* Close button */}
                         <button
                             onClick={close}
                             className="absolute right-3 top-3 w-10 h-10 rounded-full hover:bg-black/10 transition flex items-center justify-center text-gray-100 z-40"
                         >
                             <XMarkIcon className="w-6 h-6" />
                         </button>
+
                         <div className="relative group h-full">
+                            {/* Left arrow navigation */}
                             {currentIndex > 0 && (
                                 <div
                                     onClick={prev}
@@ -69,6 +75,7 @@ const AttachmentPreviewModal = ({
                                     <ChevronLeftIcon className="w-12" />
                                 </div>
                             )}
+                            {/* Right arrow navigation */}
                             {currentIndex <
                                 previewableAttachments.length - 1 && (
                                 <div
@@ -79,6 +86,7 @@ const AttachmentPreviewModal = ({
                                 </div>
                             )}
 
+                            {/* Attachment preview area */}
                             {attachment && (
                                 <div className="flex items-center justify-center w-full h-full p-3">
                                     {isImage(attachment) && (
@@ -114,7 +122,6 @@ const AttachmentPreviewModal = ({
                                     {!isPreviewable(attachment) && (
                                         <div className="p-32 flex flex-col justify-center items-center text-gray-100">
                                             <PaperClipIcon className="w-10 h-10 mb-3" />
-
                                             <small>{attachment.name}</small>
                                         </div>
                                     )}

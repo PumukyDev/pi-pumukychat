@@ -12,6 +12,8 @@ const ConversationItem = ({
     const page = usePage();
     const currentUser = page.props.auth.user;
     let classes = "border-transparent";
+
+    // Format a human-readable date from last message
     function formatDate(conversationDate) {
         const now = new Date();
         const date = new Date(conversationDate);
@@ -25,17 +27,18 @@ const ConversationItem = ({
             });
         } else if (diffDays === 1) {
             return "Yesterday";
-        } else if(diffDays < 7){
+        } else if (diffDays < 7) {
             return `${diffDays} days ago`;
-        } else if(diffDays < 30){
+        } else if (diffDays < 30) {
             return `${Math.floor(diffDays / 7)} weeks ago`;
-        } else if(diffDays < 365){
+        } else if (diffDays < 365) {
             return `${Math.floor(diffDays / 30)} months ago`;
         } else {
             return `${Math.floor(diffDays / 365)} years ago`;
         }
     }
 
+    // Highlight the current conversation
     if (selectedConversation) {
         if (
             !selectedConversation.is_group &&
@@ -52,6 +55,7 @@ const ConversationItem = ({
             classes = "border-blue-500 bg-black/20";
         }
     }
+
     const formattedDate = formatDate(conversation.last_message_date);
 
     return (
@@ -68,10 +72,12 @@ const ConversationItem = ({
                 (conversation.is_user && currentUser.is_admin ? "pr-2" : "pr-4")
             }
         >
+            {/* Display avatar depending on conversation type */}
             {conversation.is_user && (
                 <UserAvatar user={conversation} online={online} />
             )}
             {conversation.is_group && <GroupAvatar group={conversation} />}
+
             <div
                 className={
                     `flex-1 text-xs max-w-full overflow-hidden ` +
@@ -80,6 +86,7 @@ const ConversationItem = ({
                         : "")
                 }
             >
+                {/* Conversation title and date */}
                 <div className="flex gap-1 justify-between items-center">
                     <h3 className="text-sm font-semibold overflow-hidden text-nowrap text-ellipsis">
                         {conversation.name}
@@ -90,12 +97,16 @@ const ConversationItem = ({
                         </span>
                     )}
                 </div>
+
+                {/* Preview of last message */}
                 {conversation.last_message && (
                     <p className="text-xs text-nowrap overflow-hidden text-ellipsis">
                         {conversation.last_message}
                     </p>
                 )}
             </div>
+
+            {/* Admin-only dropdown for user management */}
             {currentUser.is_admin && conversation.is_user && (
                 <UserOptionsDropdown conversation={conversation} />
             )}

@@ -5,12 +5,15 @@ import {
 } from "@heroicons/react/24/solid";
 import { isAudio, isImage, isPDF, isPreviewable, isVideo } from "@/helper";
 
+// Renders a preview of message attachments: images, videos, audio, PDFs, and others
 const MessageAttachments = ({ attachments, attachmentClick }) => {
     return (
         <>
             {attachments.length > 0 && (
+                // Container for all attachments
                 <div className="mt-2 flex flex-wrap justify-end gap-1">
                     {attachments.map((attachment, ind) => (
+                        // Each attachment wrapper
                         <div
                             onClick={(ev) => attachmentClick(attachments, ind)}
                             key={attachment.id}
@@ -21,6 +24,7 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     : "w-32 aspect-square bg-blue-100")
                             }
                         >
+                            {/* Download button (shown for all except audio) */}
                             {!isAudio(attachment) && (
                                 <a
                                     onClick={(ev) => ev.stopPropagation()}
@@ -31,6 +35,8 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     <ArrowDownCircleIcon className="w-4 h-4" />
                                 </a>
                             )}
+
+                            {/* Show image preview */}
                             {isImage(attachment) && (
                                 <img
                                     src={attachment.url}
@@ -38,6 +44,8 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     className="aspect-square object-contain"
                                 />
                             )}
+
+                            {/* Show video preview with overlay */}
                             {isVideo(attachment) && (
                                 <div className="relative flex justify-center items-center">
                                     <PlayCircleIcon className="z-20 absolute w-16 h-16 text-white opacity-70" />
@@ -45,6 +53,8 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     <video src={attachment.url}></video>
                                 </div>
                             )}
+
+                            {/* Audio player */}
                             {isAudio(attachment) && (
                                 <div className="relative flex justify-center items-center">
                                     <audio
@@ -53,6 +63,8 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     ></audio>
                                 </div>
                             )}
+
+                            {/* PDF viewer using iframe */}
                             {isPDF(attachment) && (
                                 <div className="relative flex justify-center items-center">
                                     <div className="absolute left-0 top-0 right-0 bottom-0"></div>
@@ -62,6 +74,8 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     ></iframe>
                                 </div>
                             )}
+
+                            {/* Generic file (not previewable) */}
                             {!isPreviewable(attachment) && (
                                 <a
                                     onClick={(ev) => ev.stopPropagation()}

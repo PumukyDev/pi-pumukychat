@@ -8,6 +8,7 @@ const CustomAudioPlayer = ({ file, showVolume = true }) => {
     const [duration, setDuration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
 
+    // Toggle play/pause
     const togglePlayPause = () => {
         const audio = audioRef.current;
         if (isPlaying) {
@@ -20,27 +21,32 @@ const CustomAudioPlayer = ({ file, showVolume = true }) => {
         setIsPlaying(!isPlaying);
     };
 
+    // Handle volume slider
     const handleVolumeChange = (e) => {
         const volume = e.target.value;
         audioRef.current.volume = volume;
         setVolume(volume);
     };
 
+    // Update currentTime during playback
     const handleTimeUpdate = (e) => {
         const audio = audioRef.current;
         setDuration(audio.duration);
         setCurrentTime(e.target.currentTime);
     };
 
+    // Get metadata once audio is loaded
     const handleLoadedMetadata = (e) => {
         setDuration(e.target.duration);
     };
 
+    // Seek audio position
     const handleSeekChange = (e) => {
         const time = e.target.value;
         audioRef.current.currentTime = time;
         setCurrentTime(time);
     };
+
     return (
         <div className="w-full flex items-center gap-2 py-2 px-3 rounded-md bg-slate-800">
             <audio

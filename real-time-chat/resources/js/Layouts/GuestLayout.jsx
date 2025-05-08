@@ -1,6 +1,7 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
 
+// Guest layout used for unauthenticated pages like login, register, and password reset
 export default function Guest({ children }) {
     return (
         <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">

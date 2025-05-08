@@ -4,9 +4,11 @@ import { Fragment } from 'react'
 
 export default function GroupDescriptionPopover({ description }) {
     return (
+        // Main popover container
         <Popover className="relative">
             {({ open }) => (
                 <>
+                    {/* Popover trigger button */}
                     <Popover.Button
                         className={`${
                             open ? "text-gray-200" : "text-gray-400"
@@ -14,6 +16,8 @@ export default function GroupDescriptionPopover({ description }) {
                     >
                         <ExclamationCircleIcon className="w-4" />
                     </Popover.Button>
+
+                    {/* Popover panel with transition */}
                     <Transition
                         as={Fragment}
                         enter="transition ease-out duration-200"
@@ -29,11 +33,15 @@ export default function GroupDescriptionPopover({ description }) {
                                     <h2 className="text-lg mb-3">
                                         Description
                                     </h2>
+
+                                    {/* Render description if available */}
                                     {description && (
                                         <div className="text-xs">
                                             {description}
                                         </div>
                                     )}
+
+                                    {/* Fallback message if no description */}
                                     {!description && (
                                         <div className="text-xs text-gray-500 text-center py-4">
                                             No description is defined.
@@ -47,4 +55,4 @@ export default function GroupDescriptionPopover({ description }) {
             )}
         </Popover>
     )
-    }
+}

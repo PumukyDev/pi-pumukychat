@@ -8,10 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
-
+    // Disables the default 'data' wrapper in the JSON response
     public static $wrap = false;
+
     /**
-     * Transform the resource into an array.
+     * Transforms the resource into an array.
      *
      * @return array<string, mixed>
      */
@@ -19,6 +20,7 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            // Generates a public URL for the avatar if it exists, otherwise, returns null
             'avatar_url' => $this->avatar ? Storage::url($this->avatar) : null,
             'name' => $this->name,
             'email' => $this->email,

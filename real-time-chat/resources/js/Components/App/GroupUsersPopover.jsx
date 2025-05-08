@@ -7,15 +7,19 @@ import { Link } from '@inertiajs/react'
 export default function GroupUsersPopover({ users = [] }) {
     return (
         <Popover className="relative">
+            {/* Popover render prop gives us the `open` state */}
             {({ open }) => (
                 <>
+                    {/* Button to toggle the popover */}
                     <Popover.Button
                         className={`${
                             open ? "text-gray-200" : "text-gray-400"
                         } hover:text-gray-200`}
                     >
-                       <UsersIcon className="w-4" />
+                        <UsersIcon className="w-4" />
                     </Popover.Button>
+
+                    {/* Animated panel with transition */}
                     <Transition
                         as={Fragment}
                         enter="transition ease-out duration-200"
@@ -25,9 +29,11 @@ export default function GroupUsersPopover({ users = [] }) {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 translate-y-1"
                     >
+                        {/* Popover content panel (user list) */}
                         <Popover.Panel className="absolute right-0 z-20 mt-3 w-[240px] px-4 sm:px-0">
                             <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
                                 <div className="bg-gray-800 p-2">
+                                    {/* List of users with avatars and names */}
                                     {users.map((user) => (
                                         <Link
                                             href={route("chat.user", user.id)}
@@ -48,4 +54,4 @@ export default function GroupUsersPopover({ users = [] }) {
             )}
         </Popover>
     )
-    }
+}

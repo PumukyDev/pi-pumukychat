@@ -5,8 +5,10 @@ const AudioRecorder = ({ fileReady }) => {
     const [mediaRecorder, setMediaRecorder] = useState(null);
     const [recording, setRecording] = useState(false);
 
+    // Handle click on microphone or stop icon
     const onMicrophoneClick = async () => {
         if (recording) {
+            // Stop recording
             setRecording(false);
             if (mediaRecorder) {
                 mediaRecorder.stop();
@@ -14,18 +16,24 @@ const AudioRecorder = ({ fileReady }) => {
             }
             return;
         }
+
+        // Start recording
         setRecording(true);
         try {
+            // Request access to microphone
             const stream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
             });
+
             const newMediaRecorder = new MediaRecorder(stream);
             const chunks = [];
 
+            // Save audio chunks as they are recorded
             newMediaRecorder.addEventListener("dataavailable", (event) => {
                 chunks.push(event.data);
             });
 
+            // When recording stops, create a File and notify parent
             newMediaRecorder.addEventListener("stop", () => {
                 let audioBlob = new Blob(chunks, {
                     type: "audio/ogg; codecs=opus",
@@ -36,9 +44,11 @@ const AudioRecorder = ({ fileReady }) => {
 
                 const url = URL.createObjectURL(audioFile);
 
+                // Send file and preview URL to parent
                 fileReady(audioFile, url);
             });
 
+            // Start recording
             newMediaRecorder.start();
             setMediaRecorder(newMediaRecorder);
         } catch (error) {
@@ -48,11 +58,12 @@ const AudioRecorder = ({ fileReady }) => {
     };
 
     return (
+        // Toggle button to start/stop recording
         <button
             onClick={onMicrophoneClick}
             className="p-1 text-gray-400 hover:text-gray-200"
         >
-            {recording && <StopCircleIcon className="w-6 text-red-600"/>}
+            {recording && <StopCircleIcon className="w-6 text-red-600" />}
             {!recording && <MicrophoneIcon className="w-6" />}
         </button>
     )

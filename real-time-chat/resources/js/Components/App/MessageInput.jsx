@@ -16,12 +16,13 @@ import {
     PopoverPanel,
     Transition,
 } from "@headlessui/react";
-import { isAudio, isImage,  } from "@/helper";
+import { isAudio, isImage } from "@/helper";
 import AttachmentPreview from "./AttachmentPreview";
 import CustomAudioPlayer from "./CustomAudioPlayer";
 import AudioRecorder from "./AudioRecorder";
 import { useEventBus } from "@/EventBus";
 
+// Main message input component for composing and sending chat messages
 const MessageInput = ({ conversation = null }) => {
     const [newMessage, setNewMessage] = useState("");
     const [inputErrorMessage, setInputErrorMessage] = useState("");
@@ -30,27 +31,29 @@ const MessageInput = ({ conversation = null }) => {
     const [uploadProgress, setUploadProgress] = useState(0);
     const { emit } = useEventBus();
 
+    // Handle file input (both generic and image-only)
     const onFileChange = (ev) => {
-        
         const files = ev.target.files;
         const updatedFiles = [...files].map((file) => {
             return {
                 file: file,
-                url: URL.createObjectURL(file),
+                url: URL.createObjectURL(file), // Used for previews
             };
         });
-        
 
-        setChosenFiles((prevFiles) => {            
+        setChosenFiles((prevFiles) => {
             return [...prevFiles, ...updatedFiles];
         });
     };
 
+    // Handles message sending logic with validation and upload
     const onSend = () => {
-        emit('toast.show', 'Message sent successfully')
+        emit('toast.show', 'Message sent successfully');
+
         if (messageSending) {
             return;
         }
+
         if (newMessage.trim() === "" && chosenFiles.length === 0) {
             setInputErrorMessage("Please type a message or attach a file");
             setTimeout(() => {
@@ -58,17 +61,22 @@ const MessageInput = ({ conversation = null }) => {
             }, 3000);
             return;
         }
+
         const formData = new FormData();
         chosenFiles.forEach((file) => {
-            formData.append("attachments[]", file.file);  
+            formData.append("attachments[]", file.file);
         });
         formData.append("message", newMessage);
+
         if (conversation.is_user) {
             formData.append("receiver_id", conversation.id);
         } else if (conversation.is_group) {
             formData.append("group_id", conversation.id);
         }
+
         setMessageSending(true);
+
+        // Post message with attachment upload progress
         axios
             .post(route("message.store"), formData, {
                 onUploadProgress: (progressEvent) => {
@@ -95,27 +103,31 @@ const MessageInput = ({ conversation = null }) => {
             });
     };
 
+    // Sends a quick thumbs up as a message
     const onLikeClick = () => {
         if (messageSending) {
             return;
         }
-        const data = {
-            message: "👍",
-        };
+
+        const data = { message: "👍" };
+
         if (conversation.is_user) {
             data["receiver_id"] = conversation.id;
         } else if (conversation.is_group) {
             data["group_id"] = conversation.id;
         }
+
         axios.post(route("message.store"), data);
     };
 
+    // Called when an audio file is recorded and ready
     const recordedAudioReady = (file, url) => {
-        setChosenFiles((prevFiles) => [...prevFiles,{file,url}]);
+        setChosenFiles((prevFiles) => [...prevFiles, { file, url }]);
     };
 
     return (
         <div className="flex flex-wrap items-start border-t border-slate-700 py-3">
+            {/* Left buttons: file, image, and audio upload */}
             <div className="order-2 flex-1 xs:flex-none xs:order-1 p-2">
                 <button className="p-1 text-gray-400 hover:text-gray-300 relative">
                     <PaperClipIcon className="w-6" />
@@ -138,6 +150,8 @@ const MessageInput = ({ conversation = null }) => {
                 </button>
                 <AudioRecorder fileReady={recordedAudioReady} />
             </div>
+
+            {/* Center area: message input + send button + file previews */}
             <div className="order-1 px-3 xs:p-0 min-w-[220px] basis-full xs:basis-0 xs:order-2 flex-1 relative">
                 <div className="flex">
                     <NewMessageInput
@@ -157,6 +171,7 @@ const MessageInput = ({ conversation = null }) => {
                         <span className="hidden sm:inline">Send</span>
                     </button>
                 </div>
+
                 {!!uploadProgress && (
                     <progress
                         className="progress progress-info w-full"
@@ -164,9 +179,12 @@ const MessageInput = ({ conversation = null }) => {
                         max="100"
                     ></progress>
                 )}
+
                 {inputErrorMessage && (
                     <p className="text-xs text-red-400">{inputErrorMessage}</p>
                 )}
+
+                {/* Preview of selected files */}
                 <div className="flex flex-wrap gap-1 mt-2">
                     {chosenFiles.map((file) => (
                         <div
@@ -209,6 +227,8 @@ const MessageInput = ({ conversation = null }) => {
                     ))}
                 </div>
             </div>
+
+            {/* Right: emoji picker and thumbs up */}
             <div className="order-3 xs:order-3 p-2 flex">
                 <Popover className="relative">
                     <PopoverButton className="p-1 text-gray-400 hover:text-gray-300">

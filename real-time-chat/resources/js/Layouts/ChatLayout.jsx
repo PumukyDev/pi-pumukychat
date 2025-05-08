@@ -7,17 +7,22 @@ import { router, usePage } from "@inertiajs/react";
 import React, { useEffect, useState } from "react";
 
 const ChatLayout = ({ children }) => {
+    // Access global page props from Inertia
     const page = usePage();
     const conversations = page.props.conversations;
     const selectedConversation = page.props.selectedConversation;
+
+    // State for online users, filtered conversations, and UI
     const [onlineUsers, setOnlineUsers] = useState({});
     const [localConversations, setLocalConversations] = useState([]);
     const [sortedConversations, setSortedConversations] = useState([]);
     const [showGroupModal, setShowGroupModal] = useState(false);
     const { emit, on } = useEventBus();
 
+    // Helper to check if a user is online
     const isUserOnline = (userId) => onlineUsers[userId];
 
+    // Filters conversations based on search input
     const onSearch = (ev) => {
         const search = ev.target.value.toLowerCase();
         setLocalConversations(
@@ -26,6 +31,8 @@ const ChatLayout = ({ children }) => {
             })
         );
     };
+
+    // Handles a new message: updates last message info in the correct conversation
     const messageCreated = (message) => {
         setLocalConversations((oldUsers) => {
             return oldUsers.map((u) => {
@@ -52,15 +59,17 @@ const ChatLayout = ({ children }) => {
         });
     };
 
+    // Handles message deletion by using the previous message to update the UI
     const messageDeleted = ({ prevMessage }) => {
         if (!prevMessage) {
             return;
         }
 
-        // Find the conversation by prevMessage and updated its last_message_id and date
+        // Reuse the messageCreated logic to update last message
         messageCreated(prevMessage);
     };
 
+    // Subscribes to EventBus events and socket events
     useEffect(() => {
         const offCreated = on("message.created", messageCreated);
         const offDeleted = on("message.deleted", messageDeleted);
@@ -70,7 +79,7 @@ const ChatLayout = ({ children }) => {
 
         const offGroupDelete = on("group.deleted", ({id, name}) => {
             setLocalConversations((oldConversations) => {
-                return oldConversations.filger((con) => con.id != id);
+                return oldConversations.filter((con) => con.id != id);
             });
 
             emit('toast.show', `Group "${name}" was deleted`);
@@ -86,6 +95,7 @@ const ChatLayout = ({ children }) => {
             }
         })
 
+        // Cleanup event listeners on unmount
         return () => {
             offCreated();
             offDeleted();
@@ -94,6 +104,7 @@ const ChatLayout = ({ children }) => {
         };
     }, [on]);
 
+    // Sort conversations based on blocked status and last message date
     useEffect(() => {
         setSortedConversations(
             localConversations.sort((a, b) => {
@@ -120,10 +131,12 @@ const ChatLayout = ({ children }) => {
         );
     }, [localConversations]);
 
+    // Update localConversations state when original conversations change
     useEffect(() => {
         setLocalConversations(conversations);
     }, [conversations]);
 
+    // Join the "online" Echo channel and update online users in real-time
     useEffect(() => {
         Echo.join("online")
             .here((users) => {
@@ -152,6 +165,7 @@ const ChatLayout = ({ children }) => {
                 console.error("Error:", error);
             });
 
+        // Leave channel on unmount
         return () => {
             Echo.leave("online");
         };
@@ -160,18 +174,19 @@ const ChatLayout = ({ children }) => {
     return (
         <>
             <div className="flex-1 w-full flex overflow-hidden">
+                {/* Sidebar with conversations list */}
                 <div
-                    className={`transition-all w-full sm:w-[220px] md:w-[300px] bg-slate-800 flex flex-col overflow-hidden ${
+                    className={`transition-all w-full sm:w-[220px] md:w-[300px] bg-base-200 text-base-content flex flex-col overflow-hidden ${
                         selectedConversation ? "-ml-[100%] sm:ml-0" : ""
                     }`}
                 >
-                    <div className="flex items-center justify-between py-2 px-3 text-xl font-medium text-gray-200">
+                    <div className="flex items-center justify-between py-2 px-3 text-xl font-medium">
                         My Conversations
                         <div
                             className="tooltip tooltip-left"
                             data-tip="Create new Group"
                         >
-                            <button onClick={ev => setShowGroupModal(true)} className="text-gray-400 hover:text-gray-200">
+                            <button onClick={ev => setShowGroupModal(true)} className="text-base-content hover:text-primary">
                                 <PencilSquareIcon className="h-4 w-4 inline-block ml-2" />
                             </button>
                         </div>
@@ -180,7 +195,7 @@ const ChatLayout = ({ children }) => {
                         <TextInput
                             onKeyUp={onSearch}
                             placeholder="Filter users and groups"
-                            className="w-full"
+                            className="w-full bg-base-100 text-base-content"
                         />
                     </div>
                     <div className="flex-1 overflow-auto">
@@ -199,13 +214,17 @@ const ChatLayout = ({ children }) => {
                             ))}
                     </div>
                 </div>
+
+                {/* Main conversation panel */}
                 <div className="flex-1 flex flex-col overflow-hidden">
                     {children}
                 </div>
             </div>
+
+            {/* Modal for creating new groups */}
             <GroupModal
                 show={showGroupModal}
-                onCLose={() => setShowGroupModal(false)}
+                onClose={() => setShowGroupModal(false)}
             />
         </>
     );

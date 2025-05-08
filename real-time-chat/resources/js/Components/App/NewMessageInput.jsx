@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from "react";
 
 const NewMessageInput = ({ value, onChange, onSend }) => {
     const input = useRef();
+
+    // Handle Enter key to send message (Shift+Enter inserts newline)
     const onInputKeyDown = (ev) => {
         if (ev.key === "Enter" && !ev.shiftKey) {
             ev.preventDefault();
@@ -9,6 +11,7 @@ const NewMessageInput = ({ value, onChange, onSend }) => {
         }
     };
 
+    // Trigger height adjustment after change
     const onChangeEvent = (ev) => {
         setTimeout(() => {
             adjustHeight();
@@ -16,6 +19,7 @@ const NewMessageInput = ({ value, onChange, onSend }) => {
         onChange(ev);
     };
 
+    // Dynamically resize textarea height based on content
     const adjustHeight = () => {
         setTimeout(() => {
             input.current.style.height = "auto";
@@ -23,6 +27,7 @@ const NewMessageInput = ({ value, onChange, onSend }) => {
         }, 100);
     };
 
+    // Adjust height on initial render or when value changes
     useEffect(() => {
         adjustHeight();
     }, [value]);
