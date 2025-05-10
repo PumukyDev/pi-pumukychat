@@ -1,0 +1,22 @@
+flowchart TD
+    A[Usuario]
+    B[Interfaz React - Vite y Tailwind CSS]
+    C[Laravel API - Sanctum y Broadcasting]
+    D[Base de Datos MySQL]
+    E[phpMyAdmin]
+    H[Laravel Echo Server - WebSocket]
+
+    A --> B
+    B -->|REST API| C
+    B -- WebSocket --> H
+    H -->|Eventos Broadcast| C
+    C --> D
+    E --> D
+
+    subgraph Contenedores Docker
+        B
+        C
+        D
+        E
+        H
+    end
