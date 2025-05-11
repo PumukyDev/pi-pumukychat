@@ -15,6 +15,7 @@ services:
       - db
     networks:
       - mysql-network
+      - proxy-network
     platform: linux/arm64
 
   db:
@@ -53,6 +54,7 @@ services:
       - db
     networks:
       - mysql-network
+      - proxy-network
     platform: linux/arm64
 
   phpmyadmin:
@@ -78,3 +80,5 @@ volumes:
 networks:
   mysql-network:
     driver: bridge
+  proxy-network:
+    external: true
