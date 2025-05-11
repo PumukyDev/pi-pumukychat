@@ -2,24 +2,24 @@ services:
   app:
     container_name: blog
     build:
-      context: ./php
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./php/Dockerfile
     restart: unless-stopped
-    volumes:
-      - ./src:/var/www
     ports:
       - "9000:9000"
+      - "6001:6001"
     working_dir: /var/www
+    volumes:
+      - ./src:/var/www
     depends_on:
       - db
-      - redis
     networks:
       - mysql-network
     platform: linux/arm64
 
   db:
     image: mariadb:latest
-    container_name: mysql-container
+    container_name: database_chat
     restart: unless-stopped
     tty: true
     ports:
@@ -40,13 +40,14 @@ services:
     container_name: nginx_chat
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "8090:80"
+      - "8081:8081"
+      - "8082:8082"
+      - "4433:443"
     volumes:
       - ./src:/var/www
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/certs/:/etc/nginx/certs/
     depends_on:
       - app
       - db
@@ -72,6 +73,7 @@ services:
 
 volumes:
   db-data:
+  app-src:
 
 networks:
   mysql-network:
