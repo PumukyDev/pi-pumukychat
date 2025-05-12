@@ -77,11 +77,13 @@ class MessageController extends Controller
         $receiverId = $data['receiver_id'] ?? null;
         $groupId = $data['group_id'] ?? null;
         $files = $data['attachments'] ?? [];
+
+        // Only store the encrypted message
         $message = Message::create($data);
 
         $attachments = [];
-        if($files){
-            foreach($files as $file){
+        if ($files) {
+            foreach ($files as $file) {
                 $directory = 'attachments/' . Str::random(32);
                 Storage::makeDirectory($directory);
 
@@ -97,17 +99,26 @@ class MessageController extends Controller
             }
             $message->attachments = $attachments;
         }
-        if($receiverId){
+
+        if ($receiverId) {
             Conversation::updateConversationWithMessage($receiverId, auth()->id(), $message);
         }
-        if($groupId){
+
+        if ($groupId) {
             Group::updateGroupWithMessage($groupId, $message);
         }
 
-        SocketMessage::dispatch($message);  
+        // Emit plain message, not the encrypted one
+        $messageToEmit = clone $message;
+        if ($request->has('plain_message')) {
+            $messageToEmit->message = $request->input('plain_message');
+        }
+
+        SocketMessage::dispatch($messageToEmit);
 
         return new MessageResource($message);
     }
+
 
     public function destroy(Message $message)
     {

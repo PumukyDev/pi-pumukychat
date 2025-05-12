@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
+use App\Models\User;
 
 // Routes requiring authentication and email verification
 Route::middleware(['auth', 'verified'])->group(function() {
@@ -32,6 +33,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth')->get('/api/users/{user}/public-key', function (User $user) {
+    if (!$user->public_key) {
+        return response('No public key found for this user.', 404);
+    }
+    return response($user->public_key, 200)->header('Content-Type', 'text/plain');
 });
 
 // Authentication routes (login, register, etc.)

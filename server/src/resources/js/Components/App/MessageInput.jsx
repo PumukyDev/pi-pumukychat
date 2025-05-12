@@ -22,8 +22,7 @@ import CustomAudioPlayer from "./CustomAudioPlayer";
 import AudioRecorder from "./AudioRecorder";
 import { useEventBus } from "@/EventBus";
 
-// Main message input component for composing and sending chat messages
-const MessageInput = ({ conversation = null }) => {
+export default function MessageInput({ conversation = null }) {
     const [newMessage, setNewMessage] = useState("");
     const [inputErrorMessage, setInputErrorMessage] = useState("");
     const [messageSending, setMessageSending] = useState(false);
@@ -31,83 +30,101 @@ const MessageInput = ({ conversation = null }) => {
     const [uploadProgress, setUploadProgress] = useState(0);
     const { emit } = useEventBus();
 
-    // Handle file input (both generic and image-only)
     const onFileChange = (ev) => {
         const files = ev.target.files;
-        const updatedFiles = [...files].map((file) => {
-            return {
-                file: file,
-                url: URL.createObjectURL(file), // Used for previews
-            };
-        });
-
-        setChosenFiles((prevFiles) => {
-            return [...prevFiles, ...updatedFiles];
-        });
+        const updatedFiles = [...files].map((file) => ({
+            file: file,
+            url: URL.createObjectURL(file),
+        }));
+        setChosenFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
     };
 
-    // Handles message sending logic with validation and upload
-    const onSend = () => {
-        emit('toast.show', 'Message sent successfully');
+    async function fetchPublicKeyPem(userId) {
+        const res = await fetch(`/api/users/${userId}/public-key`);
+        return await res.text();
+    }
 
-        if (messageSending) {
-            return;
-        }
+    async function importPublicKey(pem) {
+        const b64 = pem
+            .replace('-----BEGIN PUBLIC KEY-----', '')
+            .replace('-----END PUBLIC KEY-----', '')
+            .replace(/\n/g, '');
+        const binary = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        return crypto.subtle.importKey(
+            'spki',
+            binary.buffer,
+            { name: 'RSA-OAEP', hash: 'SHA-256' },
+            true,
+            ['encrypt']
+        );
+    }
+
+    async function encryptMessage(plainText, publicKey) {
+        const encoded = new TextEncoder().encode(plainText);
+        const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, encoded);
+        return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+    }
+
+    const onSend = async () => {
+        if (messageSending) return;
 
         if (newMessage.trim() === "" && chosenFiles.length === 0) {
             setInputErrorMessage("Please type a message or attach a file");
-            setTimeout(() => {
-                setInputErrorMessage("");
-            }, 3000);
+            setTimeout(() => setInputErrorMessage(""), 3000);
             return;
-        }
-
-        const formData = new FormData();
-        chosenFiles.forEach((file) => {
-            formData.append("attachments[]", file.file);
-        });
-        formData.append("message", newMessage);
-
-        if (conversation.is_user) {
-            formData.append("receiver_id", conversation.id);
-        } else if (conversation.is_group) {
-            formData.append("group_id", conversation.id);
         }
 
         setMessageSending(true);
 
-        // Post message with attachment upload progress
-        axios
-            .post(route("message.store"), formData, {
+        try {
+            let encryptedMessage = newMessage;
+
+            if (conversation.is_user) {
+                const publicKeyPem = await fetchPublicKeyPem(conversation.id);
+                const publicKey = await importPublicKey(publicKeyPem);
+                encryptedMessage = await encryptMessage(newMessage, publicKey);
+            }
+
+            const formData = new FormData();
+            chosenFiles.forEach((file) => {
+                formData.append("attachments[]", file.file);
+            });
+            formData.append("message", encryptedMessage); // for DB
+            formData.append("plain_message", newMessage); // for WebSocket
+
+            if (conversation.is_user) {
+                formData.append("receiver_id", conversation.id);
+            } else if (conversation.is_group) {
+                formData.append("group_id", conversation.id);
+            }
+
+            axios.post(route("message.store"), formData, {
                 onUploadProgress: (progressEvent) => {
-                    const progress = Math.round(
-                        (progressEvent.loaded / progressEvent.total) * 100
-                    );
-                    console.log(progress);
+                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
                     setUploadProgress(progress);
                 },
-            })
-            .then((response) => {
+            }).then(() => {
                 setNewMessage("");
                 setMessageSending(false);
                 setUploadProgress(0);
                 setChosenFiles([]);
-            })
-            .catch((error) => {
+                emit('toast.show', 'Message sent successfully');
+            }).catch((error) => {
                 setMessageSending(false);
                 setChosenFiles([]);
-                const message = error?.response?.data?.message;
                 setInputErrorMessage(
-                    message || "An error occurred while sending the message"
+                    error?.response?.data?.message || "An error occurred while sending the message"
                 );
             });
+
+        } catch (err) {
+            console.error('❌ Encryption failed', err);
+            setMessageSending(false);
+        }
     };
 
-    // Sends a quick thumbs up as a message
     const onLikeClick = () => {
-        if (messageSending) {
-            return;
-        }
+        if (messageSending) return;
 
         const data = { message: "👍" };
 
@@ -120,38 +137,24 @@ const MessageInput = ({ conversation = null }) => {
         axios.post(route("message.store"), data);
     };
 
-    // Called when an audio file is recorded and ready
     const recordedAudioReady = (file, url) => {
         setChosenFiles((prevFiles) => [...prevFiles, { file, url }]);
     };
 
     return (
         <div className="flex flex-wrap items-start border-t border-slate-700 py-3">
-            {/* Left buttons: file, image, and audio upload */}
             <div className="order-2 flex-1 xs:flex-none xs:order-1 p-2">
                 <button className="p-1 text-gray-400 hover:text-gray-300 relative">
                     <PaperClipIcon className="w-6" />
-                    <input
-                        type="file"
-                        multiple
-                        onChange={onFileChange}
-                        className="absolute left-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer"
-                    />
+                    <input type="file" multiple onChange={onFileChange} className="absolute left-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer" />
                 </button>
                 <button className="p-1 text-gray-400 hover:text-gray-300 relative">
                     <PhotoIcon className="w-6" />
-                    <input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={onFileChange}
-                        className="absolute left-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer"
-                    />
+                    <input type="file" multiple accept="image/*" onChange={onFileChange} className="absolute left-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer" />
                 </button>
                 <AudioRecorder fileReady={recordedAudioReady} />
             </div>
 
-            {/* Center area: message input + send button + file previews */}
             <div className="order-1 px-3 xs:p-0 min-w-[220px] basis-full xs:basis-0 xs:order-2 flex-1 relative">
                 <div className="flex">
                     <NewMessageInput
@@ -159,68 +162,39 @@ const MessageInput = ({ conversation = null }) => {
                         onSend={onSend}
                         onChange={(ev) => setNewMessage(ev.target.value)}
                     />
-                    <button
-                        onClick={onSend}
-                        disabled={messageSending}
-                        className="btn btn-info rounded-l-none"
-                    >
-                        {messageSending && (
-                            <span className="loading loading-spinner loading-xs"></span>
-                        )}
+                    <button onClick={onSend} disabled={messageSending} className="btn btn-info rounded-l-none">
+                        {messageSending && <span className="loading loading-spinner loading-xs"></span>}
                         <PaperAirplaneIcon className="w-6" />
                         <span className="hidden sm:inline">Send</span>
                     </button>
                 </div>
 
                 {!!uploadProgress && (
-                    <progress
-                        className="progress progress-info w-full"
-                        value={uploadProgress}
-                        max="100"
-                    ></progress>
+                    <progress className="progress progress-info w-full" value={uploadProgress} max="100"></progress>
                 )}
 
                 {inputErrorMessage && (
                     <p className="text-xs text-red-400">{inputErrorMessage}</p>
                 )}
 
-                {/* Preview of selected files */}
                 <div className="flex flex-wrap gap-1 mt-2">
                     {chosenFiles.map((file) => (
-                        <div
-                            key={file.file.name}
-                            className={
-                                `relative justify-between cursor-pointer ` +
-                                (!isImage(file.file) ? "w-[240px]" : "")
-                            }
-                        >
+                        <div key={file.file.name} className={
+                            "relative justify-between cursor-pointer " +
+                            (!isImage(file.file) ? "w-[240px]" : "")
+                        }>
                             {isImage(file.file) && (
-                                <img
-                                    src={file.url}
-                                    alt="Smiley face"
-                                    className="w-16 h-16 object-cover"
-                                />
+                                <img src={file.url} alt="Preview" className="w-16 h-16 object-cover" />
                             )}
                             {isAudio(file.file) && (
-                                <CustomAudioPlayer
-                                    file={file}
-                                    showVolume={false}
-                                />
+                                <CustomAudioPlayer file={file} showVolume={false} />
                             )}
                             {!isAudio(file.file) && !isImage(file.file) && (
                                 <AttachmentPreview file={file} />
                             )}
-                            <button
-                                onClick={() => {
-                                    setChosenFiles(
-                                        chosenFiles.filter(
-                                            (f) =>
-                                                f.file.name !== file.file.name
-                                        )
-                                    );
-                                }}
-                                className="absolute w-6 h-6 rounded-full bg-gray-800 -right-2 -top-2 text-gray-300 hover:text-gray-100 z-10"
-                            >
+                            <button onClick={() => {
+                                setChosenFiles(chosenFiles.filter(f => f.file.name !== file.file.name));
+                            }} className="absolute w-6 h-6 rounded-full bg-gray-800 -right-2 -top-2 text-gray-300 hover:text-gray-100 z-10">
                                 <XCircleIcon className="w-6" />
                             </button>
                         </div>
@@ -228,33 +202,22 @@ const MessageInput = ({ conversation = null }) => {
                 </div>
             </div>
 
-            {/* Right: emoji picker and thumbs up */}
             <div className="order-3 xs:order-3 p-2 flex">
                 <Popover className="relative">
                     <PopoverButton className="p-1 text-gray-400 hover:text-gray-300">
                         <FaceSmileIcon className="w-6 h-6" />
                     </PopoverButton>
-                    <PopoverPanel
-                        transition
-                        className="absolute z-10 right-0 bottom-full"
-                    >
+                    <PopoverPanel transition className="absolute z-10 right-0 bottom-full">
                         <EmojiPicker
                             theme="dark"
-                            onEmojiClick={(ev) =>
-                                setNewMessage(newMessage + ev.emoji)
-                            }
-                        ></EmojiPicker>
+                            onEmojiClick={(ev) => setNewMessage(newMessage + ev.emoji)}
+                        />
                     </PopoverPanel>
                 </Popover>
-                <button
-                    onClick={onLikeClick}
-                    className="p-1 text-gray-400 hover:text-gray-300"
-                >
+                <button onClick={onLikeClick} className="p-1 text-gray-400 hover:text-gray-300">
                     <HandThumbUpIcon className="w-6 h-6" />
                 </button>
             </div>
         </div>
     );
-};
-
-export default MessageInput;
+}

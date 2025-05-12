@@ -2,13 +2,13 @@
 
 namespace App\Http\Resources;
 
-use App\Models\MessageAttachment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MessageResource extends JsonResource
 {
     public static $wrap = false;
+
     /**
      * Transform the resource into an array.
      *
@@ -16,6 +16,8 @@ class MessageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->loadMissing(['sender', 'attachments']);
+
         return [
             'id' => $this->id,
             'message' => $this->message,
