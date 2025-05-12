@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email_verified_at',
         'password',
         'is_admin',
+        'public_key',
     ];
 
     /**
