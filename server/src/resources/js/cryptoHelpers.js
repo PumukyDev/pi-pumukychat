@@ -1,11 +1,6 @@
-// resources/js/cryptoHelpers.js
-
 const DB_NAME = 'SecureChatKeys';
 const STORE_NAME = 'keys';
 
-/**
- * Converts a PEM-encoded string to an ArrayBuffer.
- */
 export function pemToArrayBuffer(pem) {
     const base64 = pem
         .replace(/-----BEGIN .*-----/, '')
@@ -20,9 +15,6 @@ export function pemToArrayBuffer(pem) {
     return buffer;
 }
 
-/**
- * Converts an ArrayBuffer to a PEM-formatted string.
- */
 export function arrayBufferToPem(buffer, label) {
     const binary = String.fromCharCode(...new Uint8Array(buffer));
     const base64 = btoa(binary);
@@ -30,9 +22,6 @@ export function arrayBufferToPem(buffer, label) {
     return `-----BEGIN ${label}-----\n${lines.join('\n')}\n-----END ${label}-----`;
 }
 
-/**
- * Store the private key PEM in IndexedDB under the 'SecureChatKeys' database.
- */
 export function storePrivateKeyPem(pem) {
     const request = indexedDB.open(DB_NAME, 1);
 
@@ -56,9 +45,6 @@ export function storePrivateKeyPem(pem) {
     };
 }
 
-/**
- * Load and import the private RSA key from IndexedDB.
- */
 export function loadPrivateKey() {
     return new Promise((resolve, reject) => {
         const request = indexedDB.open(DB_NAME, 1);
@@ -113,9 +99,6 @@ export function loadPrivateKey() {
     });
 }
 
-/**
- * Decrypt AES key using the RSA private key.
- */
 export async function decryptAESKeyWithPrivateKey(encryptedBase64, privateKey) {
     const encryptedBuffer = Uint8Array.from(atob(encryptedBase64), c => c.charCodeAt(0));
     const aesKeyBuffer = await window.crypto.subtle.decrypt(
@@ -134,8 +117,21 @@ export async function decryptAESKeyWithPrivateKey(encryptedBase64, privateKey) {
 }
 
 /**
+ * Converts base64 to Uint8Array with validation.
+ */
+function base64ToUint8Array(base64) {
+    try {
+        const binary = atob(base64);
+        return Uint8Array.from(binary, c => c.charCodeAt(0));
+    } catch (e) {
+        console.error("❌ Invalid base64 data:", base64);
+        throw e;
+    }
+}
+
+/**
  * Decrypts a base64-encoded AES-encrypted message.
- * Assumes IV is prepended to the ciphertext (first 12 bytes).
+ * Assumes the format: iv:content (both base64).
  */
 export async function decryptMessageAES(encryptedBase64, aesKey) {
     console.debug("🔐 decryptMessageAES() input:", encryptedBase64);
@@ -146,11 +142,14 @@ export async function decryptMessageAES(encryptedBase64, aesKey) {
 
     const [ivB64, contentB64] = encryptedBase64.split(":");
 
-    const iv = Uint8Array.from(atob(ivB64), c => c.charCodeAt(0));
-    const ciphertext = Uint8Array.from(atob(contentB64), c => c.charCodeAt(0));
+    if (!ivB64 || !contentB64) {
+        throw new Error("Invalid encrypted message format. IV or content missing.");
+    }
 
-    console.debug("🔐 IV (base64):", ivB64, "IV (bytes):", iv);
-    console.debug("🔐 Ciphertext (base64):", contentB64);
+    const iv = base64ToUint8Array(ivB64);
+    const ciphertext = base64ToUint8Array(contentB64);
+
+    console.debug("🔐 Decryption attempt → IV:", iv, "Ciphertext length:", ciphertext.length);
 
     const decryptedBuffer = await window.crypto.subtle.decrypt(
         {
@@ -161,5 +160,7 @@ export async function decryptMessageAES(encryptedBase64, aesKey) {
         ciphertext
     );
 
-    return new TextDecoder().decode(decryptedBuffer);
+    const decryptedText = new TextDecoder().decode(decryptedBuffer);
+    console.debug("✅ Decrypted message:", decryptedText);
+    return decryptedText;
 }

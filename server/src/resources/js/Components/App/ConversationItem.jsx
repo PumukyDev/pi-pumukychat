@@ -1,8 +1,14 @@
+import { useEffect, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import UserAvatar from "./UserAvatar";
 import GroupAvatar from "./GroupAvatar";
 import UserOptionsDropdown from "./UserOptionsDropdown";
 import { formatMessageDateShort } from "@/helper";
+import {
+    loadPrivateKey,
+    decryptAESKeyWithPrivateKey,
+    decryptMessageAES,
+} from "@/cryptoHelpers";
 
 const ConversationItem = ({
     conversation,
@@ -11,9 +17,10 @@ const ConversationItem = ({
 }) => {
     const page = usePage();
     const currentUser = page.props.auth.user;
+    const [preview, setPreview] = useState("...");
+
     let classes = "border-transparent";
 
-    // Format a human-readable date from last message
     function formatDate(conversationDate) {
         const now = new Date();
         const date = new Date(conversationDate);
@@ -21,10 +28,7 @@ const ConversationItem = ({
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays === 0) {
-            return date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-            });
+            return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
         } else if (diffDays === 1) {
             return "Yesterday";
         } else if (diffDays < 7) {
@@ -38,7 +42,6 @@ const ConversationItem = ({
         }
     }
 
-    // Highlight the current conversation
     if (selectedConversation) {
         if (
             !selectedConversation.is_group &&
@@ -58,6 +61,32 @@ const ConversationItem = ({
 
     const formattedDate = formatDate(conversation.last_message_date);
 
+    useEffect(() => {
+        const decryptPreview = async () => {
+            if (
+                conversation.last_message &&
+                conversation.last_message_encrypted_key
+            ) {
+                try {
+                    const privateKey = await loadPrivateKey();
+                    const aesKey = await decryptAESKeyWithPrivateKey(
+                        conversation.last_message_encrypted_key,
+                        privateKey
+                    );
+                    const plaintext = await decryptMessageAES(conversation.last_message, aesKey);
+                    setPreview(plaintext);
+                } catch (err) {
+                    console.error("❌ Failed to decrypt sidebar message:", err);
+                    setPreview("[Decryption failed]");
+                }
+            } else {
+                setPreview(conversation.last_message || "");
+            }
+        };
+
+        decryptPreview();
+    }, [conversation]);
+
     return (
         <Link
             href={
@@ -72,21 +101,15 @@ const ConversationItem = ({
                 (conversation.is_user && currentUser.is_admin ? "pr-2" : "pr-4")
             }
         >
-            {/* Display avatar depending on conversation type */}
-            {conversation.is_user && (
-                <UserAvatar user={conversation} online={online} />
-            )}
+            {conversation.is_user && <UserAvatar user={conversation} online={online} />}
             {conversation.is_group && <GroupAvatar group={conversation} />}
 
             <div
                 className={
-                    `flex-1 text-xs max-w-full overflow-hidden ` +
-                    (conversation.is_user && conversation.blocked_at
-                        ? "opacity-50"
-                        : "")
+                    "flex-1 text-xs max-w-full overflow-hidden " +
+                    (conversation.is_user && conversation.blocked_at ? "opacity-50" : "")
                 }
             >
-                {/* Conversation title and date */}
                 <div className="flex gap-1 justify-between items-center">
                     <h3 className="text-sm font-semibold overflow-hidden text-nowrap text-ellipsis">
                         {conversation.name}
@@ -98,15 +121,11 @@ const ConversationItem = ({
                     )}
                 </div>
 
-                {/* Preview of last message */}
-                {conversation.last_message && (
-                    <p className="text-xs text-nowrap overflow-hidden text-ellipsis">
-                        {conversation.last_message}
-                    </p>
-                )}
+                <p className="text-xs text-nowrap overflow-hidden text-ellipsis">
+                    {preview}
+                </p>
             </div>
 
-            {/* Admin-only dropdown for user management */}
             {currentUser.is_admin && conversation.is_user && (
                 <UserOptionsDropdown conversation={conversation} />
             )}

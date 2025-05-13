@@ -68,14 +68,14 @@ function Home({ selectedConversation = null, messages = null }) {
 
                     try {
                         const aesKey = await decryptAESKeyWithPrivateKey(msg.encrypted_key, privateKey);
-                        console.debug("🔑 AES key decrypted");
+                        console.debug(`🔑 AES key decrypted for message ID ${msg.id}`);
 
                         const plaintext = await decryptMessageAES(msg.message, aesKey);
-                        console.debug("✅ Message decrypted:", plaintext);
+                        console.debug(`✅ Message ID ${msg.id} decrypted:`, plaintext);
 
                         return { ...msg, decrypted: plaintext };
                     } catch (err) {
-                        console.error("❌ Decryption failed for message:", msg.id, err);
+                        console.error(`❌ Decryption failed for message ID ${msg.id}:`, err);
                         return { ...msg, decrypted: "[Decryption failed]" };
                     }
                 })
@@ -87,6 +87,7 @@ function Home({ selectedConversation = null, messages = null }) {
             return messageArray.map((m) => ({ ...m, decrypted: "[No key available]" }));
         }
     };
+
 
 
     const messageCreated = (message) => {

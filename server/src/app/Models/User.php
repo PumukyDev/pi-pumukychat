@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,11 +11,6 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'avatar',
         'name',
@@ -27,21 +21,11 @@ class User extends Authenticatable
         'public_key',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -58,9 +42,18 @@ class User extends Authenticatable
     public static function getUsersExceptUser(User $user)
     {
         $userId = $user->id;
-        $query = User::select(['users.*', 'messages.message as last_message', 'messages.created_at as last_message_date'])->where('users.id', '!=', $userId)->when($user->is_admin, function ($query) {
+
+        $query = User::select([
+            'users.*',
+            'messages.message as last_message',
+            'messages.created_at as last_message_date',
+            'message_keys.encrypted_key as last_message_encrypted_key'
+        ])
+        ->where('users.id', '!=', $userId)
+        ->when($user->is_admin, function ($query) {
             $query->whereNull('users.blocked_at');
-        })->leftJoin('conversations', function ($join) use ($userId) {
+        })
+        ->leftJoin('conversations', function ($join) use ($userId) {
             $join->on('conversations.user_id1', '=', 'users.id')
                 ->where('conversations.user_id2', '=', $userId)
                 ->orWhere(function ($query) use ($userId) {
@@ -68,10 +61,14 @@ class User extends Authenticatable
                         ->where('conversations.user_id1', '=', $userId);
                 });
         })
-            ->leftJoin('messages', 'messages.id', '=', 'conversations.last_message_id')
-            ->orderByRaw('IFNULL(users.blocked_at, 1)')
-            ->orderBy('messages.created_at', 'desc')
-            ->orderBy('users.name');
+        ->leftJoin('messages', 'messages.id', '=', 'conversations.last_message_id')
+        ->leftJoin('message_keys', function ($join) use ($userId) {
+            $join->on('message_keys.message_id', '=', 'messages.id')
+                ->where('message_keys.user_id', '=', $userId);
+        })
+        ->orderByRaw('IFNULL(users.blocked_at, 1)')
+        ->orderBy('messages.created_at', 'desc')
+        ->orderBy('users.name');
 
         return $query->get();
     }
@@ -89,7 +86,8 @@ class User extends Authenticatable
             'blocked_at' => $this->blocked_at,
             'last_message' => $this->last_message,
             'last_message_date' =>
-            $this->last_message_date ? ($this->last_message_date . ' UTC') : null,
+                $this->last_message_date ? ($this->last_message_date . ' UTC') : null,
+            'last_message_encrypted_key' => $this->last_message_encrypted_key,
         ];
     }
 }
