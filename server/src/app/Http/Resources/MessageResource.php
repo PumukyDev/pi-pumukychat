@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
+use App\Models\MessageKey;
 
 class MessageResource extends JsonResource
 {
@@ -18,6 +20,12 @@ class MessageResource extends JsonResource
     {
         $this->resource->loadMissing(['sender', 'attachments']);
 
+        // Buscar la clave AES cifrada solo para el usuario actual
+        $userId = Auth::id();
+        $messageKey = MessageKey::where('message_id', $this->id)
+            ->where('user_id', $userId)
+            ->first();
+
         return [
             'id' => $this->id,
             'message' => $this->message,
@@ -26,6 +34,7 @@ class MessageResource extends JsonResource
             'sender' => new UserResource($this->sender),
             'group_id' => $this->group_id,
             'attachments' => MessageAttachmentResource::collection($this->attachments),
+            'encrypted_key' => optional($messageKey)->encrypted_key,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

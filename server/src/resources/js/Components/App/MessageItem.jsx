@@ -8,6 +8,7 @@ import MessageOptionsDropdown from "./MessageOptionsDropdown";
 
 const MessageItem = ({ message, decrypted, attachmentClick }) => {
     const currentUser = usePage().props.auth.user;
+    const content = decrypted !== undefined ? decrypted : message.message;
 
     return (
         <div
@@ -40,9 +41,7 @@ const MessageItem = ({ message, decrypted, attachmentClick }) => {
 
                 <div className="chat-message">
                     <div className="chat-message-content">
-                        <ReactMarkDown>
-                            {decrypted || message.message}
-                        </ReactMarkDown>
+                        <ReactMarkDown>{content}</ReactMarkDown>
                     </div>
 
                     <MessageAttachments

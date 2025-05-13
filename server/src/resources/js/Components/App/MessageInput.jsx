@@ -1,4 +1,4 @@
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import {
     PaperClipIcon,
     PhotoIcon,
@@ -14,13 +14,13 @@ import {
     Popover,
     PopoverButton,
     PopoverPanel,
-    Transition,
 } from "@headlessui/react";
 import { isAudio, isImage } from "@/helper";
 import AttachmentPreview from "./AttachmentPreview";
 import CustomAudioPlayer from "./CustomAudioPlayer";
 import AudioRecorder from "./AudioRecorder";
 import { useEventBus } from "@/EventBus";
+import { usePage } from "@inertiajs/react";
 
 export default function MessageInput({ conversation = null }) {
     const [newMessage, setNewMessage] = useState("");
@@ -29,6 +29,7 @@ export default function MessageInput({ conversation = null }) {
     const [chosenFiles, setChosenFiles] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
     const { emit } = useEventBus();
+    const currentUser = usePage().props.auth.user;
 
     const onFileChange = (ev) => {
         const files = ev.target.files;
@@ -39,12 +40,9 @@ export default function MessageInput({ conversation = null }) {
         setChosenFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
     };
 
-    async function fetchPublicKeyPem(userId) {
+    const fetchPublicKey = async (userId) => {
         const res = await fetch(`/api/users/${userId}/public-key`);
-        return await res.text();
-    }
-
-    async function importPublicKey(pem) {
+        const pem = await res.text();
         const b64 = pem
             .replace('-----BEGIN PUBLIC KEY-----', '')
             .replace('-----END PUBLIC KEY-----', '')
@@ -57,13 +55,37 @@ export default function MessageInput({ conversation = null }) {
             true,
             ['encrypt']
         );
-    }
+    };
 
-    async function encryptMessage(plainText, publicKey) {
-        const encoded = new TextEncoder().encode(plainText);
-        const encrypted = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, publicKey, encoded);
+    const generateAESKey = () => crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+    );
+
+    const encryptWithAES = async (key, text) => {
+        const encoder = new TextEncoder();
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const ciphertext = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv },
+            key,
+            encoder.encode(text)
+        );
+        return {
+            iv: btoa(String.fromCharCode(...iv)),
+            content: btoa(String.fromCharCode(...new Uint8Array(ciphertext)))
+        };
+    };
+
+    const exportAndEncryptAESKey = async (aesKey, publicKey) => {
+        const rawKey = await crypto.subtle.exportKey('raw', aesKey);
+        const encrypted = await crypto.subtle.encrypt(
+            { name: 'RSA-OAEP' },
+            publicKey,
+            rawKey
+        );
         return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
-    }
+    };
 
     const onSend = async () => {
         if (messageSending) return;
@@ -77,20 +99,31 @@ export default function MessageInput({ conversation = null }) {
         setMessageSending(true);
 
         try {
-            let encryptedMessage = newMessage;
+            const aesKey = await generateAESKey();
+            const encrypted = await encryptWithAES(aesKey, newMessage);
 
-            if (conversation.is_user) {
-                const publicKeyPem = await fetchPublicKeyPem(conversation.id);
-                const publicKey = await importPublicKey(publicKeyPem);
-                encryptedMessage = await encryptMessage(newMessage, publicKey);
-            }
+            const senderKey = await fetchPublicKey(currentUser.id);
+            const receiverKey = conversation.is_user
+                ? await fetchPublicKey(conversation.id)
+                : null;
+
+            const encryptedKeyForSender = await exportAndEncryptAESKey(aesKey, senderKey);
+            const encryptedKeyForReceiver = receiverKey
+                ? await exportAndEncryptAESKey(aesKey, receiverKey)
+                : null;
+
+            const encryptedMessage = `${encrypted.iv}:${encrypted.content}`;
 
             const formData = new FormData();
             chosenFiles.forEach((file) => {
                 formData.append("attachments[]", file.file);
             });
-            formData.append("message", encryptedMessage); // for DB
-            formData.append("plain_message", newMessage); // for WebSocket
+            formData.append("message", encryptedMessage);
+            formData.append("plain_message", newMessage);
+            formData.append("encrypted_key_for_sender", encryptedKeyForSender);
+            if (encryptedKeyForReceiver) {
+                formData.append("encrypted_key_for_receiver", encryptedKeyForReceiver);
+            }
 
             if (conversation.is_user) {
                 formData.append("receiver_id", conversation.id);
@@ -98,27 +131,22 @@ export default function MessageInput({ conversation = null }) {
                 formData.append("group_id", conversation.id);
             }
 
-            axios.post(route("message.store"), formData, {
-                onUploadProgress: (progressEvent) => {
-                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+            await axios.post(route("message.store"), formData, {
+                onUploadProgress: (e) => {
+                    const progress = Math.round((e.loaded / e.total) * 100);
                     setUploadProgress(progress);
                 },
-            }).then(() => {
-                setNewMessage("");
-                setMessageSending(false);
-                setUploadProgress(0);
-                setChosenFiles([]);
-                emit('toast.show', 'Message sent successfully');
-            }).catch((error) => {
-                setMessageSending(false);
-                setChosenFiles([]);
-                setInputErrorMessage(
-                    error?.response?.data?.message || "An error occurred while sending the message"
-                );
             });
+
+            setNewMessage("");
+            setChosenFiles([]);
+            setUploadProgress(0);
+            emit('toast.show', 'Message sent successfully');
 
         } catch (err) {
             console.error('❌ Encryption failed', err);
+            setInputErrorMessage("Encryption error: " + err.message);
+        } finally {
             setMessageSending(false);
         }
     };

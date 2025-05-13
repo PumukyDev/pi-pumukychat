@@ -73,42 +73,68 @@ class MessageController extends Controller
     public function store(StoreMessageRequest $request)
     {
         $data = $request->validated();
-        $data['sender_id'] = auth()->id();
+        $senderId = auth()->id();
+        $data['sender_id'] = $senderId;
         $receiverId = $data['receiver_id'] ?? null;
         $groupId = $data['group_id'] ?? null;
         $files = $data['attachments'] ?? [];
 
-        // Only store the encrypted message
-        $message = Message::create($data);
+        // 1. Validación extra si es mensaje directo (no grupo)
+        if ($receiverId) {
+            if (!$request->has('encrypted_key_for_sender') || !$request->has('encrypted_key_for_receiver')) {
+                return response()->json(['message' => 'Missing encrypted AES keys for sender/receiver'], 422);
+            }
+        }
 
+        // 2. Guardamos el mensaje cifrado
+        $message = Message::create([
+            'message' => $data['message'],
+            'sender_id' => $senderId,
+            'receiver_id' => $receiverId,
+            'group_id' => $groupId,
+        ]);
+
+        // 3. Guardamos claves cifradas si es chat privado
+        if ($receiverId) {
+            \App\Models\MessageKey::create([
+                'message_id' => $message->id,
+                'user_id' => $senderId,
+                'encrypted_key' => $request->input('encrypted_key_for_sender'),
+            ]);
+            \App\Models\MessageKey::create([
+                'message_id' => $message->id,
+                'user_id' => $receiverId,
+                'encrypted_key' => $request->input('encrypted_key_for_receiver'),
+            ]);
+        }
+
+        // 4. Adjuntos (opcional)
         $attachments = [];
         if ($files) {
             foreach ($files as $file) {
                 $directory = 'attachments/' . Str::random(32);
                 Storage::makeDirectory($directory);
 
-                $model = [
+                $attachment = MessageAttachment::create([
                     'message_id' => $message->id,
                     'name' => $file->getClientOriginalName(),
                     'mime' => $file->getClientMimeType(),
                     'size' => $file->getSize(),
                     'path' => $file->store($directory, 'public'),
-                ];
-                $attachment = MessageAttachment::create($model);
+                ]);
                 $attachments[] = $attachment;
             }
             $message->attachments = $attachments;
         }
 
+        // 5. Actualizamos la conversación o grupo
         if ($receiverId) {
-            Conversation::updateConversationWithMessage($receiverId, auth()->id(), $message);
-        }
-
-        if ($groupId) {
+            Conversation::updateConversationWithMessage($receiverId, $senderId, $message);
+        } elseif ($groupId) {
             Group::updateGroupWithMessage($groupId, $message);
         }
 
-        // Emit plain message, not the encrypted one
+        // 6. Emitimos el mensaje plano por WebSocket
         $messageToEmit = clone $message;
         if ($request->has('plain_message')) {
             $messageToEmit->message = $request->input('plain_message');
@@ -118,7 +144,6 @@ class MessageController extends Controller
 
         return new MessageResource($message);
     }
-
 
     public function destroy(Message $message)
     {

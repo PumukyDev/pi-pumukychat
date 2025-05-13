@@ -4,6 +4,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KeyController;
 use App\Http\Controllers\MessageController;
 use App\Models\User;
 
@@ -41,6 +42,9 @@ Route::middleware('auth')->get('/api/users/{user}/public-key', function (User $u
     }
     return response($user->public_key, 200)->header('Content-Type', 'text/plain');
 });
+
+Route::middleware('auth')->post('/api/store-public-key', [KeyController::class, 'store']);
+
 
 // Authentication routes (login, register, etc.)
 require __DIR__.'/auth.php';

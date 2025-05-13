@@ -35,4 +35,9 @@ class Message extends Model
     public function attachments() {
         return $this->hasMany(MessageAttachment::class);
     }
+
+    public function keys()
+    {
+        return $this->hasMany(MessageKey::class);
+    }
 }
