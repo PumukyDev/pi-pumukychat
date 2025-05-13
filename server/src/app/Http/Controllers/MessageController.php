@@ -94,7 +94,7 @@ class MessageController extends Controller
             'group_id' => $groupId,
         ]);
 
-        // 3. Guardamos claves cifradas si es chat privado
+        // 3. Guardamos claves cifradas
         if ($receiverId) {
             \App\Models\MessageKey::create([
                 'message_id' => $message->id,
@@ -106,9 +106,18 @@ class MessageController extends Controller
                 'user_id' => $receiverId,
                 'encrypted_key' => $request->input('encrypted_key_for_receiver'),
             ]);
+        } elseif ($groupId) {
+            $keys = $request->input('keys', []);
+            foreach ($keys as $userId => $encryptedKey) {
+                \App\Models\MessageKey::create([
+                    'message_id' => $message->id,
+                    'user_id' => $userId,
+                    'encrypted_key' => $encryptedKey,
+                ]);
+            }
         }
 
-        // 4. Adjuntos (opcional)
+        // 4. Adjuntos
         $attachments = [];
         if ($files) {
             foreach ($files as $file) {
@@ -127,20 +136,22 @@ class MessageController extends Controller
             $message->attachments = $attachments;
         }
 
-        // 5. Actualizamos la conversación o grupo
+        // 5. Actualizamos conversación o grupo
         if ($receiverId) {
             Conversation::updateConversationWithMessage($receiverId, $senderId, $message);
         } elseif ($groupId) {
             Group::updateGroupWithMessage($groupId, $message);
         }
 
-        // 6. Emitimos el mensaje plano por WebSocket
+        // 6. Emitimos mensaje plano por WebSocket
         $messageToEmit = clone $message;
         if ($request->has('plain_message')) {
             $messageToEmit->message = $request->input('plain_message');
         }
-
         SocketMessage::dispatch($messageToEmit);
+
+        // 7. Recargamos el mensaje para devolverlo con relaciones y encrypted_key
+        $message = Message::with('sender', 'attachments')->find($message->id);
 
         return new MessageResource($message);
     }

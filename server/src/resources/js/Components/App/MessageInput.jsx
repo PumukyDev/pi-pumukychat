@@ -22,6 +22,7 @@ import AudioRecorder from "./AudioRecorder";
 import { useEventBus } from "@/EventBus";
 import { usePage } from "@inertiajs/react";
 
+
 export default function MessageInput({ conversation = null }) {
     const [newMessage, setNewMessage] = useState("");
     const [inputErrorMessage, setInputErrorMessage] = useState("");
@@ -43,31 +44,28 @@ export default function MessageInput({ conversation = null }) {
     const fetchPublicKey = async (userId) => {
         const res = await fetch(`/api/users/${userId}/public-key`);
         const pem = await res.text();
-        const b64 = pem
-            .replace('-----BEGIN PUBLIC KEY-----', '')
-            .replace('-----END PUBLIC KEY-----', '')
-            .replace(/\n/g, '');
+        const b64 = pem.replace(/-----.*-----/g, "").replace(/\n/g, "");
         const binary = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
         return crypto.subtle.importKey(
-            'spki',
+            "spki",
             binary.buffer,
-            { name: 'RSA-OAEP', hash: 'SHA-256' },
+            { name: "RSA-OAEP", hash: "SHA-256" },
             true,
-            ['encrypt']
+            ["encrypt"]
         );
     };
 
     const generateAESKey = () => crypto.subtle.generateKey(
-        { name: 'AES-GCM', length: 256 },
+        { name: "AES-GCM", length: 256 },
         true,
-        ['encrypt', 'decrypt']
+        ["encrypt", "decrypt"]
     );
 
     const encryptWithAES = async (key, text) => {
         const encoder = new TextEncoder();
         const iv = crypto.getRandomValues(new Uint8Array(12));
         const ciphertext = await crypto.subtle.encrypt(
-            { name: 'AES-GCM', iv },
+            { name: "AES-GCM", iv },
             key,
             encoder.encode(text)
         );
@@ -78,9 +76,9 @@ export default function MessageInput({ conversation = null }) {
     };
 
     const exportAndEncryptAESKey = async (aesKey, publicKey) => {
-        const rawKey = await crypto.subtle.exportKey('raw', aesKey);
+        const rawKey = await crypto.subtle.exportKey("raw", aesKey);
         const encrypted = await crypto.subtle.encrypt(
-            { name: 'RSA-OAEP' },
+            { name: "RSA-OAEP" },
             publicKey,
             rawKey
         );
@@ -89,7 +87,6 @@ export default function MessageInput({ conversation = null }) {
 
     const onSend = async () => {
         if (messageSending) return;
-
         if (newMessage.trim() === "" && chosenFiles.length === 0) {
             setInputErrorMessage("Please type a message or attach a file");
             setTimeout(() => setInputErrorMessage(""), 3000);
@@ -101,17 +98,6 @@ export default function MessageInput({ conversation = null }) {
         try {
             const aesKey = await generateAESKey();
             const encrypted = await encryptWithAES(aesKey, newMessage);
-
-            const senderKey = await fetchPublicKey(currentUser.id);
-            const receiverKey = conversation.is_user
-                ? await fetchPublicKey(conversation.id)
-                : null;
-
-            const encryptedKeyForSender = await exportAndEncryptAESKey(aesKey, senderKey);
-            const encryptedKeyForReceiver = receiverKey
-                ? await exportAndEncryptAESKey(aesKey, receiverKey)
-                : null;
-
             const encryptedMessage = `${encrypted.iv}:${encrypted.content}`;
 
             const formData = new FormData();
@@ -120,31 +106,49 @@ export default function MessageInput({ conversation = null }) {
             });
             formData.append("message", encryptedMessage);
             formData.append("plain_message", newMessage);
-            formData.append("encrypted_key_for_sender", encryptedKeyForSender);
-            if (encryptedKeyForReceiver) {
-                formData.append("encrypted_key_for_receiver", encryptedKeyForReceiver);
-            }
 
             if (conversation.is_user) {
+                // 1-1: enviar 2 claves cifradas
+                const senderKey = await fetchPublicKey(currentUser.id);
+                const receiverKey = await fetchPublicKey(conversation.id);
+
+                const keyForSender = await exportAndEncryptAESKey(aesKey, senderKey);
+                const keyForReceiver = await exportAndEncryptAESKey(aesKey, receiverKey);
+
                 formData.append("receiver_id", conversation.id);
-            } else if (conversation.is_group) {
+                formData.append("encrypted_key_for_sender", keyForSender);
+                formData.append("encrypted_key_for_receiver", keyForReceiver);
+            }
+
+            if (conversation.is_group) {
+                // Grupos: enviar clave AES cifrada para cada miembro
                 formData.append("group_id", conversation.id);
+                const keys = {};
+
+                for (const member of conversation.members) {
+                    const pubKey = await fetchPublicKey(member.id);
+                    const encryptedKey = await exportAndEncryptAESKey(aesKey, pubKey);
+                    keys[member.id] = encryptedKey;
+                }
+
+                Object.entries(keys).forEach(([userId, encryptedKey]) => {
+                    formData.append(`keys[${userId}]`, encryptedKey);
+                });
             }
 
             await axios.post(route("message.store"), formData, {
                 onUploadProgress: (e) => {
-                    const progress = Math.round((e.loaded / e.total) * 100);
-                    setUploadProgress(progress);
+                    setUploadProgress(Math.round((e.loaded / e.total) * 100));
                 },
             });
 
             setNewMessage("");
             setChosenFiles([]);
             setUploadProgress(0);
-            emit('toast.show', 'Message sent successfully');
+            emit("toast.show", "Message sent successfully");
 
         } catch (err) {
-            console.error('❌ Encryption failed', err);
+            console.error("❌ Encryption failed", err);
             setInputErrorMessage("Encryption error: " + err.message);
         } finally {
             setMessageSending(false);

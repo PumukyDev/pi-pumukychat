@@ -27,6 +27,10 @@ class StoreMessageRequest extends FormRequest
             'receiver_id' => 'required_without:group_id|nullable|exists:users,id',
             'attachments' => 'nullable|array|max:10',
             'attachments.*' => 'file|max:1024000',
+
+            // Nuevo campo para claves en grupo
+            'keys' => 'nullable|array',
+            'keys.*' => 'required|string', // Cada clave cifrada debe ser string
         ];
     }
 }

@@ -18,7 +18,7 @@ class MessageResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->resource->loadMissing(['sender', 'attachments']);
+        $this->resource->loadMissing(['sender', 'attachments', 'keys']);
 
         // Buscar la clave AES cifrada solo para el usuario actual
         $userId = Auth::id();
