@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -63,6 +64,11 @@ class Group extends Model
             'updated_at' => $this->updated_at,
             'last_message' => $this->last_message,
             'last_message_date' => $this->last_message_date ? ($this->last_message_date . ' UTC') : null,
+            'last_message_encrypted_key' => optional(
+                MessageKey::where('message_id', $this->last_message_id)
+                    ->where('user_id', Auth::id())
+                    ->first()
+            )->encrypted_key,
             'members' => $this->users()->select('users.id', 'users.name')->get(),
         ];
     }
