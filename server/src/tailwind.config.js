@@ -39,20 +39,35 @@ export default {
         themes: [
             {
                 pumukyChatTheme: {
-                    "primary": "#5865F2",
-                    "secondary": "#4F545C",
-                    "accent": "#3BA55D",
-                    "neutral": "#2C2F33",
+                    primary: "#5865F2",
+                    secondary: "#4F545C",
+                    accent: "#3BA55D",
+                    neutral: "#2C2F33",
                     "base-100": "#23272A",
                     "base-200": "#2C2F33",
                     "base-300": "#40444B",
-                    "info": "#00B0F4",
-                    "success": "#3BA55D",
-                    "warning": "#FAA61A",
-                    "error": "#ED4245",
+                    info: "#00B0F4",
+                    success: "#3BA55D",
+                    warning: "#FAA61A",
+                    error: "#ED4245",
                 },
             },
+            {
+                pumukyChatLight: {
+                    primary: "#4F46E5",
+                    secondary: "#6B7280",
+                    accent: "#10B981",
+                    neutral: "#F3F4F6",
+                    "base-100": "#FFFFFF",
+                    "base-200": "#F9FAFB",
+                    "base-300": "#E5E7EB",
+                    info: "#3B82F6",
+                    success: "#22C55E",
+                    warning: "#EAB308",
+                    error: "#EF4444",
+                },
+            }
         ],
         darkTheme: "pumukyChatTheme",
-    },
+    }
 };

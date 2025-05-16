@@ -3,6 +3,7 @@ import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import ThemeToggle from "@/Components/App/ThemeToggle";
 import { Link, usePage } from "@inertiajs/react";
 import Echo from "laravel-echo";
 import { useEventBus } from "@/EventBus";
@@ -115,8 +116,8 @@ export default function Authenticated({ header, children }) {
                             </div>
 
                             {/* User dropdown menu */}
-                            <div className="hidden sm:flex sm:items-center sm:ms-6">
-                                <div className="ms-3 relative">
+                            <div className="hidden sm:flex sm:items-center sm:ms-6 gap-4">
+                                <div className="relative">
                                     <Dropdown>
                                         <Dropdown.Trigger>
                                             <span className="inline-flex rounded-md">
@@ -140,22 +141,17 @@ export default function Authenticated({ header, children }) {
                                                 </button>
                                             </span>
                                         </Dropdown.Trigger>
-
                                         <Dropdown.Content>
-                                            <Dropdown.Link href={route("profile.edit")}>
-                                                Profile
-                                            </Dropdown.Link>
-                                            <Dropdown.Link
-                                                href={route("logout")}
-                                                method="post"
-                                                as="button"
-                                            >
-                                                Log Out
-                                            </Dropdown.Link>
+                                            <Dropdown.Link href={route("profile.edit")}>Profile</Dropdown.Link>
+                                            <Dropdown.Link href={route("logout")} method="post" as="button">Log Out</Dropdown.Link>
                                         </Dropdown.Content>
                                     </Dropdown>
                                 </div>
+
+                                {/* Theme toggle button on far right */}
+                                <ThemeToggle />
                             </div>
+
 
                             {/* Hamburger menu for small screens */}
                             <div className="-me-2 flex items-center sm:hidden">
