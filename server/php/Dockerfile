@@ -13,7 +13,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /var/www
 
-COPY src/ /var/www
-
-RUN chown -R www-data:www-data /var/www && \
-    chmod -R 775 /var/www
+COPY php/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
