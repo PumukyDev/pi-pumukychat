@@ -1,4 +1,4 @@
-import {Link, usePage} from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { ArrowLeftIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 import UserAvatar from './UserAvatar';
 import GroupAvatar from './GroupAvatar';
@@ -6,7 +6,7 @@ import GroupDescriptionPopover from './GroupDescriptionPopover';
 import GroupUsersPopover from './GroupUsersPopover';
 import { useEventBus } from '@/EventBus';
 
-const ConversationHeader = ({selectedConversation}) => {
+const ConversationHeader = ({ selectedConversation }) => {
     const authUser = usePage().props.auth.user;
     const { emit } = useEventBus();
 
@@ -20,15 +20,15 @@ const ConversationHeader = ({selectedConversation}) => {
             .then((res) => {
                 console.log(res)
                 emit("toast.show", res.data.message); // Notify user via toast
-        }).catch((err) => {
-            console.log(err)
-        });
+            }).catch((err) => {
+                console.log(err)
+            });
     }
 
     return (
         <>
             {selectedConversation && (
-                <div className="p-3 flex justify-between items-center border-b border-slate-700">
+                <div className="p-3 flex justify-between items-center border-b border-base-300 bg-base-200 text-base-content">
                     <div className="flex items-center gap-3">
                         {/* Back button on small screens */}
                         <Link
@@ -47,7 +47,7 @@ const ConversationHeader = ({selectedConversation}) => {
                         <div>
                             <h3>{selectedConversation.name}</h3>
                             {selectedConversation.is_group && (
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-base-content/60">
                                     {selectedConversation.users.length} members
                                 </p>
                             )}
@@ -56,7 +56,7 @@ const ConversationHeader = ({selectedConversation}) => {
 
                     {/* Group management options for owner */}
                     {selectedConversation.is_group && (
-                        <div className='flex gap-3'>
+                        <div className="flex gap-3">
                             <GroupDescriptionPopover
                                 description={selectedConversation.description}
                             />
@@ -77,7 +77,7 @@ const ConversationHeader = ({selectedConversation}) => {
                                                     selectedConversation
                                                 )
                                             }
-                                            className="text-gray-400 hover:text-gray-200"
+                                            className="text-base-content/70 hover:text-primary"
                                         >
                                             <PencilSquareIcon className="w-4" />
                                         </button>
@@ -90,7 +90,7 @@ const ConversationHeader = ({selectedConversation}) => {
                                     >
                                         <button
                                             onClick={onDeleteGroup}
-                                            className="text-gray-400 hover:text-gray-200"
+                                            className="text-base-content/70 hover:text-error"
                                         >
                                             <TrashIcon className="w-4" />
                                         </button>

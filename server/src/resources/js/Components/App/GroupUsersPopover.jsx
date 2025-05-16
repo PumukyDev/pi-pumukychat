@@ -13,8 +13,8 @@ export default function GroupUsersPopover({ users = [] }) {
                     {/* Button to toggle the popover */}
                     <Popover.Button
                         className={`${
-                            open ? "text-gray-200" : "text-gray-400"
-                        } hover:text-gray-200`}
+                            open ? "text-base-content" : "text-base-content/70"
+                        } hover:text-primary`}
                     >
                         <UsersIcon className="w-4" />
                     </Popover.Button>
@@ -31,19 +31,17 @@ export default function GroupUsersPopover({ users = [] }) {
                     >
                         {/* Popover content panel (user list) */}
                         <Popover.Panel className="absolute right-0 z-20 mt-3 w-[240px] px-4 sm:px-0">
-                            <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-                                <div className="bg-gray-800 p-2">
+                            <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-base-300 bg-base-200">
+                                <div className="p-2">
                                     {/* List of users with avatars and names */}
                                     {users.map((user) => (
                                         <Link
                                             href={route("chat.user", user.id)}
                                             key={user.id}
-                                            className="flex items-center gap-2 py-2 px-3 hover:bg-black/30"
+                                            className="flex items-center gap-2 py-2 px-3 hover:bg-base-300 rounded text-base-content"
                                         >
                                             <UserAvatar user={user} />
-                                            <div className="text-xs">
-                                                {user.name}
-                                            </div>
+                                            <div className="text-xs">{user.name}</div>
                                         </Link>
                                     ))}
                                 </div>

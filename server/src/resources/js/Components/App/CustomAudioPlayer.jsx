@@ -48,7 +48,7 @@ const CustomAudioPlayer = ({ file, showVolume = true }) => {
     };
 
     return (
-        <div className="w-full flex items-center gap-2 py-2 px-3 rounded-md bg-slate-800">
+        <div className="w-full flex items-center gap-2 py-2 px-3 rounded-md bg-base-200 text-base-content">
             <audio
                 ref={audioRef}
                 src={file.url}
@@ -59,9 +59,9 @@ const CustomAudioPlayer = ({ file, showVolume = true }) => {
             />
             <button onClick={togglePlayPause}>
                 {isPlaying ? (
-                    <PauseCircleIcon className="w-6 text-gray-400" />
+                    <PauseCircleIcon className="w-6 text-base-content/70" />
                 ) : (
-                    <PlayCircleIcon className="w-6 text-gray-400" />
+                    <PlayCircleIcon className="w-6 text-base-content/70" />
                 )}
             </button>
             {showVolume && (
@@ -72,11 +72,12 @@ const CustomAudioPlayer = ({ file, showVolume = true }) => {
                     step="0.01"
                     value={volume}
                     onChange={handleVolumeChange}
+                    className="range range-xs range-primary"
                 />
             )}
             <input
                 type="range"
-                className="flex-1"
+                className="range range-xs range-accent flex-1"
                 min="0"
                 max={duration}
                 step="0.01"

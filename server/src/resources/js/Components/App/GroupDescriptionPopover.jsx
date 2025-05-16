@@ -11,8 +11,8 @@ export default function GroupDescriptionPopover({ description }) {
                     {/* Popover trigger button */}
                     <Popover.Button
                         className={`${
-                            open ? "text-gray-200" : "text-gray-400"
-                        } hover:text-gray-200`}
+                            open ? "text-base-content" : "text-base-content/70"
+                        } hover:text-primary`}
                     >
                         <ExclamationCircleIcon className="w-4" />
                     </Popover.Button>
@@ -28,8 +28,8 @@ export default function GroupDescriptionPopover({ description }) {
                         leaveTo="opacity-0 translate-y-1"
                     >
                         <Popover.Panel className="absolute right-0 z-10 mt-3 w-[300px] px-4 sm:px-0">
-                            <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
-                                <div className="bg-gray-800 p-4">
+                            <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-base-300 bg-base-200 text-base-content">
+                                <div className="p-4">
                                     <h2 className="text-lg mb-3">
                                         Description
                                     </h2>
@@ -43,7 +43,7 @@ export default function GroupDescriptionPopover({ description }) {
 
                                     {/* Fallback message if no description */}
                                     {!description && (
-                                        <div className="text-xs text-gray-500 text-center py-4">
+                                        <div className="text-xs text-base-content/60 text-center py-4">
                                             No description is defined.
                                         </div>
                                     )}

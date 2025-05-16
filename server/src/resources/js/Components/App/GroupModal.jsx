@@ -16,7 +16,6 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
     const { on, emit } = useEventBus();
     const [group, setGroup] = useState({});
 
-    // Form state
     const { data, setData, processing, reset, post, put, errors } = useForm({
         id: "",
         name: "",
@@ -24,10 +23,8 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
         user_ids: [],
     });
 
-    // List of non-group users
     const users = conversations.filter((c) => !c.is_group);
 
-    // Submit handler for create or update
     const createOrUpdateGroup = (e) => {
         e.preventDefault();
 
@@ -48,13 +45,11 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
         });
     };
 
-    // Reset and close modal
     const closeModal = () => {
         reset();
         onClose();
     };
 
-    // Listen to external event to open the modal and prefill data
     useEffect(() => {
         return on("GroupModal.show", (group) => {
             setGroup(group);
@@ -83,7 +78,7 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
 
                 {/* Name input */}
                 <div className="mt-8">
-                    <InputLabel htmlFor="name" value="Name" className="text-white"/>
+                    <InputLabel htmlFor="name" value="Name" />
                     <TextInput
                         id="name"
                         className="mt-1 block w-full bg-base-300"
@@ -98,7 +93,7 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
 
                 {/* Description input */}
                 <div className="mt-4">
-                    <InputLabel htmlFor="description" value="Description" className="text-white"/>
+                    <InputLabel htmlFor="description" value="Description" />
                     <TextAreaInput
                         id="description"
                         rows="3"
@@ -111,7 +106,7 @@ export default function GroupModal({ show = false, onClose = () => {} }) {
 
                 {/* User selector */}
                 <div className="mt-4">
-                    <InputLabel value="Select Users" className="text-white"/>
+                    <InputLabel value="Select Users" />
                     <UserPicker
                         value={
                             users.filter(

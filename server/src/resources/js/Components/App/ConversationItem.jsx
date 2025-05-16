@@ -48,14 +48,14 @@ const ConversationItem = ({
             !conversation.is_group &&
             conversation.id == selectedConversation.id
         ) {
-            classes = "border-blue-500 bg-black/20";
+            classes = "border-primary bg-base-300";
         }
         if (
             selectedConversation.is_group &&
             conversation.is_group &&
             conversation.id == selectedConversation.id
         ) {
-            classes = "border-blue-500 bg-black/20";
+            classes = "border-primary bg-base-300";
         }
     }
 
@@ -96,7 +96,7 @@ const ConversationItem = ({
             }
             preserveState
             className={
-                "conversation-item flex items-center gap-2 p-2 text-gray-300 transition-all cursor-pointer border-l-4 hover:bg-black/30 " +
+                "conversation-item flex items-center gap-2 p-2 text-base-content transition-all cursor-pointer border-l-4 hover:bg-base-300 " +
                 classes +
                 (conversation.is_user && currentUser.is_admin ? "pr-2" : "pr-4")
             }

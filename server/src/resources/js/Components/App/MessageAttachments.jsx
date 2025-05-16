@@ -18,10 +18,10 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                             onClick={(ev) => attachmentClick(attachments, ind)}
                             key={attachment.id}
                             className={
-                                `group flex flex-col items-center justify-center text-gray-500 relative cursor-pointer ` +
+                                `group flex flex-col items-center justify-center text-base-content/50 relative cursor-pointer ` +
                                 (isAudio(attachment)
                                     ? "w-84"
-                                    : "w-32 aspect-square bg-blue-100")
+                                    : "w-32 aspect-square bg-base-300")
                             }
                         >
                             {/* Download button (shown for all except audio) */}
@@ -30,7 +30,7 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                                     onClick={(ev) => ev.stopPropagation()}
                                     download
                                     href={attachment.url}
-                                    className="z-20 opacity-100 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center text-gray-100 bg-gray-700 rounded absolute right-0 top-0 cursor-pointer hover:bg-gray-800"
+                                    className="z-20 opacity-100 group-hover:opacity-100 transition-all w-8 h-8 flex items-center justify-center text-base-content bg-base-300 rounded absolute right-0 top-0 cursor-pointer hover:bg-base-200"
                                 >
                                     <ArrowDownCircleIcon className="w-4 h-4" />
                                 </a>
@@ -48,8 +48,8 @@ const MessageAttachments = ({ attachments, attachmentClick }) => {
                             {/* Show video preview with overlay */}
                             {isVideo(attachment) && (
                                 <div className="relative flex justify-center items-center">
-                                    <PlayCircleIcon className="z-20 absolute w-16 h-16 text-white opacity-70" />
-                                    <div className="absolute left-0 top-0 w-full h-full bg-black/50 z-10"></div>
+                                    <PlayCircleIcon className="z-20 absolute w-16 h-16 text-base-content opacity-70" />
+                                    <div className="absolute left-0 top-0 w-full h-full bg-base-300/80 z-10"></div>
                                     <video src={attachment.url}></video>
                                 </div>
                             )}

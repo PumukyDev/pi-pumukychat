@@ -31,11 +31,11 @@ export default function NewMessageNotification({}) {
 
     return (
         // Toast container at the top center
-        <div className="toast toast-top toast-center min-w-[280px]">
+        <div className="toast toast-top toast-center min-w-[280px] z-50">
             {toasts.map((toast, index) => (
                 <div
                     key={toast.uuid}
-                    className="alert alert-success py-3 px-4 text-gray-100 rounded-md"
+                    className="alert alert-success text-base-content shadow-md"
                 >
                     {/* Link to the group or user chat */}
                     <Link

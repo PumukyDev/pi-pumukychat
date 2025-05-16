@@ -10,32 +10,32 @@ const MessageItem = ({ message, decrypted, attachmentClick }) => {
     const currentUser = usePage().props.auth.user;
     const content = decrypted !== undefined ? decrypted : message.message;
 
+    const isOwnMessage = currentUser?.id === message?.sender_id;
+
     return (
         <div
             className={
                 "chat " +
-                (message.sender_id === currentUser.id
-                    ? "chat-end"
-                    : "chat-start")
+                (isOwnMessage ? "chat-end" : "chat-start")
             }
         >
             <UserAvatar user={message.sender} />
+
             <div className="chat-header">
-                {message.sender_id !== currentUser.id ? message.sender.name : ""}
+                {!isOwnMessage ? message.sender.name : ""}
                 <time className="text-xs opacity-50 ml-2">
                     {formatMessageDateLong(message.created_at)}
                 </time>
             </div>
 
             <div
-                className={
-                    "chat-bubble relative " +
-                    (message.sender_id === currentUser.id
-                        ? "bg-gray-700 text-white"
-                        : "bg-gray-600 text-white")
-                }
+                className={`chat-bubble relative ${
+                    isOwnMessage
+                        ? 'bg-bubbleown text-bubbleown-content'
+                        : 'bg-bubbleother text-bubbleother-content'
+                }`}
             >
-                {message.sender_id === currentUser.id && (
+                {isOwnMessage && (
                     <MessageOptionsDropdown message={message} />
                 )}
 

@@ -201,19 +201,19 @@ function Home({ selectedConversation = null, messages = null }) {
         <>
             {!messages && (
                 <div className="flex flex-col gap-8 justify-center items-center text-center h-full opacity-35">
-                    <div className="text-2xl md:text-4xl text-slate-200">
+                    <div className="text-2xl md:text-4xl text-base-content">
                         Please select conversation to see messages
                     </div>
-                    <ChatBubbleLeftRightIcon className="w-32 h-32 inline-block" />
+                    <ChatBubbleLeftRightIcon className="w-32 h-32 inline-block text-base-content" />
                 </div>
             )}
             {messages && (
                 <>
                     <ConversationHeader selectedConversation={selectedConversation} />
-                    <div ref={messagesCtrRef} className="flex-1 overflow-y-auto p-5">
+                    <div ref={messagesCtrRef} className="flex-1 overflow-y-auto p-5 bg-base-100">
                         {localMessages.length === 0 && (
                             <div className="flex justify-center items-center h-full">
-                                <div className="text-lg text-slate-200">No messages found</div>
+                                <div className="text-lg text-base-content">No messages found</div>
                             </div>
                         )}
                         {localMessages.length > 0 && (
@@ -244,6 +244,7 @@ function Home({ selectedConversation = null, messages = null }) {
             )}
         </>
     );
+
 }
 
 Home.layout = (page) => (

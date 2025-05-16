@@ -26,12 +26,12 @@ export default function Toast({ }) {
 
     return (
         // Toast container (mapping to be able to show several toasts)
-        <div className="toast min-w-[280px] w-full xs:w-auto">
+        <div className="toast toast-end min-w-[280px] w-full xs:w-auto z-50">
             {toasts.map((toast, index) => (
                 // Toast alert element
                 <div
                     key={toast.uuid}
-                    className="alert alert-success py-3 px-4 text-gray-100 rounded-md "
+                    className="alert alert-success text-base-content shadow-md"
                 >
                     <span>{toast.message}</span>
                 </div>

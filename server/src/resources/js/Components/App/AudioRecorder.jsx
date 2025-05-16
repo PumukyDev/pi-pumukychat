@@ -61,12 +61,12 @@ const AudioRecorder = ({ fileReady }) => {
         // Toggle button to start/stop recording
         <button
             onClick={onMicrophoneClick}
-            className="p-1 text-gray-400 hover:text-gray-200"
+            className="p-1 text-base-content/70 hover:text-base-content transition"
         >
-            {recording && <StopCircleIcon className="w-6 text-red-600" />}
+            {recording && <StopCircleIcon className="w-6 text-error" />}
             {!recording && <MicrophoneIcon className="w-6" />}
         </button>
-    )
+    );
 }
 
 export default AudioRecorder;

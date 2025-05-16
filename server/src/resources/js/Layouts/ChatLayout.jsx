@@ -77,7 +77,7 @@ const ChatLayout = ({ children }) => {
             setShowGroupModal(true);
         });
 
-        const offGroupDelete = on("group.deleted", ({id, name}) => {
+        const offGroupDelete = on("group.deleted", ({ id, name }) => {
             setLocalConversations((oldConversations) => {
                 return oldConversations.filter((con) => con.id != id);
             });
@@ -90,10 +90,10 @@ const ChatLayout = ({ children }) => {
                 !selectedConversation ||
                 selectedConversation.is_group &&
                 selectedConversation.id == id
-            ){
+            ) {
                 router.visit(route("dashboard"));
             }
-        })
+        });
 
         // Cleanup event listeners on unmount
         return () => {
@@ -180,8 +180,8 @@ const ChatLayout = ({ children }) => {
                         selectedConversation ? "-ml-[100%] sm:ml-0" : ""
                     }`}
                 >
-                    <div className="flex items-center justify-between py-2 px-3 text-xl font-medium">
-                        My Conversations
+                    <div className="flex items-center justify-between px-3 py-2 text-base-content text-xl font-medium bg-base-200">
+                        <span>My Conversations</span>
                         <div
                             className="tooltip tooltip-left"
                             data-tip="Create new Group"
@@ -216,7 +216,7 @@ const ChatLayout = ({ children }) => {
                 </div>
 
                 {/* Main conversation panel */}
-                <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="flex-1 flex flex-col overflow-hidden bg-base-100 text-base-content">
                     {children}
                 </div>
             </div>

@@ -52,9 +52,7 @@ export default function UserOptionsDropdown({ conversation }) {
             <Menu as="div" className="relative inline-block text-left">
                 <div>
                     {/* Three-dot icon that opens the dropdown */}
-                    <MenuButton
-                        className="flex justify-center items-center w-8 h-8 rounded-full hover:bg-base-300"
-                    >
+                    <MenuButton className="flex justify-center items-center w-8 h-8 rounded-full hover:bg-base-300">
                         <EllipsisVerticalIcon className="h-5 w-5 text-base-content" />
                     </MenuButton>
                 </div>

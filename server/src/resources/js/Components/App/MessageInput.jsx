@@ -22,7 +22,6 @@ import AudioRecorder from "./AudioRecorder";
 import { useEventBus } from "@/EventBus";
 import { usePage } from "@inertiajs/react";
 
-
 export default function MessageInput({ conversation = null }) {
     const [newMessage, setNewMessage] = useState("");
     const [inputErrorMessage, setInputErrorMessage] = useState("");
@@ -174,17 +173,17 @@ export default function MessageInput({ conversation = null }) {
     };
 
     return (
-        <div className="flex flex-wrap items-start border-t border-slate-700 py-3">
+        <div className="flex flex-wrap items-start border-t border-base-300 py-3">
             <div className="order-2 flex-1 xs:flex-none xs:order-1 p-2">
-                <button className="p-1 text-gray-400 hover:text-gray-300 relative">
+                <button className="p-1 text-base-content/70 hover:text-base-content transition relative">
                     <PaperClipIcon className="w-6" />
                     <input type="file" multiple onChange={onFileChange} className="absolute left-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer" />
                 </button>
-                <button className="p-1 text-gray-400 hover:text-gray-300 relative">
+                <button className="p-1 text-base-content/70 hover:text-base-content transition relative">
                     <PhotoIcon className="w-6" />
                     <input type="file" multiple accept="image/*" onChange={onFileChange} className="absolute left-0 right-0 bottom-0 z-20 opacity-0 cursor-pointer" />
                 </button>
-                <AudioRecorder fileReady={recordedAudioReady} />
+                <AudioRecorder fileReady={recordedAudioReady} className="p-1 text-base-content/70 hover:text-base-content transition" />
             </div>
 
             <div className="order-1 px-3 xs:p-0 min-w-[220px] basis-full xs:basis-0 xs:order-2 flex-1 relative">
@@ -194,7 +193,11 @@ export default function MessageInput({ conversation = null }) {
                         onSend={onSend}
                         onChange={(ev) => setNewMessage(ev.target.value)}
                     />
-                    <button onClick={onSend} disabled={messageSending} className="btn btn-info rounded-l-none">
+                    <button
+                        onClick={onSend}
+                        disabled={messageSending}
+                        className="btn rounded-l-none bg-base-300 text-base-content hover:bg-base-200 border border-base-300"
+                    >
                         {messageSending && <span className="loading loading-spinner loading-xs"></span>}
                         <PaperAirplaneIcon className="w-6" />
                         <span className="hidden sm:inline">Send</span>
@@ -206,7 +209,7 @@ export default function MessageInput({ conversation = null }) {
                 )}
 
                 {inputErrorMessage && (
-                    <p className="text-xs text-red-400">{inputErrorMessage}</p>
+                    <p className="text-xs text-error">{inputErrorMessage}</p>
                 )}
 
                 <div className="flex flex-wrap gap-1 mt-2">
@@ -226,7 +229,7 @@ export default function MessageInput({ conversation = null }) {
                             )}
                             <button onClick={() => {
                                 setChosenFiles(chosenFiles.filter(f => f.file.name !== file.file.name));
-                            }} className="absolute w-6 h-6 rounded-full bg-gray-800 -right-2 -top-2 text-gray-300 hover:text-gray-100 z-10">
+                            }} className="absolute w-6 h-6 rounded-full bg-base-300 -right-2 -top-2 text-base-content hover:text-primary z-10">
                                 <XCircleIcon className="w-6" />
                             </button>
                         </div>
@@ -236,17 +239,17 @@ export default function MessageInput({ conversation = null }) {
 
             <div className="order-3 xs:order-3 p-2 flex">
                 <Popover className="relative">
-                    <PopoverButton className="p-1 text-gray-400 hover:text-gray-300">
+                    <PopoverButton className="p-1 text-base-content/70 hover:text-base-content transition">
                         <FaceSmileIcon className="w-6 h-6" />
                     </PopoverButton>
                     <PopoverPanel transition className="absolute z-10 right-0 bottom-full">
                         <EmojiPicker
                             theme="dark"
-                            onEmojiClick={(ev) => setNewMessage(newMessage + ev.emoji)}
+                            onEmojiClick={(emojiData) => setNewMessage((prev) => prev + emojiData.emoji)}
                         />
                     </PopoverPanel>
                 </Popover>
-                <button onClick={onLikeClick} className="p-1 text-gray-400 hover:text-gray-300">
+                <button onClick={onLikeClick} className="p-1 text-base-content/70 hover:text-base-content transition">
                     <HandThumbUpIcon className="w-6 h-6" />
                 </button>
             </div>

@@ -20,7 +20,7 @@ const UserAvatar = ({ user, online = null, profile = false }) => {
             {/* If not, show a placeholder with the user's initial */}
             {!user.avatar_url && (
                 <div className={`chat-image avatar placeholder ${onlineClass}`}>
-                    <div className={`bg-gray-400 text-gray-800 rounded-full ${sizeClass}`}>
+                    <div className={`bg-base-300 text-base-content rounded-full ${sizeClass}`}>
                         <span className="text-xl">
                             {user.name.substring(0, 1)}
                         </span>

@@ -152,7 +152,6 @@ export default function Authenticated({ header, children }) {
                                 <ThemeToggle />
                             </div>
 
-
                             {/* Hamburger menu for small screens */}
                             <div className="-me-2 flex items-center sm:hidden">
                                 <button
@@ -218,7 +217,7 @@ export default function Authenticated({ header, children }) {
                                 <div className="font-medium text-base text-base-content">
                                     {user.name}
                                 </div>
-                                <div className="font-medium text-sm text-gray-400">
+                                <div className="font-medium text-sm text-base-content/60">
                                     {user.email}
                                 </div>
                             </div>
