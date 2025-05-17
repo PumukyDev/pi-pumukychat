@@ -3,12 +3,16 @@ export default function SecondaryButton({ type = 'button', className = '', disab
         <button
             {...props}
             type={type}
+            disabled={disabled}
             className={
-                `btn btn-secondary text-base-content font-semibold text-xs uppercase tracking-widest shadow-sm transition ease-in-out duration-150 ${
+                `px-4 py-2 text-sm font-semibold tracking-wide rounded-md
+                bg-base-300 text-base-content
+                hover:bg-base-300/80
+                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-base-300
+                transition duration-150 ease-in-out ${
                     disabled ? 'opacity-25 cursor-not-allowed' : ''
                 } ` + className
             }
-            disabled={disabled}
         >
             {children}
         </button>

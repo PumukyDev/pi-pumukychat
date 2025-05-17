@@ -33,11 +33,26 @@ export default function Register() {
 
     const submit = async (e) => {
         e.preventDefault();
+
+        if (form.password.length < 8) {
+            setErrors({
+                ...errors,
+                password: 'The password must be at least 8 characters.',
+            });
+            return;
+        }
+
+        if (form.password !== form.password_confirmation) {
+            setErrors({
+                ...errors,
+                password: 'Passwords do not match.',
+            });
+            return;
+        }
+
         setProcessing(true);
-        console.log('🚀 Form submitted');
 
         try {
-            console.log('🔐 Generating RSA key pair...');
             const keyPair = await window.crypto.subtle.generateKey(
                 {
                     name: 'RSA-OAEP',
@@ -62,14 +77,9 @@ export default function Register() {
                 public_key: publicKeyPem,
             };
 
-            console.log('Payload:', payload);
-
             router.post(route('register'), payload, {
                 preserveState: false,
-                onError: (err) => {
-                    console.error('❌ Validation errors:', err);
-                    setErrors(err);
-                },
+                onError: (err) => setErrors(err),
                 onFinish: () => setProcessing(false),
             });
 
@@ -193,14 +203,18 @@ export default function Register() {
                     <InputError message={errors.password_confirmation} className="mt-2" />
                 </div>
 
-                <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href={route('login')}
-                        className="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800"
-                    >
+                <div className="flex items-center justify-between mt-6">
+                    <div className="text-sm text-base-content/70">
                         Already registered?
-                    </Link>
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                        <Link
+                            href={route('login')}
+                            className="ml-1 text-primary hover:underline focus:outline-none"
+                        >
+                            Log in
+                        </Link>
+                    </div>
+
+                    <PrimaryButton className="px-4 py-2" disabled={processing}>
                         Register
                     </PrimaryButton>
                 </div>

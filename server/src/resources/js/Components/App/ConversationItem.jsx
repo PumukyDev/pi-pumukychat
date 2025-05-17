@@ -59,8 +59,6 @@ const ConversationItem = ({
         }
     }
 
-    const formattedDate = formatDate(conversation.last_message_date);
-
     useEffect(() => {
         const decryptPreview = async () => {
             if (
@@ -96,9 +94,9 @@ const ConversationItem = ({
             }
             preserveState
             className={
-                "conversation-item flex items-center gap-2 p-2 text-base-content transition-all cursor-pointer border-l-4 hover:bg-base-300 " +
+                "conversation-item flex items-center gap-2 p-2 text-base-content border-l-4 cursor-pointer hover:bg-base-300 " +
                 classes +
-                (conversation.is_user && currentUser.is_admin ? "pr-2" : "pr-4")
+                (conversation.is_user && currentUser.is_admin ? " pr-2" : " pr-4")
             }
         >
             {conversation.is_user && <UserAvatar user={conversation} online={online} />}

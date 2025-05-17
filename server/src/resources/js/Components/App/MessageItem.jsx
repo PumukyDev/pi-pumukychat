@@ -29,12 +29,13 @@ const MessageItem = ({ message, decrypted, attachmentClick }) => {
             </div>
 
             <div
-                className={`chat-bubble relative ${
+                className={`chat-bubble relative break-all max-w-[80vw] ${
                     isOwnMessage
-                        ? 'bg-bubbleown text-bubbleown-content'
-                        : 'bg-bubbleother text-bubbleother-content'
+                    ? 'bg-bubbleown text-bubbleown-content'
+                    : 'bg-bubbleother text-bubbleother-content'
                 }`}
             >
+
                 {isOwnMessage && (
                     <MessageOptionsDropdown message={message} />
                 )}

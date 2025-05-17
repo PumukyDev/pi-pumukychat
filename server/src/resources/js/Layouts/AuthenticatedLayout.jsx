@@ -24,37 +24,21 @@ export default function Authenticated({ header, children }) {
         conversations.forEach((conversation) => {
             let channel = `message.group.${conversation.id}`;
             if (conversation.is_user) {
-                channel = `message.user.${[
-                    parseInt(user.id),
-                    parseInt(conversation.id),
-                ]
-                    .sort((a, b) => a - b)
-                    .join("-")}`;
+                channel = `message.user.${[parseInt(user.id), parseInt(conversation.id)].sort((a, b) => a - b).join("-")}`;
             }
 
             window.Echo.private(channel)
-                .error((error) => {
-                    console.error(error);
-                })
+                .error(console.error)
                 .listen("SocketMessage", (event) => {
-                    console.log("socket message", event);
                     const message = event.message;
-
                     emit("message.created", message);
-                    if (message.sender_id === user.id) {
-                        return;
+                    if (message.sender_id !== user.id) {
+                        emit("newMessageNotification", {
+                            user: message.sender,
+                            group_id: message.group_id,
+                            message: message.message || `Shared ${message.attachments.length === 1 ? "an attachment" : `${message.attachments.length} attachments`}`,
+                        });
                     }
-                    emit("newMessageNotification", {
-                        user: message.sender,
-                        group_id: message.group_id,
-                        message:
-                            message.message ||
-                            `Shared ${
-                                message.attachments.length === 1
-                                    ? "an attachment"
-                                    : `${message.attachments.length} attachments`
-                            }`,
-                    });
                 });
 
             if (conversation.is_group) {
@@ -62,9 +46,7 @@ export default function Authenticated({ header, children }) {
                     .listen("GroupDeleted", (e) => {
                         emit("group.deleted", { id: e.id, name: e.name });
                     })
-                    .error((e) => {
-                        console.error(e);
-                    });
+                    .error(console.error);
             }
         });
 
@@ -73,15 +55,9 @@ export default function Authenticated({ header, children }) {
             conversations.forEach((conversation) => {
                 let channel = `message.group.${conversation.id}`;
                 if (conversation.is_user) {
-                    channel = `message.user.${[
-                        parseInt(user.id),
-                        parseInt(conversation.id),
-                    ]
-                        .sort((a, b) => a - b)
-                        .join("-")}`;
+                    channel = `message.user.${[parseInt(user.id), parseInt(conversation.id)].sort((a, b) => a - b).join("-")}`;
                 }
                 window.Echo.leave(channel);
-
                 if (conversation.is_group) {
                     window.Echo.leave(`group.deleted.${conversation.id}`);
                 }
@@ -91,7 +67,7 @@ export default function Authenticated({ header, children }) {
 
     return (
         <>
-            <div className="min-h-screen bg-base-100 text-base-content flex flex-col h-screen">
+            <div className="min-h-screen h-screen bg-base-100 text-base-content flex flex-col overflow-hidden">
                 {/* Top navigation bar */}
                 <nav className="bg-base-100 border-b border-base-300">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -100,7 +76,7 @@ export default function Authenticated({ header, children }) {
                                 {/* Logo section */}
                                 <div className="shrink-0 flex items-center">
                                     <Link href="/">
-                                        <ApplicationLogo className="block h-9 w-auto fill-current text-base-content" />
+                                        <ApplicationLogo className="block h-14 w-auto fill-current text-base-content" />
                                     </Link>
                                 </div>
 
@@ -109,6 +85,11 @@ export default function Authenticated({ header, children }) {
                                     <NavLink
                                         href={route("dashboard")}
                                         active={route().current("dashboard")}
+                                        className={({ isActive }) =>
+                                            `text-sm font-medium transition ${
+                                                isActive ? "text-base-content" : "text-base-content/60"
+                                            } hover:text-primary`
+                                        }
                                     >
                                         Dashboard
                                     </NavLink>
@@ -123,11 +104,11 @@ export default function Authenticated({ header, children }) {
                                             <span className="inline-flex rounded-md">
                                                 <button
                                                     type="button"
-                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-base-content bg-base-100 hover:text-primary focus:outline-none transition ease-in-out duration-150"
+                                                    className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-base-content/60 bg-base-100 hover:text-base-content focus:outline-none"
                                                 >
                                                     {user.name}
                                                     <svg
-                                                        className="ms-2 -me-0.5 h-4 w-4"
+                                                        className="ms-2 -me-0.5 h-4 w-4 text-base-content"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 20 20"
                                                         fill="currentColor"
@@ -154,37 +135,23 @@ export default function Authenticated({ header, children }) {
 
                             {/* Hamburger menu for small screens */}
                             <div className="-me-2 flex items-center sm:hidden">
+                                <div className="me-4">
+                                    <ThemeToggle />
+                                </div>
                                 <button
-                                    onClick={() =>
-                                        setShowingNavigationDropdown(
-                                            (previousState) => !previousState
-                                        )
-                                    }
+                                    onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)}
                                     className="inline-flex items-center justify-center p-2 rounded-md text-base-content hover:text-primary hover:bg-base-200 focus:outline-none focus:bg-base-200 focus:text-primary transition duration-150 ease-in-out"
                                 >
-                                    <svg
-                                        className="h-6 w-6"
-                                        stroke="currentColor"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                    >
+                                    <svg className="h-6 w-6 text-base-content" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path
-                                            className={
-                                                !showingNavigationDropdown
-                                                    ? "inline-flex"
-                                                    : "hidden"
-                                            }
+                                            className={!showingNavigationDropdown ? "inline-flex" : "hidden"}
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             strokeWidth="2"
                                             d="M4 6h16M4 12h16M4 18h16"
                                         />
                                         <path
-                                            className={
-                                                showingNavigationDropdown
-                                                    ? "inline-flex"
-                                                    : "hidden"
-                                            }
+                                            className={showingNavigationDropdown ? "inline-flex" : "hidden"}
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
                                             strokeWidth="2"
@@ -197,16 +164,16 @@ export default function Authenticated({ header, children }) {
                     </div>
 
                     {/* Responsive navigation dropdown */}
-                    <div
-                        className={
-                            (showingNavigationDropdown ? "block" : "hidden") +
-                            " sm:hidden"
-                        }
-                    >
+                    <div className={(showingNavigationDropdown ? "block" : "hidden") + " sm:hidden"}>
                         <div className="pt-2 pb-3 space-y-1">
                             <ResponsiveNavLink
                                 href={route("dashboard")}
                                 active={route().current("dashboard")}
+                                className={({ isActive }) =>
+                                    `block px-4 py-2 text-base transition ${
+                                        isActive ? "font-medium text-base-content" : "text-base-content/60"
+                                    } hover:text-primary`
+                                }
                             >
                                 Dashboard
                             </ResponsiveNavLink>
@@ -214,23 +181,13 @@ export default function Authenticated({ header, children }) {
 
                         <div className="pt-4 pb-1 border-t border-base-300">
                             <div className="px-4">
-                                <div className="font-medium text-base text-base-content">
-                                    {user.name}
-                                </div>
-                                <div className="font-medium text-sm text-base-content/60">
-                                    {user.email}
-                                </div>
+                                <div className="font-medium text-base text-base-content">{user.name}</div>
+                                <div className="font-medium text-sm text-base-content/60">{user.email}</div>
                             </div>
 
                             <div className="mt-3 space-y-1">
-                                <ResponsiveNavLink href={route("profile.edit")}>
-                                    Profile
-                                </ResponsiveNavLink>
-                                <ResponsiveNavLink
-                                    method="post"
-                                    href={route("logout")}
-                                    as="button"
-                                >
+                                <ResponsiveNavLink href={route("profile.edit")}>Profile</ResponsiveNavLink>
+                                <ResponsiveNavLink method="post" href={route("logout")} as="button">
                                     Log Out
                                 </ResponsiveNavLink>
                             </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
     PaperClipIcon,
     PhotoIcon,
@@ -28,8 +28,31 @@ export default function MessageInput({ conversation = null }) {
     const [messageSending, setMessageSending] = useState(false);
     const [chosenFiles, setChosenFiles] = useState([]);
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [emojiTheme, setEmojiTheme] = useState("light");
     const { emit } = useEventBus();
     const currentUser = usePage().props.auth.user;
+
+    useEffect(() => {
+        const darkThemes = ["pumukyChatTheme"];
+
+        const getTheme = () => {
+            const theme = document.documentElement.getAttribute("data-theme");
+            return darkThemes.includes(theme) ? "dark" : "light";
+        };
+
+        setEmojiTheme(getTheme());
+
+        const observer = new MutationObserver(() => {
+            setEmojiTheme(getTheme());
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ["data-theme"],
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     const onFileChange = (ev) => {
         const files = ev.target.files;
@@ -107,7 +130,6 @@ export default function MessageInput({ conversation = null }) {
             formData.append("plain_message", newMessage);
 
             if (conversation.is_user) {
-                // 1-1: enviar 2 claves cifradas
                 const senderKey = await fetchPublicKey(currentUser.id);
                 const receiverKey = await fetchPublicKey(conversation.id);
 
@@ -120,7 +142,6 @@ export default function MessageInput({ conversation = null }) {
             }
 
             if (conversation.is_group) {
-                // Grupos: enviar clave AES cifrada para cada miembro
                 formData.append("group_id", conversation.id);
                 const keys = {};
 
@@ -144,7 +165,6 @@ export default function MessageInput({ conversation = null }) {
             setNewMessage("");
             setChosenFiles([]);
             setUploadProgress(0);
-            emit("toast.show", "Message sent successfully");
 
         } catch (err) {
             console.error("❌ Encryption failed", err);
@@ -242,10 +262,11 @@ export default function MessageInput({ conversation = null }) {
                     <PopoverButton className="p-1 text-base-content/70 hover:text-base-content transition">
                         <FaceSmileIcon className="w-6 h-6" />
                     </PopoverButton>
-                    <PopoverPanel transition className="absolute z-10 right-0 bottom-full">
+                    <PopoverPanel transition className="absolute z-10 right-0 bottom-full max-h-[300px] w-[90vw] max-w-xs overflow-y-auto rounded-xl shadow-lg">
                         <EmojiPicker
-                            theme="dark"
+                            theme={emojiTheme}
                             onEmojiClick={(emojiData) => setNewMessage((prev) => prev + emojiData.emoji)}
+                            width="100%"
                         />
                     </PopoverPanel>
                 </Popover>

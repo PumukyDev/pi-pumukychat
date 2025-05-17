@@ -42,7 +42,7 @@ export default function MessageOptionsDropdown({ message }) {
                 </div>
 
                 {/* Dropdown content */}
-                <MenuItems className="absolute left-0 mt-2 w-48 rounded-md bg-base-200 border border-base-300 shadow-xl backdrop-blur z-50">
+                <MenuItems className="absolute left-0 mt-2 min-w-max rounded-md bg-base-200 border border-base-300 shadow-xl backdrop-blur z-50">
                     <div className="px-1 py-1">
                         <MenuItem as={Fragment}>
                             {({ focus }) => (

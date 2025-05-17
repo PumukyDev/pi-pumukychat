@@ -9,9 +9,9 @@ function Edit({ auth, mustVerifyEmail, status }) {
         <>
             <Head title="Profile" />
 
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                    <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <div className="h-full overflow-auto bg-base-100 text-base-content px-4 sm:px-6 lg:px-8 py-12">
+                <div className="max-w-4xl mx-auto space-y-12 pb-12">
+                    <div className="p-6 bg-base-200 rounded-lg shadow-md">
                         <UpdateProfileInformationForm
                             mustVerifyEmail={mustVerifyEmail}
                             status={status}
@@ -19,11 +19,11 @@ function Edit({ auth, mustVerifyEmail, status }) {
                         />
                     </div>
 
-                    <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                    <div className="p-6 bg-base-200 rounded-lg shadow-md">
                         <UpdatePasswordForm className="max-w-xl" />
                     </div>
 
-                    <div className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                    <div className="p-6 bg-base-200 rounded-lg shadow-md">
                         <DeleteUserForm className="max-w-xl" />
                     </div>
                 </div>
@@ -37,12 +37,12 @@ Edit.layout = (page) => {
         <AuthenticatedLayout
             user={page.props.auth.user}
             header={
-                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                <h2 className="font-semibold text-xl text-base-content leading-tight">
                     Profile
                 </h2>
             }
             children={page}
-        ></AuthenticatedLayout>
+        />
     );
 };
 

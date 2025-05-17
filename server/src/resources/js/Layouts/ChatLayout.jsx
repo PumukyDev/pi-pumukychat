@@ -176,7 +176,7 @@ const ChatLayout = ({ children }) => {
             <div className="flex-1 w-full flex overflow-hidden">
                 {/* Sidebar with conversations list */}
                 <div
-                    className={`transition-all w-full sm:w-[220px] md:w-[300px] bg-base-200 text-base-content flex flex-col overflow-hidden ${
+                    className={`w-full sm:w-[220px] md:w-[300px] bg-base-200 text-base-content flex flex-col overflow-hidden ${
                         selectedConversation ? "-ml-[100%] sm:ml-0" : ""
                     }`}
                 >
@@ -186,7 +186,10 @@ const ChatLayout = ({ children }) => {
                             className="tooltip tooltip-left"
                             data-tip="Create new Group"
                         >
-                            <button onClick={ev => setShowGroupModal(true)} className="text-base-content hover:text-primary">
+                            <button
+                                onClick={(ev) => setShowGroupModal(true)}
+                                className="text-base-content hover:text-base-content hover:bg-transparent focus:outline-none"
+                            >
                                 <PencilSquareIcon className="h-4 w-4 inline-block ml-2" />
                             </button>
                         </div>

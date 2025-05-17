@@ -63,8 +63,8 @@ export default {
                     accent: "#10B981",
                     neutral: "#F3F4F6",
                     "base-100": "#FFFFFF",
-                    "base-200": "#F9FAFB",
-                    "base-300": "#E5E7EB",
+                    "base-200": "#F3F4F6",
+                    "base-300": "#D1D5DB",
                     "base-content": "#1F2937", // <- añadido para texto oscuro coherente
                     info: "#3B82F6",
                     success: "#22C55E",

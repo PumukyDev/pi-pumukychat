@@ -39,16 +39,14 @@ export default function DeleteUserForm({ className = '' }) {
 
     const closeModal = () => {
         setConfirmingUserDeletion(false);
-
         reset();
     };
 
     return (
-        <section className={`space-y-6 ${className}`}>
+        <section className={`space-y-6 ${className} text-base-content`}>
             <header>
-                <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Delete Account</h2>
-
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <h2 className="text-lg font-medium">Delete Account</h2>
+                <p className="mt-1 text-sm text-base-content/70">
                     Once your account is deleted, all of its resources and data will be permanently deleted. Before
                     deleting your account, please download any data or information that you wish to retain.
                 </p>
@@ -57,19 +55,18 @@ export default function DeleteUserForm({ className = '' }) {
             <DangerButton onClick={confirmUserDeletion}>Delete Account</DangerButton>
 
             <Modal show={confirmingUserDeletion} onClose={closeModal}>
-                <form onSubmit={deleteUser} className="p-6">
-                    <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                <form onSubmit={deleteUser} className="p-6 text-base-content">
+                    <h2 className="text-lg font-medium">
                         Are you sure you want to delete your account?
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-1 text-sm text-base-content/70">
                         Once your account is deleted, all of its resources and data will be permanently deleted. Please
                         enter your password to confirm you would like to permanently delete your account.
                     </p>
 
                     <div className="mt-6">
                         <InputLabel htmlFor="password" value="Password" className="sr-only" />
-
                         <TextInput
                             id="password"
                             type="password"
@@ -81,13 +78,11 @@ export default function DeleteUserForm({ className = '' }) {
                             isFocused
                             placeholder="Password"
                         />
-
                         <InputError message={errors.password} className="mt-2" />
                     </div>
 
                     <div className="mt-6 flex justify-end">
                         <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
-
                         <DangerButton className="ms-3" disabled={processing}>
                             Delete Account
                         </DangerButton>
