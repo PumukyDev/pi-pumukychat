@@ -25,10 +25,10 @@ class MessageController extends Controller
             ->latest()
             ->paginate(10);
 
-            return inertia('Home', [
-                'selectedConversation' => $user->toConversationArray(),
-                'messages' => MessageResource::collection($messages),
-            ]);
+        return inertia('Home', [
+            'selectedConversation' => $user->toConversationArray(),
+            'messages' => MessageResource::collection($messages),
+        ]);
     }
 
     public function byGroup(Group $group)
@@ -45,16 +45,15 @@ class MessageController extends Controller
 
     public function loadOlder(Message $message)
     {
-
-        // Load older messages that are older than the given message, sort them by the latest
-        if($message->group_id) {
-            $messages = Message::where('created_at', '<' , $message->created_at)
+        // Load messages older than the given message, sorted by latest
+        if ($message->group_id) {
+            $messages = Message::where('created_at', '<', $message->created_at)
                 ->where('group_id', $message->group_id)
                 ->latest()
                 ->paginate(10);
         } else {
             $messages = Message::where('created_at', '<', $message->created_at)
-                ->where(function($query) use ($message) {
+                ->where(function ($query) use ($message) {
                     $query->where('sender_id', $message->sender_id)
                         ->where('receiver_id', $message->receiver_id)
                         ->orWhere('sender_id', $message->receiver_id)
@@ -68,7 +67,7 @@ class MessageController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created message in the database.
      */
     public function store(StoreMessageRequest $request)
     {
@@ -79,14 +78,14 @@ class MessageController extends Controller
         $groupId = $data['group_id'] ?? null;
         $files = $data['attachments'] ?? [];
 
-        // 1. Validación extra si es mensaje directo (no grupo)
+        // 1. Additional validation for direct messages (not group)
         if ($receiverId) {
             if (!$request->has('encrypted_key_for_sender') || !$request->has('encrypted_key_for_receiver')) {
                 return response()->json(['message' => 'Missing encrypted AES keys for sender/receiver'], 422);
             }
         }
 
-        // 2. Guardamos el mensaje cifrado
+        // 2. Save the encrypted message to the database
         $message = Message::create([
             'message' => $data['message'],
             'sender_id' => $senderId,
@@ -94,7 +93,7 @@ class MessageController extends Controller
             'group_id' => $groupId,
         ]);
 
-        // 3. Guardamos claves cifradas
+        // 3. Save encrypted AES keys per user
         if ($receiverId) {
             \App\Models\MessageKey::create([
                 'message_id' => $message->id,
@@ -117,7 +116,7 @@ class MessageController extends Controller
             }
         }
 
-        // 4. Adjuntos
+        // 4. Handle file attachments
         $attachments = [];
         if ($files) {
             foreach ($files as $file) {
@@ -136,21 +135,21 @@ class MessageController extends Controller
             $message->attachments = $attachments;
         }
 
-        // 5. Actualizamos conversación o grupo
+        // 5. Update conversation or group with latest message
         if ($receiverId) {
             Conversation::updateConversationWithMessage($receiverId, $senderId, $message);
         } elseif ($groupId) {
             Group::updateGroupWithMessage($groupId, $message);
         }
 
-        // 6. Emitimos mensaje plano por WebSocket
+        // 6. Broadcast the plain message via WebSocket
         $messageToEmit = clone $message;
         if ($request->has('plain_message')) {
             $messageToEmit->message = $request->input('plain_message');
         }
         SocketMessage::dispatch($messageToEmit);
 
-        // 7. Recargamos el mensaje para devolverlo con relaciones y encrypted_key
+        // 7. Reload message with relations for response
         $message = Message::with('sender', 'attachments')->find($message->id);
 
         return new MessageResource($message);
@@ -158,31 +157,55 @@ class MessageController extends Controller
 
     public function destroy(Message $message)
     {
-        // Check if the user is the owner of the message
-        if($message->sender_id !== auth()->id()){
+        if ($message->sender_id !== auth()->id()) {
             return response()->json(['message' => 'Forbidden'], 403);
         }
 
+        $lastMessage = null;
+
         $group = null;
         $conversation = null;
-        // Check if the message is the group message
+
         if ($message->group_id) {
             $group = Group::where('last_message_id', $message->id)->first();
         } else {
             $conversation = Conversation::where('last_message_id', $message->id)->first();
         }
 
+        // Delete encrypted keys and attachments
+        $message->keys()->delete();
+        $message->attachments()->each(function ($attachment) {
+            Storage::disk('public')->delete($attachment->path);
+            $attachment->delete();
+        });
+
         $message->delete();
 
+        // Clear the last_message_id field if it pointed to the deleted message
         if ($group) {
-            // Repopulate $group with latest database data
-            $group = Group::find($group->id);
-            $lastMessage = $group->lastMessage;
-        } else if ($conversation) {
-            $conversation = Conversation::find($conversation->id);
-            $lastMessage = $conversation->lastMessage;
+            $group->last_message_id = null;
+            $group->save();
+        } elseif ($conversation) {
+            $conversation->last_message_id = null;
+            $conversation->save();
         }
 
-        return response()->json(['message' => $lastMessage ? new MessageResource($lastMessage) : null]);
+        // Recalculate the last available message, if any
+        if ($group) {
+            $lastMessage = Message::where('group_id', $group->id)->latest()->first();
+        } elseif ($conversation) {
+            $lastMessage = Message::where(function ($q) use ($conversation) {
+                $q->where('sender_id', $conversation->user_id)
+                  ->where('receiver_id', $conversation->owner_id)
+                  ->orWhere(function ($q2) use ($conversation) {
+                      $q2->where('sender_id', $conversation->owner_id)
+                         ->where('receiver_id', $conversation->user_id);
+                  });
+            })->latest()->first();
+        }
+
+        return response()->json([
+            'message' => $lastMessage ? new MessageResource($lastMessage) : null,
+        ], 200);
     }
 }
