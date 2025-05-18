@@ -13,7 +13,13 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: [
+                    'Figtree',
+                    'Segoe UI Emoji',     // Windows
+                    'Apple Color Emoji',  // macOS
+                    'Noto Color Emoji',   // Linux
+                    ...defaultTheme.fontFamily.sans,
+                ],
             },
             colors: {
                 pumukyChatTheme: {
@@ -26,7 +32,7 @@ export default {
         },
         screens: {
             xs: "420px",
-            sm: "640px", // <- cambiado de 680px a 640px para respetar el breakpoint estándar
+            sm: "640px",
             md: "768px",
             lg: "1024px",
             xl: "1280px",
@@ -45,13 +51,13 @@ export default {
                     "base-100": "#23272A",
                     "base-200": "#2C2F33",
                     "base-300": "#40444B",
-                    "base-content": "#F2F3F5", // <- añadido para que el texto herede bien
+                    "base-content": "#F2F3F5",
                     info: "#00B0F4",
                     success: "#3BA55D",
                     warning: "#FAA61A",
                     error: "#ED4245",
-                    bubbleown: "#5865F2", // Azul Discord
-                    bubbleother: "#2F3136", // Gris oscuro
+                    bubbleown: "#5865F2",
+                    bubbleother: "#2F3136",
                     "bubbleown-content": "#F2F3F5",
                     "bubbleother-content": "#F2F3F5",
                 },
@@ -65,13 +71,13 @@ export default {
                     "base-100": "#FFFFFF",
                     "base-200": "#F3F4F6",
                     "base-300": "#D1D5DB",
-                    "base-content": "#1F2937", // <- añadido para texto oscuro coherente
+                    "base-content": "#1F2937",
                     info: "#3B82F6",
                     success: "#22C55E",
                     warning: "#EAB308",
                     error: "#EF4444",
-                    bubbleown: "#E5E7EB", // Gris clarito
-                    bubbleother: "#F3F4F6", // Fondo blanco roto
+                    bubbleown: "#E5E7EB",
+                    bubbleother: "#F3F4F6",
                     "bubbleown-content": "#1F2937",
                     "bubbleother-content": "#1F2937",
                 },
