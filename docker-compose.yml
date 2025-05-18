@@ -5,7 +5,6 @@ services:
       dockerfile: ./app/Dockerfile
     container_name: app_chat
     working_dir: /var/www
-    command: php-fpm
     restart: unless-stopped
     depends_on:
       - database
@@ -27,7 +26,6 @@ services:
       dockerfile: ./node/Dockerfile
     container_name: node_chat
     working_dir: /app
-    command: sh -c "npm install && npm run build"
     volumes:
       - ./src:/app
     networks:
@@ -62,8 +60,6 @@ services:
     working_dir: /var/www
     command: php artisan reverb:start --debug
     restart: unless-stopped
-    ports:
-      - "6001:6001"
     depends_on:
       - app
     environment:
@@ -81,9 +77,6 @@ services:
     image: nginx:alpine
     container_name: nginx_chat
     restart: unless-stopped
-    ports:
-      - "8090:80"
-      - "4433:443"
     depends_on:
       - app
     volumes:
@@ -98,8 +91,6 @@ services:
     image: mariadb:latest
     container_name: database_chat
     restart: unless-stopped
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
@@ -115,9 +106,9 @@ services:
     container_name: phpmyadmin_chat
     restart: unless-stopped
     environment:
-      PMA_HOST: database_chat
-      PMA_USER: root
-      PMA_PASSWORD: ${DB_ROOT_PASSWORD}
+      PMA_HOST: ${PMA_HOST}
+      PMA_USER: ${PMA_USER}
+      PMA_PASSWORD: ${PMA_PASSWORD}
     ports:
       - "8080:80"
     networks:
