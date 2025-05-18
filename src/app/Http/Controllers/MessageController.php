@@ -121,7 +121,6 @@ class MessageController extends Controller
         if ($files) {
             foreach ($files as $file) {
                 $directory = 'attachments/' . Str::random(32);
-                Storage::makeDirectory($directory);
 
                 $attachment = MessageAttachment::create([
                     'message_id' => $message->id,

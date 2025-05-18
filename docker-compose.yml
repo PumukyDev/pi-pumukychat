@@ -1,47 +1,63 @@
 services:
   app:
     build:
-      context: ./app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./app/Dockerfile
     container_name: app_chat
-    restart: unless-stopped
     working_dir: /var/www
+    command: php-fpm
+    restart: unless-stopped
     depends_on:
       - database
-    networks:
-      - mysql-network
-      - proxy-network
+      - node
     environment:
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: database
-    # volumes:
-    #   - ./src:/var/www
+    volumes:
+      - ./src:/var/www
+    networks:
+      - mysql-network
+      - proxy-network
+
+  node:
+    build:
+      context: .
+      dockerfile: ./node/Dockerfile
+    container_name: node_chat
+    working_dir: /app
+    command: sh -c "npm install && npm run build"
+    volumes:
+      - ./src:/app
+    networks:
+      - proxy-network
 
   queue-worker:
     build:
-      context: ./app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./app/Dockerfile
     container_name: queue_chat
     working_dir: /var/www
     command: php artisan queue:work
     restart: unless-stopped
     depends_on:
       - app
-    networks:
-      - mysql-network
-      - proxy-network
     environment:
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: database
+    volumes:
+      - ./src:/var/www
+    networks:
+      - mysql-network
+      - proxy-network
 
   reverb-server:
     build:
-      context: ./app
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./app/Dockerfile
     container_name: reverb_chat
     working_dir: /var/www
     command: php artisan reverb:start --debug
@@ -50,14 +66,16 @@ services:
       - "6001:6001"
     depends_on:
       - app
-    networks:
-      - mysql-network
-      - proxy-network
     environment:
       DB_DATABASE: ${DB_DATABASE}
       DB_USERNAME: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       DB_HOST: database
+    volumes:
+      - ./src:/var/www
+    networks:
+      - mysql-network
+      - proxy-network
 
   nginx:
     image: nginx:alpine
@@ -66,12 +84,12 @@ services:
     ports:
       - "8090:80"
       - "4433:443"
+    depends_on:
+      - app
     volumes:
       - ./src:/var/www
       - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - app
     networks:
       - mysql-network
       - proxy-network
