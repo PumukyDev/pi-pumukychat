@@ -31,7 +31,7 @@ function Home({ selectedConversation = null, messages = null }) {
         try {
             await loadPrivateKey();
         } catch (e) {
-            console.warn("🔐 No private key found. Generating a new key pair...");
+            console.warn("No private key found. Generating a new key pair...");
 
             const { publicKey, privateKey } = await window.crypto.subtle.generateKey(
                 {
@@ -53,29 +53,29 @@ function Home({ selectedConversation = null, messages = null }) {
             await storePrivateKeyPem(pemPrivate);
             await axios.post("/api/store-public-key", { public_key: pemPublic });
 
-            console.log("✅ Key pair generated and stored.");
+            console.log("Key pair generated and stored.");
         }
     };
 
     const decryptAllMessages = async (messageArray) => {
         try {
             const privateKey = await loadPrivateKey();
-            console.debug("🔐 Loaded private key successfully");
+            console.debug("Loaded private key successfully");
 
             const decryptedMessages = await Promise.all(
                 messageArray.map(async (msg) => {
-                    console.debug("📩 Raw message:", msg);
+                    console.debug("Raw message:", msg);
 
                     try {
                         const aesKey = await decryptAESKeyWithPrivateKey(msg.encrypted_key, privateKey);
-                        console.debug(`🔑 AES key decrypted for message ID ${msg.id}`);
+                        console.debug(`AES key decrypted for message ID ${msg.id}`);
 
                         const plaintext = await decryptMessageAES(msg.message, aesKey);
-                        console.debug(`✅ Message ID ${msg.id} decrypted:`, plaintext);
+                        console.debug(`Message ID ${msg.id} decrypted:`, plaintext);
 
                         return { ...msg, decrypted: plaintext };
                     } catch (err) {
-                        console.error(`❌ Decryption failed for message ID ${msg.id}:`, err);
+                        console.error(`Decryption failed for message ID ${msg.id}:`, err);
                         return { ...msg, decrypted: "[Decryption failed]" };
                     }
                 })
@@ -83,7 +83,7 @@ function Home({ selectedConversation = null, messages = null }) {
 
             return decryptedMessages;
         } catch (err) {
-            console.error("❌ Error loading private key:", err);
+            console.error("Error loading private key:", err);
             return messageArray.map((m) => ({ ...m, decrypted: "[No key available]" }));
         }
     };
@@ -145,7 +145,7 @@ function Home({ selectedConversation = null, messages = null }) {
     };
 
     useEffect(() => {
-        ensureKeyPair(); // ✅ Asegura que haya una clave al iniciar
+        ensureKeyPair();
 
         setTimeout(() => {
             if (messagesCtrRef.current) {

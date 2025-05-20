@@ -41,7 +41,7 @@ export function storePrivateKeyPem(pem) {
     };
 
     request.onerror = () => {
-        console.error('❌ Failed to open IndexedDB:', request.error);
+        console.error('Failed to open IndexedDB:', request.error);
     };
 }
 
@@ -65,7 +65,7 @@ export function loadPrivateKey() {
             getRequest.onsuccess = async () => {
                 const result = getRequest.result;
                 if (!result) {
-                    console.warn("🔍 No private key found in store:", getRequest);
+                    console.warn("No private key found in store:", getRequest);
                     reject('No private key found in IndexedDB');
                     db.close();
                     return;
@@ -124,7 +124,7 @@ function base64ToUint8Array(base64) {
         const binary = atob(base64);
         return Uint8Array.from(binary, c => c.charCodeAt(0));
     } catch (e) {
-        console.error("❌ Invalid base64 data:", base64);
+        console.error("Invalid base64 data:", base64);
         throw e;
     }
 }
@@ -134,7 +134,7 @@ function base64ToUint8Array(base64) {
  * Assumes the format: iv:content (both base64).
  */
 export async function decryptMessageAES(encryptedBase64, aesKey) {
-    console.debug("🔐 decryptMessageAES() input:", encryptedBase64);
+    console.debug("decryptMessageAES() input:", encryptedBase64);
 
     if (!encryptedBase64.includes(":")) {
         throw new Error("Encrypted message missing ':' separator between IV and ciphertext");
@@ -149,7 +149,7 @@ export async function decryptMessageAES(encryptedBase64, aesKey) {
     const iv = base64ToUint8Array(ivB64);
     const ciphertext = base64ToUint8Array(contentB64);
 
-    console.debug("🔐 Decryption attempt → IV:", iv, "Ciphertext length:", ciphertext.length);
+    console.debug("Decryption attempt → IV:", iv, "Ciphertext length:", ciphertext.length);
 
     const decryptedBuffer = await window.crypto.subtle.decrypt(
         {
@@ -161,6 +161,6 @@ export async function decryptMessageAES(encryptedBase64, aesKey) {
     );
 
     const decryptedText = new TextDecoder().decode(decryptedBuffer);
-    console.debug("✅ Decrypted message:", decryptedText);
+    console.debug("Decrypted message:", decryptedText);
     return decryptedText;
 }

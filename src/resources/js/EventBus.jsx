@@ -17,7 +17,7 @@ export const EventBusProvider = ({ children }) => {
             events[name] = [];
         }
         events[name].push(cb);
-        
+
         return () => {
             events[name] = events[name].filter((eventCb) => eventCb !== cb);
         };

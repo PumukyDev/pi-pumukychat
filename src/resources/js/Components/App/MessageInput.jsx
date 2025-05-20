@@ -270,9 +270,6 @@ export default function MessageInput({ conversation = null }) {
                         />
                     </PopoverPanel>
                 </Popover>
-                <button onClick={onLikeClick} className="p-1 text-base-content/70 hover:text-base-content transition">
-                    <HandThumbUpIcon className="w-6 h-6" />
-                </button>
             </div>
         </div>
     );

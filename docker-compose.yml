@@ -21,15 +21,14 @@ services:
       - proxy-network
 
   node:
-    build:
-      context: .
-      dockerfile: ./node/Dockerfile
+    image: node:18
     container_name: node_chat
     working_dir: /app
     volumes:
       - ./src:/app
     networks:
       - proxy-network
+    command: sh -c "npm install && npm run build"
 
   queue-worker:
     build:
@@ -71,7 +70,6 @@ services:
       - ./src:/var/www
     networks:
       - mysql-network
-      - proxy-network
 
   nginx:
     image: nginx:alpine
