@@ -18,7 +18,6 @@ services:
       - ./src:/var/www
     networks:
       - mysql-network
-      - proxy-network
 
   node:
     image: node:18
@@ -26,8 +25,6 @@ services:
     working_dir: /app
     volumes:
       - ./src:/app
-    networks:
-      - proxy-network
     command: sh -c "npm install && npm run build"
 
   queue-worker:
@@ -49,7 +46,6 @@ services:
       - ./src:/var/www
     networks:
       - mysql-network
-      - proxy-network
 
   reverb-server:
     build:
