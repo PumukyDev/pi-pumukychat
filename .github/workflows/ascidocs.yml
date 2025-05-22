@@ -1,22 +1,50 @@
-name: Asciidocs
+name: Build AsciiDoc PDF
 
 on:
   push:
-  pull_request:
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    branches: [ main ]
 
 jobs:
-  build:
+  build-doc:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: asciidoctor-ghpages
-      uses: manoelcampos/asciidoctor-ghpages-action@v2.3.0
-      with:
-        pdf_build: true
-        source_dir: docs/
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1
+
+      - name: Install dependencies
+        run: |
+          gem install asciidoctor-pdf
+          gem install rouge
+          sudo apt-get update
+          sudo apt-get install -y qpdf
+
+      - name: Build base PDF from AsciiDoc
+        run: |
+          cd docs
+          asciidoctor-pdf \
+            -a pdf-theme=pi-theme.yml \
+            -a pdf-fontsdir=theme/fonts \
+            -a pdf-themesdir=theme \
+            -o base.pdf \
+            proyecto-integrado.adoc
+
+      - name: Merge with back.pdf
+        run: |
+          cd docs
+          qpdf base.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- ../2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT.pdf
+
+      - name: Deploy PDF to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          keep_files: true
+          destination_dir: .
+          enable_jekyll: false

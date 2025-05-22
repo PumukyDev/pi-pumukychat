@@ -1,0 +1,14 @@
+Laravel Reverb y WebSockets en tiempo real
+
+Una pieza clave para el funcionamiento de chat en tiempo real es Laravel Reverb. Reverb es un servidor WebSocket oficial de Laravel que se integra con el sistema de eventos/broadcasting de la aplicación
+laravel-news.com
+. Permite establecer comunicación bidireccional persistente entre servidor y clientes, de modo que se puedan enviar notificaciones y datos en vivo sin requerir peticiones HTTP constantes.
+
+¿Qué es un WebSocket? Es un canal de comunicación full-duplex entre cliente y servidor sobre una sola conexión TCP. A diferencia del protocolo HTTP tradicional (request-response), con WebSockets el servidor puede enviar datos al cliente en cualquier momento una vez establecida la conexión, y viceversa, sin necesidad de que el cliente lo solicite cada vez
+twilio.com
+twilio.com
+. Esto lo hace ideal para aplicaciones de chat, donde los mensajes deben propagarse a los usuarios en cuanto ocurren, generando una experiencia interactiva en tiempo real.
+
+Laravel Reverb actúa como mediador entre la aplicación Laravel y los usuarios: establece comunicación bidireccional en tiempo real basada en WebSockets, permitiendo que las páginas web (clientes) reciban actualizaciones del servidor sin una recarga completa
+laravel-news.com
+. En otras palabras, convierte una aplicación web tradicional en una aplicación dinámica donde los eventos se transmiten de inmediato a todos los clientes conectados. Reverb se integra con la API de broadcasting de Laravel y con librerías JavaScript (como Laravel Echo) para simplificar su uso. Sus características incluyen alto rendimiento, escalabilidad y seguridad integradas (autenticación de canales, cifrado de datos)
