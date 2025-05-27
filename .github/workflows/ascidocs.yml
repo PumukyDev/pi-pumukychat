@@ -1,4 +1,4 @@
-name: Build AsciiDoc PDF
+name: Build AsciiDoc PDF and HTML
 
 on:
   push:
@@ -19,14 +19,22 @@ jobs:
 
       - name: Install dependencies
         run: |
-          gem install asciidoctor-pdf
-          gem install rouge
+          gem install asciidoctor asciidoctor-pdf rouge
           sudo apt-get update
           sudo apt-get install -y qpdf
 
-      - name: Build main PDF with cover
+      - name: Build main PDF and HTML with cover
         run: |
           cd docs
+          # HTML
+          asciidoctor \
+            -a toc=left \
+            -a icons=font \
+            -a source-highlighter=rouge \
+            -o index.html \
+            README.adoc
+
+          # PDF
           asciidoctor-pdf \
             -a pdf-theme=pi-theme.yml \
             -a pdf-fontsdir=theme/fonts \
@@ -41,28 +49,31 @@ jobs:
 
       - name: Build annex PDFs with cover and back cover
         run: |
-            cd docs
-            for dir in Anexo*; do
-              anexo=$(echo $dir | cut -d'-' -f2)
+          cd docs
+          for dir in Anexo*; do
+            anexo=$(echo $dir | cut -d'-' -f2)
 
-              asciidoctor-pdf \
-                -a pdf-theme=pi-theme.yml \
-                -a pdf-themesdir=./${dir} \
-                -a pdf-fontsdir=theme/fonts \
-                -o temp.pdf \
-                ${dir}/README.adoc
+            asciidoctor \
+              -o ${dir}/index.html \
+              ${dir}/README.adoc
 
-              qpdf temp.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- ../2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo${anexo}.pdf
+            asciidoctor-pdf \
+              -a pdf-theme=pi-theme.yml \
+              -a pdf-themesdir=./${dir} \
+              -a pdf-fontsdir=theme/fonts \
+              -o temp.pdf \
+              ${dir}/README.adoc
 
-              rm temp.pdf
-            done
+            qpdf temp.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- ../2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo${anexo}.pdf
 
-      - name: Deploy PDF to GitHub Pages
+            rm temp.pdf
+          done
+
+      - name: Deploy documentation to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: docs
           publish_branch: gh-pages
           keep_files: true
-          destination_dir: .
           enable_jekyll: false
