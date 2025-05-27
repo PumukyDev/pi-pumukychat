@@ -1,0 +1,64 @@
+extends: default
+
+cover:
+  front:
+    image: image:cover.png[page=1]
+
+page:
+  size: A4
+  margin: [1in, 0.8in, 1in, 0.8in]
+
+font:
+  catalog:
+    merge: true
+    NotoSerif:
+      normal: NotoSerif-BoldItalic.ttf
+      bold: NotoSerif-BoldItalic.ttf
+      italic: NotoSerif-BoldItalic.ttf
+      bold_italic: NotoSerif-BoldItalic.ttf
+  base:
+    family: NotoSerif
+    size: 12
+  fallbacks: [NotoSerif]
+
+title:
+  chapter:
+    title-style: none
+
+  header:
+    height: 0
+    recto:
+      right:
+        content: ''
+  footer:
+    height: 0
+    center:
+      content: ''
+
+header:
+  height: 0.7in
+  line_height: 1.2
+  recto:
+    right:
+      content: 'PumukyChat - Anexo C'
+  verso:
+    right:
+      content: 'PumukyChat - Anexo C'
+
+footer:
+  height: 0.7in
+  line_height: 1.2
+  recto:
+    left:
+      content: ''
+    right:
+      content: 'xref:toc[Volver al índice]'
+    center:
+      content: '{page-number}'
+  verso:
+    left:
+      content: ''
+    right:
+      content: 'xref:toc[Volver al índice]'
+    center:
+      content: '{page-number}'
