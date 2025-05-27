@@ -50,7 +50,7 @@ Contenedor que actúa como un **servidor web** y **proxy inverso**. Se encarga d
 - Redirige las peticiones HTTP al contenedor de Laravel (`app`).
 - Redirige las conexiones WebSocket al contenedor `reverb-server`.
 
-Está conectado a la red externa `proxy-network`, lo que le permite comunicarse con el contenedor `nginx_proxy`, encargado de recibir todas las peticiones procedentes de Internet. Para más detalles sobre la configuración que permite redirigir las solicitudes, utilizar un sistema de DNS dinámico y scripts para paliar con problemas con el orden de arranque, consultar el link:https://github.com/PumukyDev/tests/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo1.pdf[Anexo 1].
+Está conectado a la red externa `proxy-network`, lo que le permite comunicarse con el contenedor `nginx_proxy`, encargado de recibir todas las peticiones procedentes de Internet. Para más detalles sobre la configuración que permite redirigir las solicitudes, utilizar un sistema de DNS dinámico y scripts para paliar con problemas con el orden de arranque, consultar el link:https://github.com/PumukyDev/pi-pumukydev/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo1.pdf[Anexo 1].
 
 .Fragmento docker-compose.yml
 [source,yaml]
@@ -127,7 +127,7 @@ Contenedor que ejecuta los *trabajos en segundo plano* (jobs) definidos en Larav
 
 ===== Reverb Server
 
-Contenedor que gestiona las **conexiones WebSocket** mediante **Laravel Reverb**, el sistema oficial de Laravel para la comunicación en tiempo real. A través de este servicio, los mensajes se transmiten de forma instantánea a todos los clientes conectados, sin necesidad de recargar la página. Para información sobre los WebSockets, consultar el link:https://github.com/PumukyDev/tests/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo2.pdf[Anexo 2].
+Contenedor que gestiona las **conexiones WebSocket** mediante **Laravel Reverb**, el sistema oficial de Laravel para la comunicación en tiempo real. A través de este servicio, los mensajes se transmiten de forma instantánea a todos los clientes conectados, sin necesidad de recargar la página. Para información sobre los WebSockets, consultar el link:https://github.com/PumukyDev/pi-pumukydev/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo2.pdf[Anexo 2].
 
 .Fragmento docker-compose.yml
 [source,yaml]
@@ -338,7 +338,7 @@ const decryptedMessage = await cryptoHelpers.decryptWithAES(aesKey, iv, encrypte
 
 El texto original descifrado se muestra en pantalla. Así, solo el destinatario legítimo (poseedor de la clave privada RSA) puede recuperar la clave AES y leer el contenido del mensaje.
 
-Para más información sobre el sistema de encriptación usado como por ejemplo por qué se cifran dos veces los mensajes o por qué no se usan otras alternativas, consulta el link:https://github.com/PumukyDev/tests/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo3.pdf[Anexo 3].
+Para más información sobre el sistema de encriptación usado como por ejemplo por qué se cifran dos veces los mensajes o por qué no se usan otras alternativas, consulta el link:https://github.com/PumukyDev/pi-pumukydev/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo3.pdf[Anexo 3].
 
 === Manejo de datos
 
@@ -871,9 +871,9 @@ El desarrollo ha sido una experiencia increíblemente enriquecedora, aunque tamb
 
 == Anexos
 
-* link:https://github.com/PumukyDev/tests/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo1.pdf[Anexo 1].
-* link:https://github.com/PumukyDev/tests/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo2.pdf[Anexo 2].
-* link:https://github.com/PumukyDev/tests/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo3.pdf[Anexo 3].
+* link:https://github.com/PumukyDev/pi-pumukydev/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo1.pdf[Anexo 1].
+* link:https://github.com/PumukyDev/pi-pumukydev/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo2.pdf[Anexo 2].
+* link:https://github.com/PumukyDev/pi-pumukydev/blob/gh-pages/2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo3.pdf[Anexo 3].
 
 <<<
 

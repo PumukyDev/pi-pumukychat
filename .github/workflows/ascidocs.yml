@@ -29,7 +29,7 @@ jobs:
       - name: Build main PDF and HTML with cover
         run: |
           cd docs
-          # HTML
+
           asciidoctor \
             -a toc=left \
             -a icons=font \
@@ -37,7 +37,6 @@ jobs:
             -o index.html \
             README.adoc
 
-          # PDF
           asciidoctor-pdf \
             -a pdf-theme=pi-theme.yml \
             -a pdf-fontsdir=theme/fonts \
@@ -45,12 +44,10 @@ jobs:
             -o base.pdf \
             README.adoc
 
-      - name: Add back cover to main PDF
-        run: |
-          cd docs
-          qpdf base.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- ../2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT.pdf
+          # Añadir contraportada
+          qpdf base.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- 2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT.pdf
 
-      - name: Build annex PDFs with cover and back cover
+      - name: Build annex PDFs and HTML with cover and back cover
         run: |
           cd docs
           for dir in Anexo*; do
@@ -67,9 +64,11 @@ jobs:
               -o temp.pdf \
               ${dir}/README.adoc
 
-            qpdf temp.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- ../2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo${anexo}.pdf
+            qpdf temp.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- 2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT-Anexo${anexo}.pdf
 
             rm temp.pdf
+            rm base.pdf
+            rm proyecto.pdf
           done
 
       - name: Deploy documentation to GitHub Pages
