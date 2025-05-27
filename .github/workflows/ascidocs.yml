@@ -44,7 +44,6 @@ jobs:
             -o base.pdf \
             README.adoc
 
-          # Añadir contraportada
           qpdf base.pdf --pages . theme/back.pdf -- --preserve-unreferenced -- 2ASIR_B_BERTOS_GOMEZ_ADRIAN_PUMUKYCHAT.pdf
 
       - name: Build annex PDFs and HTML with cover and back cover
