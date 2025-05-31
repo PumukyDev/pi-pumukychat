@@ -502,7 +502,7 @@ El `GroupController` se encarga de crear, actualizar y eliminar grupos de chat. 
 
 ===== Creación de grupos
 
-Una vez validados los datos, el controlardor se encarga de crear el grupo en la base de datos.
+Una vez validados los datos, el controlador se encarga de crear el grupo en la base de datos.
 
 .Fragmento GroupController.php
 [source,php]
